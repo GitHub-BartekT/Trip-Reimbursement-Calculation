@@ -30,4 +30,19 @@ public class UserGroupService {
         UserGroup userGroup = repository.save(group.toUserGroup());
         return new UserGroupDTO(userGroup);
     }
+
+    public UserGroupDTO updateUserGroupByName(UserGroupDTO group){
+        if (!repository.existsByName(group.getName())){
+            throw new IllegalArgumentException("User Group not found.");
+        }
+        UserGroup userGroup = repository.update(group.toUserGroup());
+        return new UserGroupDTO(userGroup);
+    }
+
+    public void deleteUserGroup(UserGroupDTO group) throws UserGroupNotFoundException {
+        UserGroup toDelete = repository.findById(group.getId()).orElseThrow(
+                () -> new UserGroupNotFoundException("User Group not found.")
+        );
+        repository.delete(toDelete);
+    }
 }
