@@ -11,7 +11,7 @@ public interface UserGroupRepository {
 
     Optional<UserGroup> findById(Integer i);
 
-    boolean existsById(Integer id);
+    boolean existsByName(String name);
 
     UserGroup save(UserGroup entity);
 

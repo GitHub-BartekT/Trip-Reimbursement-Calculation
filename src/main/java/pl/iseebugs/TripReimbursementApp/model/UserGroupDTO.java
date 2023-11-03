@@ -4,12 +4,11 @@ public class UserGroupDTO {
     private int id;
     private String name;
 
+    public UserGroupDTO() {    }
+
     public UserGroupDTO(UserGroup userGroup) {
         this.id = userGroup.getId();
         this.name = userGroup.getName();
-    }
-
-    public UserGroupDTO() {
     }
 
     public int getId() {
@@ -26,5 +25,11 @@ public class UserGroupDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserGroup toUserGroup(){
+        var result = new UserGroup();
+        result.setName(this.name);
+        return result;
     }
 }

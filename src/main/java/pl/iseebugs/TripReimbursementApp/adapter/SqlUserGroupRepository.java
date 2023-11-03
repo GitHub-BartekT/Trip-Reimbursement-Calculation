@@ -7,4 +7,6 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 
 @Repository
 public interface SqlUserGroupRepository extends UserGroupRepository, JpaRepository<UserGroup, Integer> {
+
+
 }
