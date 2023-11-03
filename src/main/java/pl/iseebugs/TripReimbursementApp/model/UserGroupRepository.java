@@ -14,4 +14,6 @@ public interface UserGroupRepository {
     boolean existsById(Integer id);
 
     UserGroup save(UserGroup entity);
+
+    UserGroup update(UserGroup entity);
 }

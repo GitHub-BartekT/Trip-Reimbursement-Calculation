@@ -15,7 +15,7 @@ public class UserGroup {
     @NotBlank(message = "Group name must not be empty")
     String name;
 
-    public UserGroup() {
+    protected UserGroup() {
     }
 
     int getId() {
