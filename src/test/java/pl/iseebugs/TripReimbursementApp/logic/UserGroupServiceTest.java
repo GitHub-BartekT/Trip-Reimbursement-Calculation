@@ -107,12 +107,21 @@ class UserGroupServiceTest {
     @Test
     @DisplayName("should rename user group")
     void updateUserGroupById_updatesUserGroup() throws UserGroupNotFoundException {
+
     }
 
 
     /*@Test
     void deleteUserGroup() {
     }*/
+
+    private void saveSetOfEntitiesInMemory (InMemoryUserGroupRepository inMemoryUserGroupRepository, Set<String> entities){
+        for (String entity : entities) {
+            UserGroupDTO userGroup = new UserGroupDTO();
+            userGroup.setName(entity);
+            inMemoryUserGroupRepository.save(userGroup.toUserGroup());
+        }
+    }
 
     private InMemoryUserGroupRepository inMemoryUserGroupRepository(){
         return new InMemoryUserGroupRepository();
