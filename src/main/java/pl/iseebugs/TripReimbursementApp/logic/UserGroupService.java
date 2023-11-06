@@ -34,10 +34,10 @@ public class UserGroupService {
     public UserGroupDTO updateUserGroupById(UserGroupDTO group) throws UserGroupNotFoundException{
         if(repository.findById(group.getId()).isEmpty()){
             throw new UserGroupNotFoundException();
-        } else if (repository.existsByName(group.getName())) {
-            throw new IllegalArgumentException("User Group with that name already exist.");
         } else if (group.getName().trim().isEmpty()){
             throw new IllegalArgumentException("User Group name couldn't be empty.");
+        } else if (repository.existsByName(group.getName())) {
+            throw new IllegalArgumentException("User Group with that name already exist.");
         }
         UserGroup toUpdate = repository.save(group.toUserGroup());
         return new UserGroupDTO(toUpdate);
