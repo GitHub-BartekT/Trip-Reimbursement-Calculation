@@ -31,12 +31,13 @@ public class UserGroupService {
         return new UserGroupDTO(userGroup);
     }
 
-    public UserGroupDTO updateUserGroupByName(UserGroupDTO group){
-        if (!repository.existsByName(group.getName())){
-            throw new IllegalArgumentException("User Group not found.");
+    public UserGroupDTO updateUserGroupById(UserGroupDTO group) throws UserGroupNotFoundException{
+        if(repository.findById(group.getId()).isEmpty()){
+            throw new UserGroupNotFoundException();
         }
-        UserGroup userGroup = repository.update(group.toUserGroup());
-        return new UserGroupDTO(userGroup);
+        
+        UserGroup toUpdate = repository.save(group.toUserGroup());
+        return new UserGroupDTO(toUpdate);
     }
 
     public void deleteUserGroup(UserGroupDTO group) throws UserGroupNotFoundException {

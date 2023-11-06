@@ -15,7 +15,5 @@ public interface UserGroupRepository {
 
     UserGroup save(UserGroup entity);
 
-    UserGroup update(UserGroup entity);
-
     void delete(UserGroup entity);
 }
