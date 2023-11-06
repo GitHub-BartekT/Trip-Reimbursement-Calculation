@@ -2,17 +2,17 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
+//import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,7 +22,18 @@ class UserGroupServiceTest {
     @Test
     @DisplayName("should returns empty list when no objects")
     void readAll_returnEmptyList() {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
 
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //when
+        List<UserGroupDTO> result = toTest.readAll();
+
+        //then
+        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isNotNull();
     }
 
     @Test
