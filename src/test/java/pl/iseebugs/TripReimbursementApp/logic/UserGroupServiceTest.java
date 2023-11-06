@@ -59,10 +59,41 @@ class UserGroupServiceTest {
     }
 
 
-/*
     @Test
-    void createUserGroup() {
-    }*/
+    @DisplayName("should throws IllegalArgumentException when given id already exists")
+    void createUserGroup_whenGivenIdAlreadyExist_throwsIllegalArgumentException() {
+
+    }
+
+    @Test
+    @DisplayName("should throws IllegalArgumentException when given name is empty or has only white marks")
+    void createUserGroup_emptyNameParam_throwsIllegalArgumentException() {
+
+    }
+
+    @Test
+    @DisplayName("should throws IllegalArgumentException when given name already exists")
+    void createUserGroup_givenNameExists_throwIllegalArgumentException() {
+
+    }
+
+    @Test
+    @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
+    void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
+
+    }
+
+    @Test
+    @DisplayName("should create new User Group")
+    void createUserGroup_createsUserGroup() {
+
+    }
+
+    @Test
+    @DisplayName("should create new User Group when given name has 100 marks")
+    void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
+
+    }
 
     @Test
     @DisplayName("should throw UserGroupNotFoundException when given id not found")
