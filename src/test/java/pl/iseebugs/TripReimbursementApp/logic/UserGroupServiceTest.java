@@ -19,10 +19,36 @@ import static org.mockito.Mockito.when;
 
 class UserGroupServiceTest {
 
-/*    @Test
-    void readAll() {
+    @Test
+    @DisplayName("should returns empty list when no objects")
+    void readAll_returnEmptyList() {
+
     }
 
+    @Test
+    @DisplayName("should returns all objects")
+    void readAll_readAllUserGroups() {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
+
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //when
+        List<UserGroupDTO> result = toTest.readAll();
+        int afterSize = result.size();
+
+        //then
+        assertThat(result.get(0).getName()).isEqualTo("foo");
+        assertThat(result.get(1).getName()).isEqualTo("bar");
+        assertThat(result.get(2).getName()).isEqualTo("foobar");
+        assertThat(afterSize).isEqualTo(beforeSize);
+    }
+
+
+/*
     @Test
     void createUserGroup() {
     }*/
@@ -108,7 +134,7 @@ class UserGroupServiceTest {
     void updateUserGroupById_updatesUserGroup() throws UserGroupNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, Set.of("foo","bar"));
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository);
@@ -130,7 +156,7 @@ class UserGroupServiceTest {
     void deleteUserGroup() {
     }*/
 
-    private void repositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, Set<String> entities){
+    private void repositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, List<String> entities){
         for (String entity : entities) {
             UserGroupDTO userGroup = new UserGroupDTO();
             userGroup.setName(entity);
