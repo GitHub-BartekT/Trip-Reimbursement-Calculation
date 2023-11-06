@@ -29,6 +29,7 @@ public class UserGroupDTO {
 
     public UserGroup toUserGroup(){
         var result = new UserGroup();
+        result.setId(this.id);
         result.setName(this.name);
         return result;
     }

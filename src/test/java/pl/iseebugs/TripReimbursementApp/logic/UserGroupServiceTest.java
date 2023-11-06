@@ -103,19 +103,34 @@ class UserGroupServiceTest {
                 .hasMessageContaining("User Group with that name already exist.");
     }
 
-    //TODO:
     @Test
-    @DisplayName("should rename user group")
+    @DisplayName("should rename User Group")
     void updateUserGroupById_updatesUserGroup() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, Set.of("foo","bar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
 
+        //and
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+        userGroupToCheck.setName("foobar");
+
+        //when
+        UserGroupDTO result = toTest.updateUserGroupById(userGroupToCheck);
+        int afterSize = inMemoryUserGroupRepository.count();
+        //then
+        assertThat(result.getName()).isEqualTo("foobar");
+        assertThat(afterSize).isEqualTo(beforeSize);
     }
-
 
     /*@Test
     void deleteUserGroup() {
     }*/
 
-    private void saveSetOfEntitiesInMemory (InMemoryUserGroupRepository inMemoryUserGroupRepository, Set<String> entities){
+    private void repositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, Set<String> entities){
         for (String entity : entities) {
             UserGroupDTO userGroup = new UserGroupDTO();
             userGroup.setName(entity);
@@ -170,6 +185,4 @@ class UserGroupServiceTest {
             map.remove(entity.getId());
         }
     }
-
-
 }
