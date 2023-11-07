@@ -277,35 +277,6 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throw IllegalArgumentException when given name already exists")
-    void updateUserGroupById_userGroupsNameAlreadyExists_throwsIllegalArgumentException() {
-        //given
-        var mockRepository =mock(UserGroupRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
-
-        //and
-        when(mockRepository.existsByName(any())).thenReturn(true);
-
-        //system under test
-        var toTest = new UserGroupService(mockRepository);
-
-        //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
-        userGroupToCheck.setName("bar");
-
-        var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupToCheck));
-
-        //then
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("User Group with that name already exist.");
-    }
-    
-    @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
     void updateUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
         //given
@@ -335,6 +306,34 @@ class UserGroupServiceTest {
                 .hasMessageContaining("User Group name is too long.");
     }
 
+    @Test
+    @DisplayName("should throw IllegalArgumentException when given name already exists")
+    void updateUserGroupById_userGroupsNameAlreadyExists_throwsIllegalArgumentException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        userGroupDTO.setName("foo");
+        UserGroup entity = userGroupDTO.toUserGroup();
+        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
+
+        //and
+        when(mockRepository.existsByName(any())).thenReturn(true);
+
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+        userGroupToCheck.setName("bar");
+
+        var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("User Group with that name already exist.");
+    }
 
     @Test
     @DisplayName("should rename User Group")

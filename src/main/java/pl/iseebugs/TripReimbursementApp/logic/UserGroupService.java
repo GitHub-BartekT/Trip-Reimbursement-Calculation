@@ -36,10 +36,10 @@ public class UserGroupService {
             throw new UserGroupNotFoundException();
         } else if (group.getName().trim().isEmpty()){
             throw new IllegalArgumentException("User Group name couldn't be empty.");
-        } else if (repository.existsByName(group.getName())) {
-            throw new IllegalArgumentException("User Group with that name already exist.");
         } else if (group.getName().length() > 100) {
             throw new IllegalArgumentException("User Group name is too long.");
+        } else if (repository.existsByName(group.getName())) {
+            throw new IllegalArgumentException("User Group with that name already exist.");
         }
         UserGroup toUpdate = repository.save(group.toUserGroup());
         return new UserGroupDTO(toUpdate);
