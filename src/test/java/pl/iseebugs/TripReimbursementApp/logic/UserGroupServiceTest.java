@@ -2,7 +2,6 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
@@ -10,7 +9,6 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -330,27 +328,95 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
+    // TODO: to check
     @Test
     @DisplayName("should throw UserGroupNotFoundException when given id not found")
     void deleteUserGroup_noUserGroup_throwsUserGroupNotFoundException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        when(mockRepository.findById(any())).thenReturn(Optional.empty());
+
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        userGroupDTO.setName("bar");
+
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        var exception = catchThrowable(() -> toTest.deleteUserGroup(userGroupDTO));
+
+        //then
+        assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
     }
 
+    // TODO: to check
     @Test
     @DisplayName("should delete exists entity")
-    void deleteUserGroup_deleteEntity() {
+    void deleteUserGroup_deleteEntity() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //and
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(2);
+
+        //when
+        toTest.deleteUserGroup(userGroupToCheck);
+        int afterSize = inMemoryUserGroupRepository.count();
+        //then
+        assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 
+    // TODO: to check
     @Test
     @DisplayName("should delete the first entity")
-    void deleteUserGroup_deleteTheFirstEntity() {
+    void deleteUserGroup_deleteTheFirstEntity() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //and
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+
+        //when
+        toTest.deleteUserGroup(userGroupToCheck);
+        int afterSize = inMemoryUserGroupRepository.count();
+        //then
+        assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 
+    // TODO: to check
     @Test
     @DisplayName("should delete the last entity")
-    void deleteUserGroup_deleteTheLastEntity() {
+    void deleteUserGroup_deleteTheLastEntity() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //and
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(3);
+
+        //when
+        toTest.deleteUserGroup(userGroupToCheck);
+        int afterSize = inMemoryUserGroupRepository.count();
+        //then
+        assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 
-
+    
     private String createLongString(int length){
         if (length <=0 ){
             return "";
