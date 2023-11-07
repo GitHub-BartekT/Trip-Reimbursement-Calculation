@@ -156,7 +156,7 @@ class UserGroupServiceTest {
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
-        String groupName = createLongString('A', 101);
+        String groupName = createLongString(101);
         userGroupDTO.setName(groupName);
 
         var exception = catchThrowable(() -> toTest.createUserGroup(userGroupDTO));
@@ -215,7 +215,7 @@ class UserGroupServiceTest {
 
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
-        String groupName = createLongString('A', 100);
+        String groupName = createLongString(100);
         userGroupDTO.setName(groupName);
 
         toTest.createUserGroup(userGroupDTO);
@@ -330,16 +330,33 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
-    /*@Test
-    void deleteUserGroup() {
-    }*/
+    @Test
+    @DisplayName("should throw UserGroupNotFoundException when given id not found")
+    void deleteUserGroup_noUserGroup_throwsUserGroupNotFoundException() {
+    }
 
-    private String createLongString(char character, int length){
+    @Test
+    @DisplayName("should delete exists entity")
+    void deleteUserGroup_deleteEntity() {
+    }
+
+    @Test
+    @DisplayName("should delete the first entity")
+    void deleteUserGroup_deleteTheFirstEntity() {
+    }
+
+    @Test
+    @DisplayName("should delete the last entity")
+    void deleteUserGroup_deleteTheLastEntity() {
+    }
+
+
+    private String createLongString(int length){
         if (length <=0 ){
             return "";
         }
 
-        return String.valueOf(character).repeat(length);
+        return String.valueOf('A').repeat(length);
     }
 
     private void repositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, List<String> entities){
