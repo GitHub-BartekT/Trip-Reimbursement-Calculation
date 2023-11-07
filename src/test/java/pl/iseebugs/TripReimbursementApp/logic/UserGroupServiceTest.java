@@ -58,41 +58,177 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
-
+    //TODO: to check
     @Test
     @DisplayName("should throws IllegalArgumentException when given id already exists")
     void createUserGroup_whenGivenIdAlreadyExist_throwsIllegalArgumentException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        userGroupDTO.setName("foo");
+        UserGroup entity = userGroupDTO.toUserGroup();
+        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
 
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+        userGroupToCheck.setName("bar");
+
+        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("id");
     }
 
+    //TODO: To check
     @Test
     @DisplayName("should throws IllegalArgumentException when given name is empty or has only white marks")
     void createUserGroup_emptyNameParam_throwsIllegalArgumentException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        userGroupDTO.setName("foo");
+        UserGroup entity = userGroupDTO.toUserGroup();
+        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
 
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+        userGroupToCheck.setName("   ");
+
+        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("User Group name couldn't be empty.");
     }
 
+    //TODO: to check
     @Test
     @DisplayName("should throws IllegalArgumentException when given name already exists")
     void createUserGroup_givenNameExists_throwIllegalArgumentException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        userGroupDTO.setName("foo");
+        UserGroup entity = userGroupDTO.toUserGroup();
+        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
 
+        //and
+        when(mockRepository.existsByName(any())).thenReturn(true);
+
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+        userGroupToCheck.setName("bar");
+
+        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("already exist");
     }
 
+    //TODO: to check
     @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
     void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        when(mockRepository.findById(any())).thenReturn(Optional.empty());
 
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        String groupName = createLongString('A', 101);
+        userGroupDTO.setName(groupName);
+
+        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupDTO));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("User Group name is too long.");
     }
 
+    //TODO: to check
     @Test
     @DisplayName("should create new User Group")
     void createUserGroup_createsUserGroup() {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
 
+        //and
+        when(inMemoryUserGroupRepository.findById(any())).thenReturn(Optional.empty());
+
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //when
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setName("foobar");
+
+        toTest.createUserGroup(userGroupDTO);
+        var afterCreate = inMemoryUserGroupRepository.count();
+        UserGroup afterSave = inMemoryUserGroupRepository().findById(inMemoryUserGroupRepository.count()).orElse(null);
+
+        assert afterSave != null;
+        UserGroupDTO userGroupDTOAfter  = new UserGroupDTO(afterSave);
+
+        //then
+        assertThat(afterCreate).isEqualTo(beforeSize + 1);
+        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
+        assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
 
+    //TODO:
     @Test
     @DisplayName("should create new User Group when given name has 100 marks")
     void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
+        int beforeSize = inMemoryUserGroupRepository.count();
 
+        //and
+        when(inMemoryUserGroupRepository.findById(any())).thenReturn(Optional.empty());
+
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //when
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        String groupName = createLongString('A', 100);
+        userGroupDTO.setName(groupName);
+
+        toTest.createUserGroup(userGroupDTO);
+        var afterCreate = inMemoryUserGroupRepository.count();
+        UserGroup afterSave = inMemoryUserGroupRepository().findById(inMemoryUserGroupRepository.count()).orElse(null);
+
+        assert afterSave != null;
+        UserGroupDTO userGroupDTOAfter  = new UserGroupDTO(afterSave);
+
+        //then
+        assertThat(afterCreate).isEqualTo(beforeSize + 1);
+        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
+        assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
 
     @Test
@@ -197,6 +333,14 @@ class UserGroupServiceTest {
     /*@Test
     void deleteUserGroup() {
     }*/
+
+    private String createLongString(char character, int length){
+        if (length <=0 ){
+            return "";
+        }
+
+        return String.valueOf(character).repeat(length);
+    }
 
     private void repositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, List<String> entities){
         for (String entity : entities) {
