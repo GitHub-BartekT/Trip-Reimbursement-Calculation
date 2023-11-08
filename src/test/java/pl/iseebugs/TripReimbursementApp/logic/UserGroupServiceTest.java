@@ -348,15 +348,13 @@ class UserGroupServiceTest {
         var mockRepository =mock(UserGroupRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("bar");
+        int userGroupToDelete = 1;
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
 
         //when
-        var exception = catchThrowable(() -> toTest.deleteUserGroup(userGroupDTO));
+        var exception = catchThrowable(() -> toTest.deleteUserGroup(userGroupToDelete));
 
         //then
         assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
@@ -373,11 +371,10 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository);
 
         //and
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(2);
+        int userGroupToDelete = 1;
 
         //when
-        toTest.deleteUserGroup(userGroupToCheck);
+        toTest.deleteUserGroup(userGroupToDelete);
         int afterSize = inMemoryUserGroupRepository.count();
         //then
         assertThat(afterSize).isEqualTo(beforeSize - 1);
@@ -394,11 +391,10 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository);
 
         //and
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
+        int userGroupToDelete = 1;
 
         //when
-        toTest.deleteUserGroup(userGroupToCheck);
+        toTest.deleteUserGroup(userGroupToDelete);
         int afterSize = inMemoryUserGroupRepository.count();
         //then
         assertThat(afterSize).isEqualTo(beforeSize - 1);
@@ -415,11 +411,10 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository);
 
         //and
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(3);
+        int userGroupToDelete = 1;
 
         //when
-        toTest.deleteUserGroup(userGroupToCheck);
+        toTest.deleteUserGroup(userGroupToDelete);
         int afterSize = inMemoryUserGroupRepository.count();
         //then
         assertThat(afterSize).isEqualTo(beforeSize - 1);
