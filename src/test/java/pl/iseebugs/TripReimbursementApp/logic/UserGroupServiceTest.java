@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -56,7 +56,6 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
-    //TODO: to check
     @Test
     @DisplayName("should throws IllegalArgumentException when given id already exists")
     void createUserGroup_whenGivenIdAlreadyExist_throwsIllegalArgumentException() {
@@ -66,7 +65,7 @@ class UserGroupServiceTest {
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
         UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
@@ -80,27 +79,21 @@ class UserGroupServiceTest {
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("id");
+                .hasMessageContaining("This User Group already exists.");
     }
 
-    //TODO: To check
     @Test
     @DisplayName("should throws IllegalArgumentException when given name is empty or has only white marks")
     void createUserGroup_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
 
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
         userGroupToCheck.setName("   ");
 
         var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
@@ -112,41 +105,11 @@ class UserGroupServiceTest {
 
     //TODO: to check
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name already exists")
-    void createUserGroup_givenNameExists_throwIllegalArgumentException() {
-        //given
-        var mockRepository =mock(UserGroupRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
-
-        //and
-        when(mockRepository.existsByName(any())).thenReturn(true);
-
-        //system under test
-        var toTest = new UserGroupService(mockRepository);
-
-        //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
-        userGroupToCheck.setName("bar");
-
-        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
-
-        //then
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("already exist");
-    }
-
-    //TODO: to check
-    @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
     void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
-        when(mockRepository.findById(any())).thenReturn(Optional.empty());
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
@@ -166,15 +129,41 @@ class UserGroupServiceTest {
 
     //TODO: to check
     @Test
+    @DisplayName("should throws IllegalArgumentException when given name already exists")
+    void createUserGroup_givenNameExists_throwIllegalArgumentException() {
+        //given
+        var mockRepository =mock(UserGroupRepository.class);
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(1);
+        userGroupDTO.setName("foo");
+        UserGroup entity = userGroupDTO.toUserGroup();
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
+
+        //and
+        when(mockRepository.existsByName(anyString())).thenReturn(true);
+
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        userGroupToCheck.setId(1);
+        userGroupToCheck.setName("bar");
+
+        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("already exist");
+    }
+
+    @Test
     @DisplayName("should create new User Group")
     void createUserGroup_createsUserGroup() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
         int beforeSize = inMemoryUserGroupRepository.count();
-
-        //and
-        when(inMemoryUserGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository);
@@ -185,7 +174,7 @@ class UserGroupServiceTest {
 
         toTest.createUserGroup(userGroupDTO);
         var afterCreate = inMemoryUserGroupRepository.count();
-        UserGroup afterSave = inMemoryUserGroupRepository().findById(inMemoryUserGroupRepository.count()).orElse(null);
+        UserGroup afterSave = inMemoryUserGroupRepository.findById(inMemoryUserGroupRepository.count()).orElse(null);
 
         assert afterSave != null;
         UserGroupDTO userGroupDTOAfter  = new UserGroupDTO(afterSave);
@@ -205,9 +194,6 @@ class UserGroupServiceTest {
         repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
         int beforeSize = inMemoryUserGroupRepository.count();
 
-        //and
-        when(inMemoryUserGroupRepository.findById(any())).thenReturn(Optional.empty());
-
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository);
 
@@ -218,14 +204,14 @@ class UserGroupServiceTest {
 
         toTest.createUserGroup(userGroupDTO);
         var afterCreate = inMemoryUserGroupRepository.count();
-        UserGroup afterSave = inMemoryUserGroupRepository().findById(inMemoryUserGroupRepository.count()).orElse(null);
+        UserGroup afterSave = inMemoryUserGroupRepository.findById(inMemoryUserGroupRepository.count()).orElse(null);
 
         assert afterSave != null;
         UserGroupDTO userGroupDTOAfter  = new UserGroupDTO(afterSave);
 
         //then
         assertThat(afterCreate).isEqualTo(beforeSize + 1);
-        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
+       // assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
         assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
 
@@ -234,7 +220,7 @@ class UserGroupServiceTest {
     void updateUserGroupById_noUserGroup_throwsUserGroupNotFoundException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
-        when(mockRepository.findById(any())).thenReturn(Optional.empty());
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
@@ -259,7 +245,7 @@ class UserGroupServiceTest {
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
         UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
@@ -285,10 +271,10 @@ class UserGroupServiceTest {
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
         UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //and
-        when(mockRepository.existsByName(any())).thenReturn(false);
+        when(mockRepository.existsByName(anyString())).thenReturn(false);
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
@@ -315,10 +301,10 @@ class UserGroupServiceTest {
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
         UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(any())).thenReturn(Optional.of(entity));
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //and
-        when(mockRepository.existsByName(any())).thenReturn(true);
+        when(mockRepository.existsByName(anyString())).thenReturn(true);
 
         //system under test
         var toTest = new UserGroupService(mockRepository);
@@ -358,13 +344,12 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
-    // TODO: to check
     @Test
     @DisplayName("should throw UserGroupNotFoundException when given id not found")
     void deleteUserGroup_noUserGroup_throwsUserGroupNotFoundException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
-        when(mockRepository.findById(any())).thenReturn(Optional.empty());
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
@@ -380,7 +365,6 @@ class UserGroupServiceTest {
         assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
     }
 
-    // TODO: to check
     @Test
     @DisplayName("should delete exists entity")
     void deleteUserGroup_deleteEntity() throws UserGroupNotFoundException {
@@ -402,7 +386,6 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 
-    // TODO: to check
     @Test
     @DisplayName("should delete the first entity")
     void deleteUserGroup_deleteTheFirstEntity() throws UserGroupNotFoundException {
@@ -424,7 +407,6 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 
-    // TODO: to check
     @Test
     @DisplayName("should delete the last entity")
     void deleteUserGroup_deleteTheLastEntity() throws UserGroupNotFoundException {
@@ -468,8 +450,8 @@ class UserGroupServiceTest {
     }
 
     private static class InMemoryUserGroupRepository implements UserGroupRepository {
-        private AtomicInteger index = new AtomicInteger(1);
-        private Map<Integer,UserGroup> map = new HashMap<>();
+        private final AtomicInteger index = new AtomicInteger(1);
+        private final Map<Integer,UserGroup> map = new HashMap<>();
 
         public int count(){
             return map.values().size();

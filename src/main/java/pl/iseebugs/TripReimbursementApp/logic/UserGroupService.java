@@ -24,7 +24,13 @@ public class UserGroupService {
     }
 
     public UserGroupDTO createUserGroup(UserGroupDTO group){
-        if (repository.existsByName(group.getName())){
+        if(repository.findById(group.getId()).isPresent()){
+            throw new IllegalArgumentException("This User Group already exists.");
+        } else if (group.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("User Group name couldn't be empty.");
+        } else if (group.getName().length() > 100) {
+            throw new IllegalArgumentException("User Group name is too long.");
+        } else if (repository.existsByName(group.getName())){
             throw new IllegalArgumentException("This User Group already exists.");
         }
         UserGroup userGroup = repository.save(group.toUserGroup());
