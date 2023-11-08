@@ -182,7 +182,7 @@ class UserGroupServiceTest {
         assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
         assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
-    
+
     @Test
     @DisplayName("should create new User Group when given name has 100 marks")
     void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
