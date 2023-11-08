@@ -103,7 +103,6 @@ class UserGroupServiceTest {
                 .hasMessageContaining("User Group name couldn't be empty.");
     }
 
-    //TODO: to check
     @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
     void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
@@ -127,7 +126,6 @@ class UserGroupServiceTest {
                 .hasMessageContaining("User Group name is too long.");
     }
 
-    //TODO: to check
     @Test
     @DisplayName("should throws IllegalArgumentException when given name already exists")
     void createUserGroup_givenNameExists_throwIllegalArgumentException() {
@@ -184,8 +182,7 @@ class UserGroupServiceTest {
         assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
         assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
-
-    //TODO:
+    
     @Test
     @DisplayName("should create new User Group when given name has 100 marks")
     void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
