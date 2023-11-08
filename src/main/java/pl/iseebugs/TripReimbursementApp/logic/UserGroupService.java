@@ -51,8 +51,8 @@ public class UserGroupService {
         return new UserGroupDTO(toUpdate);
     }
 
-    public void deleteUserGroup(UserGroupDTO group) throws UserGroupNotFoundException {
-        UserGroup toDelete = repository.findById(group.getId()).orElseThrow(
+    public void deleteUserGroup(int id) throws UserGroupNotFoundException {
+        UserGroup toDelete = repository.findById(id).orElseThrow(
                 () -> new UserGroupNotFoundException("User Group not found.")
         );
         repository.delete(toDelete);
