@@ -83,7 +83,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name is empty or has only white marks")
+    @DisplayName("should throws IllegalArgumentException when given name is empty or has only white-space characters")
     void createUserGroup_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
@@ -104,7 +104,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
+    @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
     void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
@@ -184,7 +184,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should create new User Group when given name has 100 marks")
+    @DisplayName("should create new User Group when given name has 100 characters")
     void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
@@ -234,7 +234,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throw IllegalArgumentException when given name is empty or has only white marks")
+    @DisplayName("should throw IllegalArgumentException when given name is empty or has only white-space characters")
     void updateUserGroupById_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
@@ -260,7 +260,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
+    @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
     void updateUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
