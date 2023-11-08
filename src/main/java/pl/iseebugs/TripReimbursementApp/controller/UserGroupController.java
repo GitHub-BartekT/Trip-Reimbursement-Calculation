@@ -41,11 +41,11 @@ public class UserGroupController {
         return ResponseEntity.ok(updated);
     }
 
-    /*@DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteUserGroup(@PathVariable int id) throws UserGroupNotFoundException {
         service.deleteUserGroup(id);
         return ResponseEntity.noContent().build();
-    }*/
+    }
 
     @ExceptionHandler(UserGroupNotFoundException.class)
     ResponseEntity<String> handlerUserGroupNotFound(UserGroupNotFoundException e){
