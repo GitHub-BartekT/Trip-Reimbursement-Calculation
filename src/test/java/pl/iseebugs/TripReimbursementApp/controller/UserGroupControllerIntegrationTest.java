@@ -76,4 +76,87 @@ class UserGroupControllerIntegrationTest {
                 .andExpect(content().string("This User Group already exists."));
     }
 
+    @Test
+    void testCreateUsersGroup_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
+        setUpRepoBeforeTest();
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setName("   ");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(post("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group name couldn't be empty."));
+    }
+
+    @Test
+    void testCreateUsersGroup_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
+        setUpRepoBeforeTest();
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        String name = createLongString(101);
+        userGroupDTO.setName(name);
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(post("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group name is too long."));
+    }
+
+    @Test
+    void testCreateUsersGroup_whenGivenNameExists_throwIllegalArgumentException() throws Exception {
+        setUpRepoBeforeTest();
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setName("foo");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(post("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("This User Group already exists."));
+    }
+
+    //TODO: bad content type
+/*    @Test
+    void testCreateUsersGroup_createsUsersGroup() throws Exception {
+        setUpRepoBeforeTest();
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setName("barfoo");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(post("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.TEXT_HTML_VALUE))
+                .andExpect(content().string("/groups"));
+    }*/
+
+
+    private String createLongString(int length){
+        if (length <=0 ){
+            return "";
+        }
+        return String.valueOf('A').repeat(length);
+    }
+
 }
