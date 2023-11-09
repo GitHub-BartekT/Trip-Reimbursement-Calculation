@@ -1,5 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.logic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserGroupService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserGroupService.class);
     public final UserGroupRepository repository;
 
     public UserGroupService(UserGroupRepository repository) {
@@ -34,6 +37,7 @@ public class UserGroupService {
             throw new IllegalArgumentException("This User Group already exists.");
         }
         UserGroup userGroup = repository.save(group.toUserGroup());
+        logger.info("Created user group with ID {}", userGroup.getId());
         return new UserGroupDTO(userGroup);
     }
 
@@ -52,9 +56,15 @@ public class UserGroupService {
     }
 
     public void deleteUserGroup(int id) throws UserGroupNotFoundException {
-        UserGroup toDelete = repository.findById(id).orElseThrow(
+        repository.findById(id).orElseThrow(
                 () -> new UserGroupNotFoundException("User Group not found.")
-        );
-        repository.delete(toDelete);
+                );
+
+        try {
+            repository.deleteById(id);
+            logger.info("Deleted user group with ID {}", id);
+        } catch (Exception e){
+            logger.error("Error deleting user group with ID {}: {}", id, e.getMessage());
+        }
     }
 }

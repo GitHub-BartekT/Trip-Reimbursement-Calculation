@@ -32,7 +32,7 @@ public class UserGroupController {
     @PostMapping
     ResponseEntity<Void> createUserGroup(@RequestBody @Valid UserGroupDTO userGroupDTO){
         var result = service.createUserGroup(userGroupDTO);
-        return ResponseEntity.created(URI.create("/groups")).build();
+        return ResponseEntity.created(URI.create("http://localhost:8080/groups")).build();
     }
 
     @PutMapping()

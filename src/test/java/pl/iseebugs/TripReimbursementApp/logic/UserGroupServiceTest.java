@@ -83,7 +83,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name is empty or has only white marks")
+    @DisplayName("should throws IllegalArgumentException when given name is empty or has only white-space characters")
     void createUserGroup_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
@@ -104,8 +104,8 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
-    void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
+    @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
+    void createUserGroup_givenNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
@@ -184,7 +184,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should create new User Group when given name has 100 marks")
+    @DisplayName("should create new User Group when given name has 100 characters")
     void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
@@ -208,7 +208,7 @@ class UserGroupServiceTest {
 
         //then
         assertThat(afterCreate).isEqualTo(beforeSize + 1);
-       // assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
+        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO.getId());
         assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
 
@@ -234,7 +234,7 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throw IllegalArgumentException when given name is empty or has only white marks")
+    @DisplayName("should throw IllegalArgumentException when given name is empty or has only white-space characters")
     void updateUserGroupById_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
@@ -260,8 +260,8 @@ class UserGroupServiceTest {
     }
 
     @Test
-    @DisplayName("should throws IllegalArgumentException when given name has more then 100 marks")
-    void updateUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
+    @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
+    void updateUserGroup_givenNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         UserGroupDTO userGroupDTO = new UserGroupDTO();
@@ -480,8 +480,13 @@ class UserGroupServiceTest {
         }
 
         @Override
-        public void delete(UserGroup entity) {
-            map.remove(entity.getId());
+        public void deleteById(int id) {
+            map.remove(id);
+        }
+
+        @Override
+        public void deleteAll() {
+
         }
     }
 }
