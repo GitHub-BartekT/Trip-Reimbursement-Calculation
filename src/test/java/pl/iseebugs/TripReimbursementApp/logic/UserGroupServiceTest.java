@@ -208,7 +208,7 @@ class UserGroupServiceTest {
 
         //then
         assertThat(afterCreate).isEqualTo(beforeSize + 1);
-       // assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
+        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO.getId());
         assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
     }
 

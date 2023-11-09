@@ -20,6 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserGroupControllerIntegrationTest {
 
+  /*  @LocalServerPort
+    private int port;*/
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -131,8 +134,7 @@ class UserGroupControllerIntegrationTest {
                 .andExpect(content().string("This User Group already exists."));
     }
 
-    //TODO: bad content type
-/*    @Test
+    @Test
     void testCreateUsersGroup_createsUsersGroup() throws Exception {
         setUpRepoBeforeTest();
         //and
@@ -146,10 +148,30 @@ class UserGroupControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 //then
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(content().contentType(MediaType.TEXT_HTML_VALUE))
-                .andExpect(content().string("/groups"));
-    }*/
+                .andExpect(status().isCreated())
+                .andExpect(header().
+                        string("Location", "http://localhost:" + "8080" + "/groups"));
+    }
+
+    @Test
+    void testCreateUsersGroup_whenGivenNameHasMaxChar_createsUsersGroup() throws Exception {
+        setUpRepoBeforeTest();
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        var name = createLongString(100);
+        userGroupDTO.setName(name);
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(post("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isCreated())
+                .andExpect(header().
+                        string("Location", "http://localhost:" + "8080" + "/groups"));
+    }
 
 
     private String createLongString(int length){
