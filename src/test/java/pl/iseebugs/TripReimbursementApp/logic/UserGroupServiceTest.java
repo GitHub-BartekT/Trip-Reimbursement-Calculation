@@ -480,8 +480,8 @@ class UserGroupServiceTest {
         }
 
         @Override
-        public void delete(UserGroup entity) {
-            map.remove(entity.getId());
+        public void deleteById(int id) {
+            map.remove(id);
         }
 
         @Override

@@ -13,7 +13,7 @@ public interface UserGroupRepository {
 
     UserGroup save(UserGroup entity);
 
-    void delete(UserGroup entity);
+    void deleteById(int id);
 
     void deleteAll();
 }

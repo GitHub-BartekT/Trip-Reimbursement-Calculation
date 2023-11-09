@@ -1,8 +1,10 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,12 +14,12 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserGroupControllerIntegrationTest {
 
   /*  @LocalServerPort
@@ -29,15 +31,19 @@ class UserGroupControllerIntegrationTest {
     @Autowired
     private UserGroupRepository repository;
 
-    @Before
-    private void setUpRepoBeforeTest(){
-        UserGroupDTO  user = new UserGroupDTO();
-        user.setName("foo");
-        repository.save(user.toUserGroup());
-        user.setName("bar");
-        repository.save(user.toUserGroup());
-        user.setName("foobar");
-        repository.save(user.toUserGroup());
+//    @Before
+    public void setUpRepoBeforeTest(){
+        UserGroupDTO  user1 = new UserGroupDTO();
+        user1.setName("foo");
+        repository.save(user1.toUserGroup());
+
+        UserGroupDTO  user2 = new UserGroupDTO();
+        user2.setName("bar");
+        repository.save(user2.toUserGroup());
+
+        UserGroupDTO  user3 = new UserGroupDTO();
+        user3.setName("foobar");
+        repository.save(user3.toUserGroup());
     }
 
     @Test
@@ -52,6 +58,7 @@ class UserGroupControllerIntegrationTest {
 
     @Test
     void testReadAllUsersGroup_returnsAllUsersGroups() throws Exception {
+        repository.deleteAll();
         setUpRepoBeforeTest();
         mockMvc.perform(get("/groups"))
                 .andExpect(status().is2xxSuccessful())
@@ -155,6 +162,7 @@ class UserGroupControllerIntegrationTest {
 
     @Test
     void testCreateUsersGroup_whenGivenNameHasMaxChar_createsUsersGroup() throws Exception {
+        //given
         setUpRepoBeforeTest();
         //and
         ObjectMapper objectMapper = new ObjectMapper();
@@ -173,6 +181,49 @@ class UserGroupControllerIntegrationTest {
                         string("Location", "http://localhost:" + "8080" + "/groups"));
     }
 
+    @Test
+    @Order(1)
+    void testDeleteUserGroup_deletesUserGroup() throws Exception {
+        //given
+        setUpRepoBeforeTest();
+
+        //when
+        mockMvc.perform(delete("/groups/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Order(2)
+    void testDeleteUserGroup_deletesTheFirstUserGroup() throws Exception {
+        //when
+        mockMvc.perform(delete("/groups/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Order(3)
+    void testDeleteUserGroup_deletesTheLastUserGroup() throws Exception {
+        //when
+        mockMvc.perform(delete("/groups/3")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Order(4)
+    void testDeleteUserGroup_noUserGroup_throwsUserGroupNotFoundException() throws Exception {
+        //when
+        mockMvc.perform(delete("/groups/5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
 
     private String createLongString(int length){
         if (length <=0 ){
