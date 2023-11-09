@@ -105,7 +105,7 @@ class UserGroupServiceTest {
 
     @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
-    void createUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
+    void createUserGroup_givenNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
@@ -261,7 +261,7 @@ class UserGroupServiceTest {
 
     @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
-    void updateUserGroup_givenNameHasMoreThen_100_Marks_throwsIllegalArgumentException() {
+    void updateUserGroup_givenNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         UserGroupDTO userGroupDTO = new UserGroupDTO();
