@@ -13,7 +13,7 @@ public class UserGroup {
     int id;
     @NotBlank(message = "Group name must not be empty")
     String name;
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "userGroup")
     private Set<User> users;
 
     protected UserGroup() {

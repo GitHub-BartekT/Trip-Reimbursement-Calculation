@@ -11,10 +11,9 @@ public class User {
     int id;
     @NotBlank(message = "User name must not be empty")
     String name;
-    Double maxValue;
     @ManyToOne
     @JoinColumn(name = "user_group_id")
-    UserGroup users;
+    UserGroup userGroup;
 
     protected User() {
     }
@@ -35,19 +34,11 @@ public class User {
         this.name = name;
     }
 
-    Double getMaxValue() {
-        return maxValue;
+    public UserGroup getUserGroup() {
+        return userGroup;
     }
 
-    void setMaxValue(Double maxValue) {
-        this.maxValue = maxValue;
-    }
-
-    public UserGroup getUsers() {
-        return users;
-    }
-
-    public void setUsers(UserGroup userGroup) {
-        this.users = userGroup;
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 }
