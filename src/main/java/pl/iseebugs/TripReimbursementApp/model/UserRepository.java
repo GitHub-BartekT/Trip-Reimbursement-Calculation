@@ -3,15 +3,17 @@ package pl.iseebugs.TripReimbursementApp.model;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserGroupRepository {
+public interface UserRepository {
+    
+    List<User> findAll();
 
-    List<UserGroup> findAll();
+    List<User> findAllAndUserGroup_Id(Integer userGroupId);
 
-    Optional<UserGroup> findById(Integer id);
+    Optional<User> findById(Integer id);
 
     boolean existsByName(String name);
 
-    UserGroup save(UserGroup entity);
+    User save(User entity);
 
     void deleteById(int id);
 
