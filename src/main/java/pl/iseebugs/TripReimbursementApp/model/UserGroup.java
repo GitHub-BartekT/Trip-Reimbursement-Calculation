@@ -2,7 +2,6 @@ package pl.iseebugs.TripReimbursementApp.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.scheduling.config.Task;
 
 import java.util.Set;
 
@@ -14,6 +13,8 @@ public class UserGroup {
     int id;
     @NotBlank(message = "Group name must not be empty")
     String name;
+    @OneToMany(mappedBy = "users")
+    private Set<User> users;
 
     protected UserGroup() {
     }
@@ -32,5 +33,13 @@ public class UserGroup {
 
     void setName(String name) {
         this.name = name;
+    }
+
+    Set<User> getUsers() {
+        return users;
+    }
+
+    void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
