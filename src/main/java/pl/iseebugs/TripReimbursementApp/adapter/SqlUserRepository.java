@@ -11,5 +11,6 @@ import java.util.List;
 interface SqlUserRepository extends UserRepository, JpaRepository<User, Integer> {
 
     @Override
-    List<User> findAllAndUserGroup_Id(Integer userGroupId);
+    List<User> findAllByUserGroup_Id(Integer userGroupId);
+
 }

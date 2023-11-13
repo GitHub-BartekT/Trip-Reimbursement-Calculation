@@ -486,7 +486,6 @@ class UserGroupServiceTest {
 
         @Override
         public void deleteAll() {
-
         }
     }
 }

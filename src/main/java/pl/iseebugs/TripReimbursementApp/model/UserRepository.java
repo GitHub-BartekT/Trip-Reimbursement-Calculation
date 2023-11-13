@@ -7,7 +7,7 @@ public interface UserRepository {
     
     List<User> findAll();
 
-    List<User> findAllAndUserGroup_Id(Integer userGroupId);
+    List<User> findAllByUserGroup_Id(Integer userGroupId);
 
     Optional<User> findById(Integer id);
 

@@ -9,7 +9,7 @@ public class UserGroupDTO {
     public UserGroupDTO(UserGroup userGroup) {
         this.id = userGroup.getId();
         this.name = userGroup.getName();
-    }
+        }
 
     public int getId() {
         return id;
