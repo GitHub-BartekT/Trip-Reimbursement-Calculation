@@ -1,9 +1,15 @@
 package pl.iseebugs.TripReimbursementApp.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
+
 public class UserDTO {
     private int id;
     private String name;
     private int userGroupId;
+
+    @Autowired
+    private UserGroupRepository repository;
 
     public UserDTO() {
     }
@@ -38,17 +44,12 @@ public class UserDTO {
         this.userGroupId = userGroupId;
     }
 
-    public User toUser(){
+    public User toUser() throws UserGroupNotFoundException {
         var result = new User();
         result.setId(this.id);
         result.setName(this.name);
-
-        /*
-        TODO:
-            userGroup -> findById - add method!!! + tests
-            UserGroup -> userGroupService.findById(this.userGroupId);
-            result.setUserGroup(UserGroup);
-        */
+        UserGroup userGroup = repository.findById(userGroupId).orElseThrow(UserGroupNotFoundException::new);
+        result.setUserGroup(userGroup);
         return result;
     }
 }
