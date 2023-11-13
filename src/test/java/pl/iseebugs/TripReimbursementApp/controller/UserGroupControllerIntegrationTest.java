@@ -236,7 +236,7 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     void testDeleteUserGroup_deletesUserGroup_whichWasDeleted_throwsUserGroupNotFoundException() throws Exception {
          /*
         DataBase
@@ -251,6 +251,159 @@ class UserGroupControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("User Group not found."));
     }
+
+    @Test
+    @Order(4)
+    void testUpdateUserGroup_throwsUserGroupNotFoundException() throws Exception {
+        /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+         */
+        //when
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(5);
+        userGroupDTO.setName("updateFoo");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(put("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
+
+    @Test
+    @Order(5)
+    void testUpdateUsersGroup_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
+        /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+        4   - foo
+        5   - bar
+        6   - foobar
+         */
+        //when
+        setUpRepoBeforeTest();
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(5);
+        userGroupDTO.setName("   ");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(put("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group name couldn't be empty."));
+    }
+
+    @Test
+    @Order(6)
+    void testUpdateUsersGroup_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
+        /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+        4   - foo
+        5   - bar
+        6   - foobar
+         */
+        //when
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        String name = createLongString(101);
+        userGroupDTO.setId(5);
+        userGroupDTO.setName(name);
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(put("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group name is too long."));
+    }
+
+    @Test
+    @Order(6)
+    void testUpdateUsersGroup_whenGivenNameExists_throwIllegalArgumentException() throws Exception {
+        /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+        4   - foo
+        5   - bar
+        6   - foobar
+         */
+        //and
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(4);
+        userGroupDTO.setName("bar");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+     /*   //when
+        mockMvc.perform(get("/groups"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("foo"))
+                .andExpect(jsonPath("$[1].name").value("bar"))
+                .andExpect(jsonPath("$[2].name").value("foobar"));*/
+
+        mockMvc.perform(put("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group with that name already exist."));
+    }
+
+    @Test
+    @Order(7)
+    void testUpdateUsersGroup_updatesUsersGroup() throws Exception {
+        /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+        4   - foo
+        5   - bar
+        6   - foobar
+         */
+        //when
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setId(4);
+        userGroupDTO.setName("barFoo");
+        String json = objectMapper.writeValueAsString(userGroupDTO);
+
+        //when
+        mockMvc.perform(put("/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(get("/groups"))
+                .andExpect(jsonPath("$[0].name").value("barFoo"))
+                .andExpect(jsonPath("$[0].id").value(4));
+    }
+
+
 
     private String createLongString(int length){
         if (length <=0 ){
