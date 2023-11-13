@@ -56,9 +56,7 @@ public class UserGroupService {
     }
 
     public void deleteUserGroup(int id) throws UserGroupNotFoundException {
-        repository.findById(id).orElseThrow(
-                () -> new UserGroupNotFoundException("User Group not found.")
-                );
+        repository.findById(id).orElseThrow(UserGroupNotFoundException::new);
 
         try {
             repository.deleteById(id);
