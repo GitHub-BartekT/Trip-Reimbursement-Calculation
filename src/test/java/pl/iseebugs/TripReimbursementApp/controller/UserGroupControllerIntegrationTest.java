@@ -171,6 +171,12 @@ class UserGroupControllerIntegrationTest {
     void testDeleteUserGroup_deletesUserGroup() throws Exception {
         //given
         setUpRepoBeforeTest();
+        /*
+        DataBase
+        1   - foo
+        2   - bar
+        3   - foobar
+         */
 
         //when
         mockMvc.perform(delete("/groups/2")
@@ -182,6 +188,12 @@ class UserGroupControllerIntegrationTest {
     @Test
     @Order(2)
     void testDeleteUserGroup_deletesTheFirstUserGroup() throws Exception {
+         /*
+        DataBase
+        1   - foo
+        2 - deleted in test Order(1)
+        3   - foobar
+         */
         //when
         mockMvc.perform(delete("/groups/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -191,7 +203,14 @@ class UserGroupControllerIntegrationTest {
 
     @Test
     @Order(3)
+
     void testDeleteUserGroup_deletesTheLastUserGroup() throws Exception {
+         /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3   - foobar
+         */
         //when
         mockMvc.perform(delete("/groups/3")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -202,6 +221,12 @@ class UserGroupControllerIntegrationTest {
     @Test
     @Order(4)
     void testDeleteUserGroup_noUserGroup_throwsUserGroupNotFoundException() throws Exception {
+         /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+         */
         //when
         mockMvc.perform(delete("/groups/5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -213,6 +238,12 @@ class UserGroupControllerIntegrationTest {
     @Test
     @Order(5)
     void testDeleteUserGroup_deletesUserGroup_whichWasDeleted_throwsUserGroupNotFoundException() throws Exception {
+         /*
+        DataBase
+        1 - deleted in test Order(2)
+        2 - deleted in test Order(1)
+        3 - deleted in test Order(3)
+         */
         //when
         mockMvc.perform(delete("/groups/2")
                         .contentType(MediaType.APPLICATION_JSON))
