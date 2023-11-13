@@ -68,7 +68,7 @@ class UserGroupControllerIntegrationTest {
                 .content(json))
         //then
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("This User Group already exists."));
+                    .andExpect(content().string("This User Group already exists."));
     }
 
     @Test
