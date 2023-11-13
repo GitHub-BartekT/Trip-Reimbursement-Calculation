@@ -31,21 +31,6 @@ class UserGroupControllerIntegrationTest {
     @Autowired
     private UserGroupRepository repository;
 
-//    @Before
-    public void setUpRepoBeforeTest(){
-        UserGroupDTO  user1 = new UserGroupDTO();
-        user1.setName("foo");
-        repository.save(user1.toUserGroup());
-
-        UserGroupDTO  user2 = new UserGroupDTO();
-        user2.setName("bar");
-        repository.save(user2.toUserGroup());
-
-        UserGroupDTO  user3 = new UserGroupDTO();
-        user3.setName("foobar");
-        repository.save(user3.toUserGroup());
-    }
-
     @Test
     void testReadAllUsersGroup_returnsEmptyList() throws Exception {
         repository.deleteAll();
@@ -225,6 +210,17 @@ class UserGroupControllerIntegrationTest {
                 .andExpect(content().string("User Group not found."));
     }
 
+    @Test
+    @Order(5)
+    void testDeleteUserGroup_deletesUserGroup_whichWasDeleted_throwsUserGroupNotFoundException() throws Exception {
+        //when
+        mockMvc.perform(delete("/groups/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
+
     private String createLongString(int length){
         if (length <=0 ){
             return "";
@@ -232,4 +228,19 @@ class UserGroupControllerIntegrationTest {
         return String.valueOf('A').repeat(length);
     }
 
+
+    //    @Before
+    public void setUpRepoBeforeTest(){
+        UserGroupDTO  user1 = new UserGroupDTO();
+        user1.setName("foo");
+        repository.save(user1.toUserGroup());
+
+        UserGroupDTO  user2 = new UserGroupDTO();
+        user2.setName("bar");
+        repository.save(user2.toUserGroup());
+
+        UserGroupDTO  user3 = new UserGroupDTO();
+        user3.setName("foobar");
+        repository.save(user3.toUserGroup());
+    }
 }
