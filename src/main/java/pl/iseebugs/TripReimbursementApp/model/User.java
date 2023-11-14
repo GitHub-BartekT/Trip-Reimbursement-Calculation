@@ -15,18 +15,18 @@ public class User {
     @JoinColumn(name = "user_group_id")
     UserGroup userGroup;
 
-    protected User() {
+    public User() {
     }
 
     public int getId() {
         return id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
