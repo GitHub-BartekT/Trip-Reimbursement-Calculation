@@ -48,7 +48,8 @@ public class UserDTO {
         var result = new User();
         result.setId(this.id);
         result.setName(this.name);
-        UserGroup userGroup = repository.findById(userGroupId).orElseThrow(UserGroupNotFoundException::new);
+        UserGroup userGroup = repository.findById(userGroupId)
+                .orElseThrow(UserGroupNotFoundException::new);
         result.setUserGroup(userGroup);
         return result;
     }
