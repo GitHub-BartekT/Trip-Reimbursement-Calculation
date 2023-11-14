@@ -437,11 +437,11 @@ class UserGroupServiceTest {
         }
     }
 
-    private InMemoryUserGroupRepository inMemoryUserGroupRepository(){
+    protected static InMemoryUserGroupRepository inMemoryUserGroupRepository(){
         return new InMemoryUserGroupRepository();
     }
 
-    private static class InMemoryUserGroupRepository implements UserGroupRepository {
+    protected static class InMemoryUserGroupRepository implements UserGroupRepository {
         private final AtomicInteger index = new AtomicInteger(1);
         private final Map<Integer,UserGroup> map = new HashMap<>();
 

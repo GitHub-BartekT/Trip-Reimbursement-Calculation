@@ -2,9 +2,7 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pl.iseebugs.TripReimbursementApp.model.User;
-import pl.iseebugs.TripReimbursementApp.model.UserDTO;
-import pl.iseebugs.TripReimbursementApp.model.UserRepository;
+import pl.iseebugs.TripReimbursementApp.model.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,8 +13,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static pl.iseebugs.TripReimbursementApp.logic.UserGroupServiceTest.InMemoryUserGroupRepository;
+import static pl.iseebugs.TripReimbursementApp.logic.UserGroupServiceTest.inMemoryUserGroupRepository;
 
 class UserServiceTest {
+
 
     @Test
     @DisplayName("should returns empty list when no objects")
@@ -33,6 +34,33 @@ class UserServiceTest {
         //then
         assertThat(result.size()).isEqualTo(0);
         assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("should returns all objects")
+    void readAll_returnsAllUsers() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserRepository.count();
+
+        //system under test
+        var toTest = new UserService(inMemoryUserRepository);
+
+        //when
+        List<UserDTO> result = toTest.readAll();
+        int afterSize = result.size();
+
+        //then
+        assertThat(result.get(0).getName()).isEqualTo("foo");
+        assertThat(result.get(1).getName()).isEqualTo("bar");
+        assertThat(result.get(2).getName()).isEqualTo("foobar");
+        assertThat(result.get(0).getUserGroupId()).isEqualTo(1);
+        assertThat(result.get(3).getUserGroupId()).isEqualTo(2);
+        assertThat(result.get(3).getUserGroup().getName()).isEqualTo("barGroup");
+        assertThat(afterSize).isEqualTo(beforeSize);
+
     }
 
     @Test
@@ -68,6 +96,20 @@ class UserServiceTest {
     //TODO
     @Test
     void deleteUser() {
+    }
+
+    private void repositoryWith(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, List<String> userGroups, List<String> users) throws UserGroupNotFoundException {
+        for (String entity : userGroups) {
+            UserGroupDTO userGroup = new UserGroupDTO();
+            userGroup.setName(entity);
+            UserGroup userGroup1 = inMemoryUserGroupRepository.save(userGroup.toUserGroup());
+            for (String entityUser : users) {
+                UserDTO user = new UserDTO();
+                user.setName(entityUser);
+                user.setUserGroup(userGroup1);
+                inMemoryUserRepository.save(user.toUser());
+            }
+        }
     }
 
     private String createLongString(int length){
