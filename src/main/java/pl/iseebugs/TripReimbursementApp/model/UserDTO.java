@@ -1,7 +1,5 @@
 package pl.iseebugs.TripReimbursementApp.model;
 
-import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
-
 public class UserDTO {
     private int id;
     private String name;
@@ -46,7 +44,7 @@ public class UserDTO {
         this.userGroup = userGroup;
     }
 
-    public User toUser() throws UserGroupNotFoundException {
+    public User toUser() {
         var result = new User();
         result.setId(this.id);
         result.setName(this.name);

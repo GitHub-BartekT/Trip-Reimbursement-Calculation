@@ -130,7 +130,7 @@ class UserServiceTest {
         //when
         UserDTO userToCheck = new UserDTO();
         userToCheck.setName("  ");
-       // userToCheck.setId(1);
+
         var exception = catchThrowable(() -> toTest.createUser(userToCheck));
 
         //then
