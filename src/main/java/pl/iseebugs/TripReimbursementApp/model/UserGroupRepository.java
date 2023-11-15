@@ -7,7 +7,7 @@ public interface UserGroupRepository {
 
     List<UserGroup> findAll();
 
-    Optional<UserGroup> findById(Integer i);
+    Optional<UserGroup> findById(Integer id);
 
     boolean existsByName(String name);
 

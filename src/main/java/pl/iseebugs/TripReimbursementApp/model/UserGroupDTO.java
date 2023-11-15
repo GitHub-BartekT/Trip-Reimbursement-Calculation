@@ -9,7 +9,7 @@ public class UserGroupDTO {
     public UserGroupDTO(UserGroup userGroup) {
         this.id = userGroup.getId();
         this.name = userGroup.getName();
-    }
+        }
 
     public int getId() {
         return id;
@@ -28,6 +28,9 @@ public class UserGroupDTO {
     }
 
     public UserGroup toUserGroup(){
+        if (this.name == null || this.name.trim().isEmpty()) {
+            throw new IllegalArgumentException("User Group name couldn't be empty.");
+        }
         var result = new UserGroup();
         result.setId(this.id);
         result.setName(this.name);

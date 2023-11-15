@@ -3,20 +3,19 @@ package pl.iseebugs.TripReimbursementApp.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Set;
-
 @Entity
-@Table(name = "user_groups")
-public class UserGroup {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     int id;
-    @NotBlank(message = "Group name must not be empty")
+    @NotBlank(message = "User name must not be empty")
     String name;
-    @OneToMany(mappedBy = "userGroup")
-    private Set<User> users;
+    @ManyToOne
+    @JoinColumn(name = "user_group_id")
+    UserGroup userGroup;
 
-    protected UserGroup() {
+    public User() {
     }
 
     public int getId() {
@@ -35,11 +34,11 @@ public class UserGroup {
         this.name = name;
     }
 
-    Set<User> getUsers() {
-        return users;
+    public UserGroup getUserGroup() {
+        return userGroup;
     }
 
-    void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 }
