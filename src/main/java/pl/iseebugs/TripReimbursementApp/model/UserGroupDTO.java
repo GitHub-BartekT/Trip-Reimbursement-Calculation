@@ -30,6 +30,8 @@ public class UserGroupDTO {
     public UserGroup toUserGroup(){
         if (this.name == null || this.name.trim().isEmpty()) {
             throw new IllegalArgumentException("User Group name couldn't be empty.");
+        }  else if (name.length() > 100){
+            throw new IllegalArgumentException("User Group name is too long.");
         }
         var result = new UserGroup();
         result.setId(this.id);

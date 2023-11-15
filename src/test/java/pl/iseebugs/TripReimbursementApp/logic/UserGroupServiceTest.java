@@ -135,7 +135,7 @@ class UserGroupServiceTest {
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
         UserGroup entity = userGroupDTO.toUserGroup();
-        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //and
         when(mockRepository.existsByName(anyString())).thenReturn(true);
@@ -152,7 +152,7 @@ class UserGroupServiceTest {
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("already exist");
+                .hasMessageContaining("User Group with that name already exist.");
     }
 
     @Test
