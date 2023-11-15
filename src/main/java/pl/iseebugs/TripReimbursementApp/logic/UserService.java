@@ -34,12 +34,14 @@ public class UserService {
     }
 
     public UserDTO createUser(UserDTO userDTO) throws UserGroupNotFoundException {
-        if(repository.findById(userDTO.getId()).isPresent()){
+        if(repository.existsById(userDTO.getId())){
             throw new IllegalArgumentException("This User already exists.");
         } else if (userDTO.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("User name couldn't be empty.");
         } else if (userDTO.getName().length() > 100) {
             throw new IllegalArgumentException("User name is too long.");
+        } else if (userDTO.getUserGroup() == null) {
+            throw new UserGroupNotFoundException();
         }
         User user = repository.save(userDTO.toUser());
         logger.info("Created user with ID {}, User group ID {}", user.getId(), user.getUserGroup());
@@ -47,7 +49,7 @@ public class UserService {
     }
 
     public UserDTO updateUserById(UserDTO userDTO) throws UserNotFoundException, UserGroupNotFoundException {
-        if(repository.findById(userDTO.getId()).isEmpty()){
+        if(repository.existsById(userDTO.getId())){
             throw new UserNotFoundException();
         } else if (userDTO.getName().trim().isEmpty()){
             throw new IllegalArgumentException("User name couldn't be empty.");

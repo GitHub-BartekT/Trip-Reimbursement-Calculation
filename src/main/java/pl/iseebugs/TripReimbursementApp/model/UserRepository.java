@@ -11,6 +11,8 @@ public interface UserRepository {
 
     Optional<User> findById(Integer id);
 
+    boolean existsById (int id);
+
     User save(User entity);
 
     void deleteById(int id);

@@ -28,6 +28,9 @@ public class UserGroupDTO {
     }
 
     public UserGroup toUserGroup(){
+        if (this.name == null || this.name.trim().isEmpty()) {
+            throw new IllegalArgumentException("User group name couldn't be empty.");
+        }
         var result = new UserGroup();
         result.setId(this.id);
         result.setName(this.name);
