@@ -54,7 +54,7 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
-    void testCreateUsersGroup_whenGivenIdAlreadyExist_throwsIllegalArgumentException() throws Exception {
+    void testCreateUsersGroup_whenGivenNameAlreadyExist_throwsIllegalArgumentException() throws Exception {
         setUpRepoBeforeTest();
         //and
         ObjectMapper objectMapper = new ObjectMapper();
@@ -68,7 +68,7 @@ class UserGroupControllerIntegrationTest {
                 .content(json))
         //then
                 .andExpect(status().isBadRequest())
-                    .andExpect(content().string("This User Group already exists."));
+                    .andExpect(content().string("User Group with that name already exist."));
     }
 
     @Test
@@ -123,7 +123,7 @@ class UserGroupControllerIntegrationTest {
                         .content(json))
                 //then
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("This User Group already exists."));
+                .andExpect(content().string("User Group with that name already exist."));
     }
 
     @Test

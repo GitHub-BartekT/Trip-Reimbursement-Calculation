@@ -194,13 +194,13 @@ class UserServiceTest {
 
     private void repositoryWith(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, List<String> userGroups, List<String> users) throws UserGroupNotFoundException {
         for (String entity : userGroups) {
-            UserGroupDTO userGroup = new UserGroupDTO();
-            userGroup.setName(entity);
-            UserGroup userGroup1 = inMemoryUserGroupRepository.save(userGroup.toUserGroup());
+            UserGroupDTO userGroupDTO = new UserGroupDTO();
+            userGroupDTO.setName(entity);
+            UserGroup userGroup = inMemoryUserGroupRepository.save(userGroupDTO.toUserGroup());
             for (String entityUser : users) {
                 UserDTO user = new UserDTO();
                 user.setName(entityUser);
-                user.setUserGroup(userGroup1);
+                user.setUserGroup(new UserGroupDTO(userGroup));
                 inMemoryUserRepository.save(user.toUser());
             }
         }

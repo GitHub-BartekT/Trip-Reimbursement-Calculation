@@ -1,9 +1,11 @@
 package pl.iseebugs.TripReimbursementApp.model;
 
+import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
+
 public class UserDTO {
     private int id;
     private String name;
-    private UserGroup userGroup;
+    private UserGroupDTO userGroupDTO;
 
 
     public UserDTO() {
@@ -12,7 +14,7 @@ public class UserDTO {
     public UserDTO(User user){
         this.id = user.getId();
         this.name = user.getName();
-        this.userGroup = user.getUserGroup();
+        userGroupDTO = new UserGroupDTO(user.getUserGroup());
     }
 
     public int getId() {
@@ -32,23 +34,31 @@ public class UserDTO {
     }
 
     public int getUserGroupId() {
-        return userGroup.getId();
+        return userGroupDTO.getId();
 
     }
 
-    public UserGroup getUserGroup() {
-        return userGroup;
+    public UserGroupDTO getUserGroup() {
+        return userGroupDTO;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public void setUserGroup(UserGroupDTO userGroupDTO) {
+        this.userGroupDTO = userGroupDTO;
     }
 
-    public User toUser() {
+    public User toUser() throws UserGroupNotFoundException {
+        if (this.name == null || this.name.trim().isEmpty()) {
+            throw new IllegalArgumentException("User Group name couldn't be empty.");
+        }  else if (name.length() > 100){
+            throw new IllegalArgumentException("User Group name is too long.");
+        }
+        if (this.userGroupDTO == null){
+            throw new UserGroupNotFoundException();
+        }
         var result = new User();
         result.setId(this.id);
         result.setName(this.name);
-        result.setUserGroup(userGroup);
+        result.setUserGroup(userGroupDTO.toUserGroup());
         return result;
     }
 }
