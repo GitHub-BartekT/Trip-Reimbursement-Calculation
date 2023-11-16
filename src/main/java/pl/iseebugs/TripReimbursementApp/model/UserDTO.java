@@ -33,11 +33,6 @@ public class UserDTO {
         this.name = name;
     }
 
-    public int getUserGroupId() {
-        return userGroupDTO.getId();
-
-    }
-
     public UserGroupDTO getUserGroup() {
         return userGroupDTO;
     }

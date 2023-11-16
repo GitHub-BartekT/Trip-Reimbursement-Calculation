@@ -56,8 +56,8 @@ class UserServiceTest {
         assertThat(result.get(0).getName()).isEqualTo("foo");
         assertThat(result.get(1).getName()).isEqualTo("bar");
         assertThat(result.get(2).getName()).isEqualTo("foobar");
-        assertThat(result.get(0).getUserGroupId()).isEqualTo(1);
-        assertThat(result.get(3).getUserGroupId()).isEqualTo(2);
+        assertThat(result.get(0).getUserGroup().getId()).isEqualTo(1);
+        assertThat(result.get(3).getUserGroup().getId()).isEqualTo(2);
         assertThat(result.get(3).getUserGroup().getName()).isEqualTo("barGroup");
         assertThat(afterSize).isEqualTo(beforeSize);
     }
@@ -92,7 +92,7 @@ class UserServiceTest {
 
         //then
         assertThat(result.getName()).isEqualTo("bar");
-        assertThat(result.getUserGroupId()).isEqualTo(2);
+        assertThat(result.getUserGroup().getId()).isEqualTo(2);
         assertThat(result.getUserGroup().getName()).isEqualTo("barGroup");
     }
 

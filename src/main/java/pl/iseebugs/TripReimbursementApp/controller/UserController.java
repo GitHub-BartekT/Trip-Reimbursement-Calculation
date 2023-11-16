@@ -32,9 +32,9 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<Void> createUser(@RequestBody @Valid UserDTO userDTO) throws UserGroupNotFoundException {
+    ResponseEntity<Void> createUser(@RequestBody @Valid UserDTO userDTO) throws UserGroupNotFoundException, UserNotFoundException {
         var result = service.createUser(userDTO);
-        return ResponseEntity.created(URI.create("http://localhost:8080/groups")).build();
+        return ResponseEntity.created(URI.create("http://localhost:8080/users/" + result.getId())).build();
     }
 
     @PutMapping()
@@ -54,7 +54,7 @@ public class UserController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(UserGroupNotFoundException.class)
+    @ExceptionHandler(UserNotFoundException.class)
     ResponseEntity<String> handlerUserNotFound(UserNotFoundException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     }

@@ -29,7 +29,7 @@ public class UserService {
     public UserDTO readById(int id) throws UserNotFoundException {
         UserDTO toRead = repository.findById(id).map(UserDTO::new)
                 .orElseThrow(UserNotFoundException::new);
-        logger.info("Read user with ID {}, User group ID {}", toRead.getId(), toRead.getUserGroupId());
+        logger.info("Read user with ID {}, User group ID {}", toRead.getId(), toRead.getUserGroup().getId());
         return toRead;
     }
 
