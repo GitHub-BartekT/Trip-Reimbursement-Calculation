@@ -20,10 +20,6 @@ public class UserGroupController {
         this.service = service;
     }
 
-    public UserGroupService getService() {
-        return service;
-    }
-
     @GetMapping
     ResponseEntity<List<UserGroupDTO>> readAllUserGroups(){
         return ResponseEntity.ok(service.readAll());
