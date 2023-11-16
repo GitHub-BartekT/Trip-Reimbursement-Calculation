@@ -52,7 +52,7 @@ public class UserDTO {
         }  else if (name.length() > 100){
             throw new IllegalArgumentException("User Group name is too long.");
         }
-        if (this.userGroupDTO == null){
+        if (this.userGroupDTO == null || this.userGroupDTO.getId() <= 0){
             throw new UserGroupNotFoundException();
         }
         var result = new User();
