@@ -258,28 +258,124 @@ class UserServiceTest {
 
     @Test
     @DisplayName("should throws IllegalArgumentException when given name is empty or has only white-space characters")
-    void updateUserById1() {
+    void updateUserById_emptyUserNameParam_throwsIllegalArgumentException() {
+        //given
+        var mockRepository = mock(UserRepository.class);
+
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(true);
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        UserDTO userToCheck = new UserDTO();
+        userToCheck.setName("  ");
+
+        var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("User name couldn't be empty.");
     }
 
     @Test
     @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
-    void updateUserById2() {
+    void updateUserById_givenUserNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
+        //given
+        var mockRepository = mock(UserRepository.class);
+
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(true);
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        UserDTO userToCheck = new UserDTO();
+        String userName = createLongString(101);
+        userToCheck.setName(userName);
+        // userToCheck.setId(1);
+        var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("User name is too long.");
     }
 
     @Test
     @DisplayName("should throws UserGroupNotFound when no user group")
-    void updateUserById3() {
+    void updateUserById_noUserGroupParam_throwsUserGroupNotFoundException() {
+        //given
+        var mockRepository = mock(UserRepository.class);
+
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(true);
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        UserDTO userToCheck = new UserDTO();
+        userToCheck.setName("foo");
+        var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
     }
 
     @Test
     @DisplayName("should throws UserGroupNotFound when no user group id")
-    void updateUserById4() {
+    void updateUserById_noUserGroupId_throwsUserGroupNotFoundException() {
+        //given
+        var mockRepository = mock(UserRepository.class);
+
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(true);
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setName("fooGroup");
+        UserDTO userToCheck = new UserDTO();
+        userToCheck.setName("foo");
+        userToCheck.setUserGroup(userGroupDTO);
+        var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
     }
 
     @Test
     @DisplayName("should update new User")
-    void updateUserById5() {
+    void updateUserById_updatesUser() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserRepository.count();
+
+        //system under test
+        var toTest = new UserService(inMemoryUserRepository);
+
+        //when
+        UserGroup userGroup = inMemoryUserGroupRepository.findById(3).orElse(null);
+        assert userGroup != null;
+        UserGroupDTO userGroupDTO = new UserGroupDTO(userGroup);
+        UserDTO userToUpdate = new UserDTO();
+        userToUpdate.setName("newFoo");
+        userToUpdate.setId(2);
+        userToUpdate.setUserGroup(userGroupDTO);
+        toTest.updateUserById(userToUpdate);
+        List<UserDTO> resultList = toTest.readAll();
+        int afterSize = resultList.size();
+
+        //then
+        assertThat(resultList.get(1).getName()).isEqualTo("newFoo");
+        assertThat(resultList.get(1).getUserGroup().getName()).isEqualTo("foobarGroup");
+        assertThat(resultList.get(1).getUserGroup().getId()).isEqualTo(3);
+        assertThat(afterSize).isEqualTo(beforeSize);
     }
+
+
     //TODO
     @Test
     void deleteUser() {
@@ -363,7 +459,7 @@ class UserServiceTest {
 
         @Override
         public boolean existsById(int id) {
-            return false;
+            return map.containsKey(id);
         }
     }
 }

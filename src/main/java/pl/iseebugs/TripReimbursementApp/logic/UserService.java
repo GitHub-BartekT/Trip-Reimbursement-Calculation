@@ -45,10 +45,6 @@ public class UserService {
     public UserDTO updateUserById(UserDTO userDTO) throws UserNotFoundException, UserGroupNotFoundException {
         if(!repository.existsById(userDTO.getId())){
             throw new UserNotFoundException();
-        } else if (userDTO.getName().trim().isEmpty()){
-            throw new IllegalArgumentException("User name couldn't be empty.");
-        } else if (userDTO.getName().length() > 100) {
-            throw new IllegalArgumentException("User name is too long.");
         }
         User toUpdate = repository.save(userDTO.toUser());
         logger.info("Updated user with ID {}, User group ID {}", toUpdate.getId(), toUpdate.getUserGroup());
