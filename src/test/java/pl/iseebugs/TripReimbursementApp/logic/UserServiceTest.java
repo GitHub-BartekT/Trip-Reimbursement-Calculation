@@ -182,6 +182,61 @@ class UserServiceTest {
         assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
     }
 
+    @Test
+    @DisplayName("should throws UserGroupNotFound when no user group id")
+    void createUser_noUserGroupId_throwsUserGroupNotFoundException() throws UserGroupNotFoundException {
+        //given
+        var mockRepository = mock(UserRepository.class);
+
+        //and
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        userGroupDTO.setName("fooGroup");
+        UserDTO userToCheck = new UserDTO();
+        userToCheck.setName("foo");
+        userToCheck.setUserGroup(userGroupDTO);
+        // userToCheck.setId(1);
+        var exception = catchThrowable(() -> toTest.createUser(userToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should create new User")
+    void createUser_createsUser() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserRepository.count();
+
+        //system under test
+        var toTest = new UserService(inMemoryUserRepository);
+
+        //when
+        UserGroup userGroup = inMemoryUserGroupRepository.findById(1).orElse(null);
+        assert userGroup != null;
+        UserGroupDTO userGroupDTO = new UserGroupDTO(userGroup);
+        UserDTO userToCheck = new UserDTO();
+        userToCheck.setName("foo");
+        userToCheck.setUserGroup(userGroupDTO);
+        UserDTO result = toTest.createUser(userToCheck);
+        List<UserDTO> resultList = toTest.readAll();
+        int afterSize = resultList.size();
+
+        //then
+        assertThat(result.getName()).isEqualTo("foo");
+        assertThat(result.getUserGroup().getName()).isEqualTo("fooGroup");
+        assertThat(result.getUserGroup().getId()).isEqualTo(1);
+        assertThat(result.getId()).isEqualTo(afterSize);
+        assertThat(afterSize).isEqualTo(beforeSize + 1);
+    }
+
     //TODO
     @Test
     void updateUserById() {
