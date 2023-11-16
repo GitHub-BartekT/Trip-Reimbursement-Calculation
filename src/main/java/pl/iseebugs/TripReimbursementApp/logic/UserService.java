@@ -43,7 +43,7 @@ public class UserService {
     }
 
     public UserDTO updateUserById(UserDTO userDTO) throws UserNotFoundException, UserGroupNotFoundException {
-        if(repository.existsById(userDTO.getId())){
+        if(!repository.existsById(userDTO.getId())){
             throw new UserNotFoundException();
         } else if (userDTO.getName().trim().isEmpty()){
             throw new IllegalArgumentException("User name couldn't be empty.");

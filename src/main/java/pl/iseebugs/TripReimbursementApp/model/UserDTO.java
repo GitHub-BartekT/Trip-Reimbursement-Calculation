@@ -48,9 +48,9 @@ public class UserDTO {
 
     public User toUser() throws UserGroupNotFoundException {
         if (this.name == null || this.name.trim().isEmpty()) {
-            throw new IllegalArgumentException("User Group name couldn't be empty.");
+            throw new IllegalArgumentException("User name couldn't be empty.");
         }  else if (name.length() > 100){
-            throw new IllegalArgumentException("User Group name is too long.");
+            throw new IllegalArgumentException("User name is too long.");
         }
         if (this.userGroupDTO == null || this.userGroupDTO.getId() <= 0){
             throw new UserGroupNotFoundException();

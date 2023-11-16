@@ -239,9 +239,47 @@ class UserServiceTest {
 
     //TODO
     @Test
-    void updateUserById() {
+    @DisplayName("should throws UserNotFoundException when no User id")
+    void updateUserById_noUserId_throwsUserNotFoundException() {
+        //given
+        var mockRepository = mock(UserRepository.class);
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(false);
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        UserDTO userToCheck = new UserDTO();
+        var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
+
+        //then
+        assertThat(exception).isInstanceOf(UserNotFoundException.class);
     }
 
+    @Test
+    @DisplayName("should throws IllegalArgumentException when given name is empty or has only white-space characters")
+    void updateUserById1() {
+    }
+
+    @Test
+    @DisplayName("should throws IllegalArgumentException when given name has more then 100 characters")
+    void updateUserById2() {
+    }
+
+    @Test
+    @DisplayName("should throws UserGroupNotFound when no user group")
+    void updateUserById3() {
+    }
+
+    @Test
+    @DisplayName("should throws UserGroupNotFound when no user group id")
+    void updateUserById4() {
+    }
+
+    @Test
+    @DisplayName("should update new User")
+    void updateUserById5() {
+    }
     //TODO
     @Test
     void deleteUser() {
