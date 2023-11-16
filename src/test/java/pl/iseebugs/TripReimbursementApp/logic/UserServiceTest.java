@@ -19,7 +19,6 @@ import static pl.iseebugs.TripReimbursementApp.logic.UserGroupServiceTest.inMemo
 
 class UserServiceTest {
 
-
     @Test
     @DisplayName("should returns empty list when no objects")
     void readAll_returnsEmptyList() throws UserGroupNotFoundException{
@@ -166,7 +165,6 @@ class UserServiceTest {
     void createUser_emptyUserGroupParam_throwsUserGroupNotFoundException() throws UserGroupNotFoundException {
         //given
         var mockRepository = mock(UserRepository.class);
-
         //and
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
         //system under test
@@ -177,7 +175,6 @@ class UserServiceTest {
         userToCheck.setName("foo");
         // userToCheck.setId(1);
         var exception = catchThrowable(() -> toTest.createUser(userToCheck));
-
         //then
         assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
     }
@@ -237,7 +234,6 @@ class UserServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize + 1);
     }
 
-    //TODO
     @Test
     @DisplayName("should throws UserNotFoundException when no User id")
     void updateUserById_noUserId_throwsUserNotFoundException() {
@@ -251,7 +247,6 @@ class UserServiceTest {
         //when
         UserDTO userToCheck = new UserDTO();
         var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
-
         //then
         assertThat(exception).isInstanceOf(UserNotFoundException.class);
     }
@@ -375,10 +370,79 @@ class UserServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
-
-    //TODO
     @Test
-    void deleteUser() {
+    @DisplayName("should throw UserNotFoundException when given id not found")
+    void deleteUser_noUser_throwsUserNotFoundException() {
+        //given
+        var mockRepository =mock(UserRepository.class);
+        when(mockRepository.existsById(anyInt())).thenReturn(false);
+        //system under test
+        var toTest = new UserService(mockRepository);
+
+        //when
+        var exception = catchThrowable(() -> toTest.deleteUser(5));
+        //then
+        assertThat(exception).isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should delete exists entity")
+    void deleteUser_deletesUser() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserRepository.count();
+        //system under test
+        var toTest = new UserService(inMemoryUserRepository);
+
+        //when
+        int userToDelete = 5;
+        toTest.deleteUser(userToDelete);
+        List<UserDTO> resultList = toTest.readAll();
+        int afterSize = resultList.size();
+        //then
+        assertThat(afterSize + 1).isEqualTo(beforeSize);
+    }
+
+    @Test
+    @DisplayName("should delete the first entity")
+    void deleteUser_deletesTheFirstUser_throwsUserNotFoundException() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserRepository.count();
+        //system under test
+        var toTest = new UserService(inMemoryUserRepository);
+
+        //when
+        int userToDelete = 1;
+        toTest.deleteUser(userToDelete);
+        List<UserDTO> resultList = toTest.readAll();
+        int afterSize = resultList.size();
+        //then
+        assertThat(afterSize + 1).isEqualTo(beforeSize);
+    }
+
+    @Test
+    @DisplayName("should delete the last entity")
+    void deleteUser_deletesTheLastUser_throwsUserNotFoundException() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        int beforeSize = inMemoryUserRepository.count();
+        //system under test
+        var toTest = new UserService(inMemoryUserRepository);
+
+        //when
+        int userToDelete = 9;
+        toTest.deleteUser(userToDelete);
+        List<UserDTO> resultList = toTest.readAll();
+        int afterSize = resultList.size();
+        //then
+        assertThat(afterSize + 1).isEqualTo(beforeSize);
     }
 
     private void repositoryWith(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, List<String> userGroups, List<String> users) throws UserGroupNotFoundException {
@@ -407,7 +471,6 @@ class UserServiceTest {
         return new UserServiceTest.InMemoryUserRepository();
     }
 
-
     private static class InMemoryUserRepository implements UserRepository {
         private final AtomicInteger index = new AtomicInteger(1);
         private final Map<Integer, User> map = new HashMap<>();
@@ -421,7 +484,6 @@ class UserServiceTest {
             return new ArrayList<>(map.values());
         }
 
-        //TODO
         @Override
         public List<User> findAllByUserGroup_Id(Integer userGroupId) {
             return map.values().stream()
