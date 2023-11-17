@@ -94,7 +94,7 @@ class UserControllerIntegrationTest {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-        //then
+                //then
                 .andExpect(status().isBadRequest())
                     .andExpect(content().string("This User already exists."));
     }
