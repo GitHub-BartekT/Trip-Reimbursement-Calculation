@@ -62,6 +62,26 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    void testReadById_throwsUserNotFoundException() throws Exception {
+        userRepository.deleteAll();
+        mockMvc.perform(get("/users/7"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User not found."));
+    }
+
+    @Test
+    @Order(1)
+    void testReadById_readUser() throws Exception {
+        mockMvc.perform(get("/users/2"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("bar"))
+                .andExpect(jsonPath("$.id").value("2"))
+                .andExpect(jsonPath("$.userGroup.name").value("fooGroup"));
+    }
+
+    @Test
+    @Order(7)
     void testCreateUser_whenGivenUserIdAlreadyExist_throwsIllegalArgumentException() throws Exception {
         //given
         ObjectMapper objectMapper = new ObjectMapper();
@@ -151,6 +171,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @Order(7)
     void testCreateUser_createsUser() throws Exception {
         //given
         UserGroupDTO userGroupDTO = new UserGroupDTO();
