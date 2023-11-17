@@ -2,19 +2,15 @@ package pl.iseebugs.TripReimbursementApp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
-import pl.iseebugs.TripReimbursementApp.logic.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.*;
-
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -36,9 +32,11 @@ class UserControllerIntegrationTest {
     private UserGroupRepository groupRepository;
 
     @Test
+    @Sql({"/sql/001-test-schema.sql"})
     void testReadAllUsers_returnsEmptyList() throws Exception {
-        userRepository.deleteAll();
+        //when
         mockMvc.perform(get("/users"))
+                //then
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -46,10 +44,8 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(0)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testReadAllUsers_returnsAllUsers() throws Exception {
-        //given
-        setUpRepoBeforeTest();
         //when
         mockMvc.perform(get("/users"))
                 .andExpect(status().is2xxSuccessful())
@@ -62,17 +58,21 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @Sql({"/sql/001-test-schema.sql"})
     void testReadById_throwsUserNotFoundException() throws Exception {
-        userRepository.deleteAll();
+        //when
         mockMvc.perform(get("/users/7"))
+                //then
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("User not found."));
     }
 
     @Test
-    @Order(1)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testReadById_readUser() throws Exception {
+        //when
         mockMvc.perform(get("/users/2"))
+                //then
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("bar"))
@@ -81,12 +81,13 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(7)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testCreateUser_whenGivenUserIdAlreadyExist_throwsIllegalArgumentException() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         userDTO.setId(8);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -101,9 +102,10 @@ class UserControllerIntegrationTest {
     @Test
     void testCreateUser_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         userDTO.setName("   ");
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -118,10 +120,11 @@ class UserControllerIntegrationTest {
     @Test
     void testCreateUser_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         String name = createLongString(101);
         userDTO.setName(name);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -136,9 +139,10 @@ class UserControllerIntegrationTest {
     @Test
     void testCreateUser_whenEmptyUserGroupParam_throwsUserGroupNotFoundException() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         userDTO.setName("foo");
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -153,12 +157,13 @@ class UserControllerIntegrationTest {
     @Test
     void testCreateUser_whenNoUserGroupId_throwsUserGroupNotFoundException() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         userDTO.setName("foo");
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setName("fooGroup");
         userDTO.setUserGroup(userGroupDTO);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -171,26 +176,24 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(7)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testCreateUser_createsUser() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("fooGroup");
-        UserGroup userGroup = groupRepository.save(userGroupDTO.toUserGroup());
+        UserGroup userGroup = groupRepository.findById(1).orElse(null);
 
         UserDTO userDTO = new UserDTO();
         userDTO.setName("foo");
+        assert userGroup != null;
         userDTO.setUserGroup(new UserGroupDTO(userGroup));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
         //and
-
         int beforeSize = userRepository.findAll().size();
-        User user = userRepository.findAll().stream()
-                .reduce((first, second) -> second).orElse(null);
+        User user = userRepository.findById(beforeSize).orElse(null);
+
         assert user != null;
-        int newUserId = user.getId() + 2; //Last index was deleted in testDeleteUser_deletesTheLastUser()
+        int newUserId = user.getId() + 1;
 
         //when
         mockMvc.perform(post("/users")
@@ -206,7 +209,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(1)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testDeleteUser_deletesUser() throws Exception {
         //given
         int beforeSize = userRepository.findAll().size();
@@ -218,10 +221,12 @@ class UserControllerIntegrationTest {
 
         int afterSize = userRepository.findAll().size();
         assertThat(afterSize + 1).isEqualTo(beforeSize);
+
+
     }
 
     @Test
-    @Order(2)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testDeleteUser_deletesTheFirstUser() throws Exception {
         //given
         int beforeSize = userRepository.findAll().size();
@@ -236,7 +241,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(3)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testDeleteUser_deletesTheLastUser() throws Exception {
         //given
         int beforeSize = userRepository.findAll().size();
@@ -251,47 +256,24 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(4)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testDeleteUser_noUser_throwsUserNotFoundException() throws Exception {
-          mockMvc.perform(delete("/users/15")
-                        .contentType(MediaType.APPLICATION_JSON))
-                //then
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("User not found."));
-    }
-
-    @Test
-    @Order(4)
-    void testDeleteUser_tryDeletesUser_whichWasDeleted_throwsUserNotFoundException() throws Exception {
-        //given
-        userRepository.deleteById(5);
         //when
-        mockMvc.perform(delete("/users/5")
+        mockMvc.perform(delete("/users/15")
                         .contentType(MediaType.APPLICATION_JSON))
                 //then
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("User not found."));
     }
 
-    /*
-        Users DataBase              Users Groups
-        1 - deleted in Order(2)     1 - fooGroup
-        2 - bar                     1
-        3 - deleted in Order(1)     1
-        4 - foo                     2 - barGroup
-        5 - deleted in Order(4)     2
-        6 - foobar                  2
-        7 - foo                     3 - foobarGroup
-        8 - bar                     3
-        9 - deleted in Order(3)     3
-    */
-
     @Test
-    @Order(4)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testUpdateUserById_throwsUserNotFoundException() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
+        //given
         UserDTO userDTO = new UserDTO();
         userDTO.setId(12);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -304,13 +286,14 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(5)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testUpdateUserById_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         userDTO.setId(7);
         userDTO.setName("   ");
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -323,14 +306,15 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(5)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testUpdateUserById_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
         //when
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         String name = createLongString(101);
         userDTO.setId(7);
         userDTO.setName(name);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -343,13 +327,14 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(5)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testUpdateUserById_whenEmptyUserGroupParam_throwsUserGroupNotFoundException() throws Exception {
         //when
-        ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = new UserDTO();
         userDTO.setId(7);
         userDTO.setName("foo");
+
+        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userDTO);
 
         //when
@@ -362,7 +347,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @Order(6)
+    @Sql({"/sql/001-test-schema.sql", "/sql/002-test-data-users.sql"})
     void testUpdateUserById_updatesUser() throws Exception {
         //given
         UserGroup userGroup = groupRepository.findById(1).orElse(null);
@@ -386,10 +371,10 @@ class UserControllerIntegrationTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        mockMvc.perform(get("/users"))
-                .andExpect(jsonPath("$[1].name").value("barFoo"))
-                .andExpect(jsonPath("$[1].userGroup.name").value("fooGroup"))
-                .andExpect(jsonPath("$[1].userGroup.id").value(1));
+        mockMvc.perform(get("/users/4"))
+                .andExpect(jsonPath("$.name").value("barFoo"))
+                .andExpect(jsonPath("$.userGroup.name").value("fooGroup"))
+                .andExpect(jsonPath("$.userGroup.id").value(1));
     }
 
     private String createLongString(int length){
@@ -397,22 +382,5 @@ class UserControllerIntegrationTest {
             return "";
         }
         return String.valueOf('A').repeat(length);
-    }
-
-    public void setUpRepoBeforeTest() throws UserGroupNotFoundException, UserNotFoundException {
-        List<String> userGroupsNames = List.of("fooGroup", "barGroup", "foobarGroup");
-        List<String> userNames = List.of("foo", "bar", "foobar");
-
-        for (String entity : userGroupsNames) {
-            UserGroupDTO userGroupDTO = new UserGroupDTO();
-            userGroupDTO.setName(entity);
-            UserGroup userGroup = groupRepository.save(userGroupDTO.toUserGroup());
-            for (String entityUser : userNames) {
-                UserDTO user = new UserDTO();
-                user.setName(entityUser);
-                user.setUserGroup(new UserGroupDTO(userGroup));
-                userRepository.save(user.toUser());
-            }
-        }
     }
 }
