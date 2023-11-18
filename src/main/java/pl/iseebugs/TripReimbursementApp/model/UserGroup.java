@@ -13,6 +13,10 @@ public class UserGroup {
     int id;
     @NotBlank(message = "Group name must not be empty")
     String name;
+    double dailyAllowance;
+    double costPerKm;
+    double maxMileage;
+    double maxRefund;
     @OneToMany(mappedBy = "userGroup")
     private Set<User> users;
 
@@ -33,6 +37,38 @@ public class UserGroup {
 
     void setName(String name) {
         this.name = name;
+    }
+
+    public double getDailyAllowance() {
+        return dailyAllowance;
+    }
+
+    public void setDailyAllowance(double dailyAllowance) {
+        this.dailyAllowance = dailyAllowance;
+    }
+
+    public double getCostPerKm() {
+        return costPerKm;
+    }
+
+    public void setCostPerKm(double costPerKm) {
+        this.costPerKm = costPerKm;
+    }
+
+    public double getMaxMileage() {
+        return maxMileage;
+    }
+
+    public void setMaxMileage(double maxMileage) {
+        this.maxMileage = maxMileage;
+    }
+
+    public double getMaxRefund() {
+        return maxRefund;
+    }
+
+    public void setMaxRefund(double maxRefund) {
+        this.maxRefund = maxRefund;
     }
 
     Set<User> getUsers() {

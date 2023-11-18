@@ -58,4 +58,9 @@ public class UserGroupController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<String> handleNumberFormatException(NumberFormatException e) {
+        return ResponseEntity.badRequest().body("Invalid number format: " + e.getMessage());
+    }
+
 }
