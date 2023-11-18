@@ -26,6 +26,13 @@ public class UserGroupService {
                 .collect(Collectors.toList());
     }
 
+    public UserGroupDTO readById(int id) throws UserGroupNotFoundException {
+        UserGroupDTO toRead = repository.findById(id).map(UserGroupDTO::new)
+                .orElseThrow(UserGroupNotFoundException::new);
+        logger.info("Read User Group with ID {}", toRead.getId());
+        return toRead;
+    }
+
     public UserGroupDTO createUserGroup(UserGroupDTO group){
         if(repository.findById(group.getId()).isPresent()){
             throw new IllegalArgumentException("This User Group already exists.");
