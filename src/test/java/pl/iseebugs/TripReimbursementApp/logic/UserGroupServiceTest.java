@@ -2,9 +2,7 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pl.iseebugs.TripReimbursementApp.model.UserGroup;
-import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
-import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
+import pl.iseebugs.TripReimbursementApp.model.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,6 +52,39 @@ class UserGroupServiceTest {
         assertThat(result.get(1).getName()).isEqualTo("bar");
         assertThat(result.get(2).getName()).isEqualTo("foobar");
         assertThat(afterSize).isEqualTo(beforeSize);
+    }
+
+    @Test
+    @DisplayName("should throws UserGroupNotFoundException when given id not found")
+    void readById_givenIdNotFound_throwsUserGroupNotFoundException() {
+        //given
+        var mockRepository = mock(UserGroupRepository.class);
+        when(mockRepository.findById(any())).thenReturn(Optional.empty());
+        //system under test
+        var toTest = new UserGroupService(mockRepository);
+        //when
+        var exception = catchThrowable(() -> toTest.readById(7));
+        //then
+        assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should reads user group")
+    void readById_returnsUserGroup() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        repositoryWith(inMemoryUserGroupRepository, List.of("fooGroup","barGroup", "foobarGroup"));
+
+        //system under test
+        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+
+        //when
+        UserGroupDTO result = toTest.readById(2);
+
+        //then
+        assertThat(result.getName()).isEqualTo("barGroup");
+        assertThat(result.getId()).isEqualTo(2);
+
     }
 
     @Test
