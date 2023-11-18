@@ -25,6 +25,11 @@ public class UserGroupController {
         return ResponseEntity.ok(service.readAll());
     }
 
+    @GetMapping("/{id}")
+    ResponseEntity<UserGroupDTO> readById(@PathVariable int id) throws UserGroupNotFoundException {
+        return ResponseEntity.ok(service.readById(id));
+    }
+
     @PostMapping
     ResponseEntity<Void> createUserGroup(@RequestBody @Valid UserGroupDTO userGroupDTO){
         var result = service.createUserGroup(userGroupDTO);
