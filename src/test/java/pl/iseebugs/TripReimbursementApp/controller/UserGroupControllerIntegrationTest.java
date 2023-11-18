@@ -55,6 +55,28 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
+    @Sql({"/sql/001-test-schema.sql"})
+    void testReadById_throwsUserGroupNotFoundException() throws Exception {
+        //when
+        mockMvc.perform(get("/groups/7"))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
+    void testReadById_readUserGroup() throws Exception {
+        //when
+        mockMvc.perform(get("/groups/2"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("barGroup"))
+                .andExpect(jsonPath("$.id").value("2"));
+    }
+
+    @Test
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameAlreadyExist_throwsIllegalArgumentException() throws Exception {
         //given
