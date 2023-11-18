@@ -70,7 +70,7 @@ class UserGroupServiceTest {
 
     @Test
     @DisplayName("should reads user group")
-    void readById_returnsUserGroup() throws UserGroupNotFoundException, UserNotFoundException {
+    void readById_returnsUserGroup() throws UserGroupNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         repositoryWith(inMemoryUserGroupRepository, List.of("fooGroup","barGroup", "foobarGroup"));
@@ -84,7 +84,6 @@ class UserGroupServiceTest {
         //then
         assertThat(result.getName()).isEqualTo("barGroup");
         assertThat(result.getId()).isEqualTo(2);
-
     }
 
     @Test
@@ -162,10 +161,6 @@ class UserGroupServiceTest {
     void createUserGroup_givenNameExists_throwIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //and
@@ -517,6 +512,7 @@ class UserGroupServiceTest {
 
         @Override
         public void deleteAll() {
+            map.clear();
         }
     }
 }
