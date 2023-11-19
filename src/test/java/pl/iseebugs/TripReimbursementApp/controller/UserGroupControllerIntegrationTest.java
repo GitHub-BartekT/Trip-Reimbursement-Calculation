@@ -170,7 +170,7 @@ class UserGroupControllerIntegrationTest {
                 //then
                 .andExpect(status().isCreated())
                 .andExpect(header().
-                        string("Location", "http://localhost:" + "8080" + "/groups"));
+                        string("Location", "http://localhost:" + "8080" + "/groups/" + 4));
     }
 
     @Test
