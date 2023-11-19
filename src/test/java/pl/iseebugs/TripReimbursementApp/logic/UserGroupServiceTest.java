@@ -49,6 +49,10 @@ class UserGroupServiceTest {
 
         //then
         assertThat(result.get(0).getName()).isEqualTo("foo");
+        assertThat(result.get(0).getCostPerKm()).isEqualTo(0.0);
+        assertThat(result.get(0).getMaxRefund()).isEqualTo(0.0);
+        assertThat(result.get(0).getMaxMileage()).isEqualTo(0.0);
+        assertThat(result.get(0).getMaxMileage()).isEqualTo(0.0);
         assertThat(result.get(1).getName()).isEqualTo("bar");
         assertThat(result.get(2).getName()).isEqualTo("foobar");
         assertThat(afterSize).isEqualTo(beforeSize);
@@ -84,6 +88,10 @@ class UserGroupServiceTest {
         //then
         assertThat(result.getName()).isEqualTo("barGroup");
         assertThat(result.getId()).isEqualTo(2);
+        assertThat(result.getCostPerKm()).isEqualTo(0.0);
+        assertThat(result.getMaxRefund()).isEqualTo(0.0);
+        assertThat(result.getMaxMileage()).isEqualTo(0.0);
+        assertThat(result.getMaxMileage()).isEqualTo(0.0);
     }
 
     @Test
@@ -103,7 +111,6 @@ class UserGroupServiceTest {
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
         userGroupToCheck.setId(1);
-        userGroupToCheck.setName("bar");
 
         var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
 
@@ -186,7 +193,6 @@ class UserGroupServiceTest {
     void createUserGroup_createsUserGroup() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
@@ -195,7 +201,6 @@ class UserGroupServiceTest {
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setName("foobar");
-
         toTest.createUserGroup(userGroupDTO);
         var afterCreate = inMemoryUserGroupRepository.count();
         UserGroup afterSave = inMemoryUserGroupRepository.findById(inMemoryUserGroupRepository.count()).orElse(null);
