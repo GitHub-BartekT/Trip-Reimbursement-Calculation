@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
-import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 
 import java.util.List;

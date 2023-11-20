@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.*;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;

@@ -3,6 +3,7 @@ package pl.iseebugs.TripReimbursementApp.logic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pl.iseebugs.TripReimbursementApp.model.*;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;

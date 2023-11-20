@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
-import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import java.net.URI;
 import java.util.List;

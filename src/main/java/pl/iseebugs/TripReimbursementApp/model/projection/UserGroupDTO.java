@@ -1,4 +1,6 @@
-package pl.iseebugs.TripReimbursementApp.model;
+package pl.iseebugs.TripReimbursementApp.model.projection;
+
+import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 
 public class UserGroupDTO {
     private int id;

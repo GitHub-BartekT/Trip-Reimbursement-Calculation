@@ -1,4 +1,8 @@
-package pl.iseebugs.TripReimbursementApp.model;
+package pl.iseebugs.TripReimbursementApp.model.projection;
+
+import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
+import pl.iseebugs.TripReimbursementApp.model.User;
+import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 
 import java.time.LocalDate;
 
@@ -9,7 +13,7 @@ public class ReimbursementDTO {
     private LocalDate end_date;
     private int distance;
     private boolean pushedToAccept;
-    int userId;
+    private int userId;
 
     public ReimbursementDTO(Reimbursement reimbursement) {
         id = reimbursement.getId();
@@ -71,12 +75,12 @@ public class ReimbursementDTO {
 
     public Reimbursement toReimbursement (){
         var result = new Reimbursement();
-        result.id = id;
-        result.name = name;
-        result.start_date = start_date;
-        result.end_date = end_date;
-        result.distance = distance;
-        result.pushedToAccept = pushedToAccept;
+        result.setId(id);
+        result.setName(name);
+        result.setStart_date(start_date);
+        result.setEnd_date(end_date);
+        result.setDistance(distance);
+        result.setPushedToAccept(pushedToAccept);
 
         UserRepository repository = null;
         User user = new User();

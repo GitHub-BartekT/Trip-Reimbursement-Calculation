@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.iseebugs.TripReimbursementApp.model.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
