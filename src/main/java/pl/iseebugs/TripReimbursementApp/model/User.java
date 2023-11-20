@@ -3,6 +3,8 @@ package pl.iseebugs.TripReimbursementApp.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -14,6 +16,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "user_group_id")
     UserGroup userGroup;
+    @OneToMany(mappedBy = "user")
+    private Set<Reimbursement> reimbursements;
 
     public User() {
     }
@@ -40,5 +44,13 @@ public class User {
 
     public void setUserGroup(UserGroup userGroup) {
         this.userGroup = userGroup;
+    }
+
+    public Set<Reimbursement> getReimbursements() {
+        return reimbursements;
+    }
+
+    public void setReimbursements(Set<Reimbursement> reimbursements) {
+        this.reimbursements = reimbursements;
     }
 }
