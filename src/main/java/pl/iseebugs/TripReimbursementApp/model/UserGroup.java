@@ -20,7 +20,7 @@ public class UserGroup {
     @OneToMany(mappedBy = "userGroup")
     private Set<User> users;
 
-    protected UserGroup() {
+    public UserGroup() {
     }
 
     public int getId() {

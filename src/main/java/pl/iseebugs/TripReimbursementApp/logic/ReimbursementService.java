@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.model.*;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,33 +21,36 @@ public class ReimbursementService {
         this.repository = repository;
     }
 
-    public List<ReimbursementDTO> readAll(){
+    public List<ReimbursementReadModel> readAll(){
         return repository.findAll().stream()
-                .map(ReimbursementDTO::new)
+                .map(ReimbursementMapper::toReadModel)
                 .collect(Collectors.toList());
     }
 
-    public ReimbursementDTO readById(int id) throws ReimbursementNotFoundException {
-        ReimbursementDTO toRead = repository.findById(id).map(ReimbursementDTO::new)
-                .orElseThrow(ReimbursementNotFoundException::new);
+    public ReimbursementReadModel readById(int id) throws ReimbursementNotFoundException {
+        Reimbursement reimbursement =
+                repository.findById(id).orElseThrow(ReimbursementNotFoundException::new);
+        ReimbursementReadModel toRead = ReimbursementMapper.toReadModel(reimbursement);
         logger.info("Read reimbursement with ID {}, User ID {}", toRead.getId(), toRead.getUserId());
         return toRead;
     }
 
-    public ReimbursementDTO createReimbursementById(ReimbursementDTO reimbursement) throws ReimbursementNotFoundException{
-        if(repository.findById(reimbursement.getId()).isPresent()){
+    public ReimbursementReadModel createReimbursementById(ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException{
+        if(repository.findById(toWrite.getId()).isPresent()){
             throw new IllegalArgumentException("This Reimbursement already exists.");
         }
-        Reimbursement toUpdate = repository.save(reimbursement.toReimbursement());
-        return new ReimbursementDTO(toUpdate);
+        ReimbursementReadModel toRead =
+                ReimbursementMapper.toReadModel(repository.save(toEntity(toWrite)));
+        return toRead;
     }
 
-    public ReimbursementDTO updateReimbursementById(ReimbursementDTO reimbursement) throws ReimbursementNotFoundException{
-        if(repository.findById(reimbursement.getId()).isEmpty()){
+    public ReimbursementReadModel updateReimbursementById(ReimbursementWriteModel toUpdate) throws ReimbursementNotFoundException{
+        if(repository.findById(toUpdate.getId()).isEmpty()){
             throw new ReimbursementNotFoundException();
         }
-        Reimbursement toUpdate = repository.save(reimbursement.toReimbursement());
-        return new ReimbursementDTO(toUpdate);
+        ReimbursementReadModel toRead =
+                ReimbursementMapper.toReadModel(repository.save(toEntity(toUpdate)));
+        return toRead;
     }
 
     public void deleteReimbursement(int id) throws ReimbursementNotFoundException {
@@ -57,6 +62,23 @@ public class ReimbursementService {
         } catch (Exception e){
             logger.error("Error deleting reimbursement with ID {}: {}", id, e.getMessage());
         }
+    }
+
+    public static Reimbursement toEntity(ReimbursementWriteModel reimbursementWriteModel){
+        var result = new Reimbursement();
+        result.setId(reimbursementWriteModel.getId());
+        result.setName(reimbursementWriteModel.getName());
+        result.setStartDate(reimbursementWriteModel.getStartDate());
+        result.setEndDate(reimbursementWriteModel.getEndDate());
+        result.setDistance(reimbursementWriteModel.getDistance());
+        result.setPushedToAccept(reimbursementWriteModel.isPushedToAccept());
+
+        UserRepository repository = null;
+        User user = new User();
+        user = repository.findById(reimbursementWriteModel.getUserId()).orElse(null);
+        assert user != null;
+        result.setUser(user);
+        return result;
     }
 
 }

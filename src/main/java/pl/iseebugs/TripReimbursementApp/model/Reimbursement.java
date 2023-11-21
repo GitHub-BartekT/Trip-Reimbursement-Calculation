@@ -14,8 +14,8 @@ public class Reimbursement {
     int id;
     @NotBlank(message = "User name must not be empty")
     String name;
-    LocalDate start_date;
-    LocalDate end_date;
+    LocalDate startDate;
+    LocalDate endDate;
     int distance;
     boolean pushedToAccept;
     @ManyToOne
@@ -41,20 +41,20 @@ public class Reimbursement {
         this.name = name;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
+    public void setStartDate(LocalDate start_date) {
+        this.startDate = start_date;
     }
 
-    public LocalDate getEnd_date() {
-        return end_date;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setEnd_date(LocalDate end_date) {
-        this.end_date = end_date;
+    public void setEndDate(LocalDate end_date) {
+        this.endDate = end_date;
     }
 
     public int getDistance() {
