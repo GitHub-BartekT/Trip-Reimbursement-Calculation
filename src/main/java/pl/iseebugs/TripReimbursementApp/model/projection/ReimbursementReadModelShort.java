@@ -7,7 +7,6 @@ public class ReimbursementReadModelShort{
     private String name;
     private double returnValue;
 
-
     public ReimbursementReadModelShort(Reimbursement reimbursement) {
         id = reimbursement.getId();
         name = reimbursement.getName();
@@ -27,8 +26,6 @@ public class ReimbursementReadModelShort{
     }
 
     private double returnValue(Reimbursement reimbursement){
-        double result = 0;
-
-        return result;
+       return ReimbursementHelper.returnValue(reimbursement);
     }
 }

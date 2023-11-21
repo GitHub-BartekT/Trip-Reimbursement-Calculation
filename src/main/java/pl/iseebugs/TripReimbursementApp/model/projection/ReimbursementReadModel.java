@@ -12,6 +12,7 @@ public class ReimbursementReadModel {
     private int distance;
     private boolean pushedToAccept;
     private int userId;
+    private double returnValue;
 
     public ReimbursementReadModel(Reimbursement reimbursement) {
         id = reimbursement.getId();
@@ -21,6 +22,7 @@ public class ReimbursementReadModel {
         distance = reimbursement.getDistance();
         pushedToAccept = reimbursement.isPushedToAccept();
         userId = reimbursement.getUser().getId();
+        returnValue = returnValue(reimbursement);
     }
 
     public int getId() {
@@ -49,5 +51,12 @@ public class ReimbursementReadModel {
 
     public int getUserId() {
         return userId;
+    }
+
+    public double getReturnValue() {
+        return returnValue;
+    }
+    private double returnValue(Reimbursement reimbursement){
+        return ReimbursementHelper.returnValue(reimbursement);
     }
 }
