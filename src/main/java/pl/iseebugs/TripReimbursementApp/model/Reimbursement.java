@@ -25,6 +25,15 @@ public class Reimbursement {
     public Reimbursement() {
     }
 
+    public Reimbursement(String name, LocalDate startDate, LocalDate endDate, int distance, boolean pushedToAccept, User user) {
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.distance = distance;
+        this.pushedToAccept = pushedToAccept;
+        this.user = user;
+    }
+
     public int getId() {
         return id;
     }
