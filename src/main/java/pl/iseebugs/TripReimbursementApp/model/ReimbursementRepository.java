@@ -13,6 +13,8 @@ public interface ReimbursementRepository {
 
     boolean existsById(int id);
 
+    boolean existsByUser_Id(int id);
+
     Reimbursement save(Reimbursement entity);
 
     void deleteById(int id);
