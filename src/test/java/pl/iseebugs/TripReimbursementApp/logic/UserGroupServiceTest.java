@@ -42,7 +42,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
@@ -53,7 +53,7 @@ class UserGroupServiceTest {
         int afterSize = result.size();
 
         //then
-        assertThat(result.get(0).getName()).isEqualTo("foo");
+        assertThat(result.get(0).getName()).isEqualTo("fooGroup");
         assertThat(result.get(0).getCostPerKm()).isEqualTo(0.0);
         assertThat(result.get(0).getMaxRefund()).isEqualTo(0.0);
         assertThat(result.get(0).getMaxMileage()).isEqualTo(0.0);
@@ -84,7 +84,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("fooGroup","barGroup", "foobarGroup"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
 
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
@@ -232,7 +232,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
@@ -372,7 +372,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
@@ -380,13 +380,13 @@ class UserGroupServiceTest {
         //and
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
         userGroupToCheck.setId(1);
-        userGroupToCheck.setName("foobar");
+        userGroupToCheck.setName("foo");
 
         //when
         UserGroupDTO result = toTest.updateUserGroupById(userGroupToCheck);
         int afterSize = inMemoryUserGroupRepository.count();
         //then
-        assertThat(result.getName()).isEqualTo("foobar");
+        assertThat(result.getName()).isEqualTo("foo");
         assertThat(afterSize).isEqualTo(beforeSize);
     }
 
@@ -416,7 +416,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
@@ -437,7 +437,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
@@ -458,7 +458,7 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        userGroupRepositoryWithInitialData(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);

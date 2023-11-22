@@ -43,7 +43,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
@@ -83,7 +83,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -210,7 +210,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
@@ -346,7 +346,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
@@ -392,7 +392,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -412,7 +412,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -432,7 +432,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWithInitialData(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -445,6 +445,4 @@ class UserServiceTest {
         //then
         assertThat(afterSize + 1).isEqualTo(beforeSize);
     }
-
-
 }

@@ -14,8 +14,19 @@ public class TestHelper {
         if (length <=0 ){
             return "";
         }
-
         return String.valueOf('A').repeat(length);
+    }
+
+    private static List<String> initialGroupData(){
+    return List.of("fooGroup","barGroup", "foobarGroup");
+    }
+
+    private static List<String> initialUserData(){
+        return List.of("foo","bar", "foobar");
+    }
+
+    protected static void userGroupRepositoryWithInitialData (InMemoryUserGroupRepository inMemoryUserGroupRepository){
+        userGroupRepositoryWith(inMemoryUserGroupRepository, initialGroupData());
     }
 
     protected static void userGroupRepositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, List<String> entities){
@@ -26,10 +37,26 @@ public class TestHelper {
         }
     }
 
+    protected static void userRepositoryWithInitialData(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository) throws UserGroupNotFoundException {
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, initialGroupData(), initialUserData());
+    }
+
     protected static void userRepositoryWith(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, List<String> userGroups, List<String> users) throws UserGroupNotFoundException {
         int groupRepoSize = userGroups.size();
         userGroupRepositoryWith(inMemoryUserGroupRepository, userGroups);
+        for (int i = 1; i <= groupRepoSize; i++) {
+            for (String entityUser : users) {
+                UserDTO user = new UserDTO();
+                user.setName(entityUser);
+                user.setUserGroup(new UserGroupDTO(inMemoryUserGroupRepository.findById(i).orElse(null)));
+                inMemoryUserRepository.save(user.toUser());
+            }
+        }
+    }
 
+    protected static void ReimbursementRepositoryWith(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, List<String> userGroups, List<String> users) throws UserGroupNotFoundException {
+        int groupRepoSize = userGroups.size();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, userGroups);
         for (int i = 1; i <= groupRepoSize; i++) {
             for (String entityUser : users) {
                 UserDTO user = new UserDTO();
