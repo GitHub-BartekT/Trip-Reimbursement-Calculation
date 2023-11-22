@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class ReimbursementHelper {
-    public static double returnValue(Reimbursement reimbursement) {
+    protected static double returnValue(Reimbursement reimbursement) {
         UserGroup userGroup = reimbursement.getUser().getUserGroup();
         double distance = reimbursement.getDistance();
         double maxMileage = userGroup.getMaxMileage();

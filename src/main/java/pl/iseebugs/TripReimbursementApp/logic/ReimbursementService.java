@@ -38,25 +38,21 @@ public class ReimbursementService {
         return toRead;
     }
 
-    public ReimbursementReadModel createReimbursementById(ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException {
+    public ReimbursementReadModel createReimbursement(ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException {
         if (repository.findById(toWrite.getId()).isPresent()) {
             throw new IllegalArgumentException("This Reimbursement already exists.");
         }
-        ReimbursementReadModel toRead =
-                ReimbursementMapper.toReadModel(repository.save(toEntity(toWrite)));
-        return toRead;
+        return ReimbursementMapper.toReadModel(repository.save(toEntity(toWrite)));
     }
 
     public ReimbursementReadModel updateReimbursementById(ReimbursementWriteModel toUpdate) throws ReimbursementNotFoundException {
         if (repository.findById(toUpdate.getId()).isEmpty()) {
             throw new ReimbursementNotFoundException();
         }
-        ReimbursementReadModel toRead =
-                ReimbursementMapper.toReadModel(repository.save(toEntity(toUpdate)));
-        return toRead;
+        return ReimbursementMapper.toReadModel(repository.save(toEntity(toUpdate)));
     }
 
-    public void deleteReimbursement(int id) throws ReimbursementNotFoundException {
+    public void deleteReimbursementById(int id) throws ReimbursementNotFoundException {
         repository.findById(id).orElseThrow(ReimbursementNotFoundException::new);
 
         try {
