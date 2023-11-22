@@ -1,26 +1,35 @@
 package pl.iseebugs.TripReimbursementApp.logic;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.InMemoryReimbursementRepository;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.inMemoryReimbursementRepository;
 
 class ReimbursementServiceTest {
 
-  /*  @Test
+    @Test
     @DisplayName("should returns empty list when no objects")
-    void readAll_returnsEmptyList() throws UserGroupNotFoundException{
+    void readAll_returnsEmptyList() throws ReimbursementNotFoundException{
         //given
-        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository =
+                inMemoryReimbursementRepository();
 
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository);
 
         //when
-        List<UserDTO> result = toTest.readAll();
+        List<ReimbursementReadModel> result = toTest.readAll();
 
         //then
         assertThat(result.size()).isEqualTo(0);
         assertThat(result).isNotNull();
     }
-*/
+
     @Test
     void readById() {
     }
