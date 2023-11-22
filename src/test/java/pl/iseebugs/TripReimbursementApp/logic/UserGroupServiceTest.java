@@ -2,17 +2,20 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pl.iseebugs.TripReimbursementApp.model.*;
+import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
+import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.*;
 
 class UserGroupServiceTest {
 
@@ -21,9 +24,9 @@ class UserGroupServiceTest {
     void readAll_returnEmptyList() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
         List<UserGroupDTO> result = toTest.readAll();
@@ -38,11 +41,12 @@ class UserGroupServiceTest {
     void readAll_readAllUserGroups() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
         List<UserGroupDTO> result = toTest.readAll();
@@ -64,9 +68,10 @@ class UserGroupServiceTest {
     void readById_givenIdNotFound_throwsUserGroupNotFoundException() {
         //given
         var mockRepository = mock(UserGroupRepository.class);
+        var mockUserRepository = mock(UserRepository.class);
         when(mockRepository.findById(any())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
         //when
         var exception = catchThrowable(() -> toTest.readById(7));
         //then
@@ -78,10 +83,11 @@ class UserGroupServiceTest {
     void readById_returnsUserGroup() throws UserGroupNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("fooGroup","barGroup", "foobarGroup"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("fooGroup","barGroup", "foobarGroup"));
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
         UserGroupDTO result = toTest.readById(2);
@@ -100,6 +106,7 @@ class UserGroupServiceTest {
     void createUserGroup_whenGivenIdAlreadyExist_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
@@ -107,7 +114,7 @@ class UserGroupServiceTest {
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
@@ -125,10 +132,11 @@ class UserGroupServiceTest {
     void createUserGroup_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
@@ -146,15 +154,16 @@ class UserGroupServiceTest {
     void createUserGroup_givenNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
-        String groupName = createLongString(101);
+        String groupName = TestHelper.createLongString(101);
         userGroupDTO.setName(groupName);
 
         var exception = catchThrowable(() -> toTest.createUserGroup(userGroupDTO));
@@ -169,13 +178,14 @@ class UserGroupServiceTest {
     void createUserGroup_givenNameExists_throwIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //and
         when(mockRepository.existsByName(anyString())).thenReturn(true);
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
@@ -194,10 +204,11 @@ class UserGroupServiceTest {
     void createUserGroup_createsUserGroup() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
@@ -220,15 +231,16 @@ class UserGroupServiceTest {
     void createUserGroup_givenNameHasMaxValue_createsUserGroup() {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
-        String groupName = createLongString(100);
+        String groupName = TestHelper.createLongString(100);
         userGroupDTO.setName(groupName);
 
         toTest.createUserGroup(userGroupDTO);
@@ -249,6 +261,7 @@ class UserGroupServiceTest {
     void updateUserGroupById_noUserGroup_throwsUserGroupNotFoundException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         UserGroupDTO userGroupDTO = new UserGroupDTO();
@@ -256,7 +269,7 @@ class UserGroupServiceTest {
         userGroupDTO.setName("bar");
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupDTO));
@@ -270,6 +283,7 @@ class UserGroupServiceTest {
     void updateUserGroupById_emptyNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
@@ -277,7 +291,7 @@ class UserGroupServiceTest {
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
@@ -296,6 +310,7 @@ class UserGroupServiceTest {
     void updateUserGroup_givenNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
@@ -306,12 +321,12 @@ class UserGroupServiceTest {
         when(mockRepository.existsByName(anyString())).thenReturn(false);
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupDTOtoCheck = new UserGroupDTO();
         userGroupDTOtoCheck.setId(1);
-        String groupName = createLongString(101);
+        String groupName = TestHelper.createLongString(101);
         userGroupDTOtoCheck.setName(groupName);
 
         var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupDTOtoCheck));
@@ -326,6 +341,7 @@ class UserGroupServiceTest {
     void updateUserGroupById_userGroupsNameAlreadyExists_throwsIllegalArgumentException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId(1);
         userGroupDTO.setName("foo");
@@ -336,7 +352,7 @@ class UserGroupServiceTest {
         when(mockRepository.existsByName(anyString())).thenReturn(true);
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
@@ -355,10 +371,11 @@ class UserGroupServiceTest {
     void updateUserGroupById_updatesUserGroup() throws UserGroupNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar"));
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //and
         UserGroupDTO userGroupToCheck = new UserGroupDTO();
@@ -378,12 +395,13 @@ class UserGroupServiceTest {
     void deleteUserGroup_noUserGroup_throwsUserGroupNotFoundException() {
         //given
         var mockRepository =mock(UserGroupRepository.class);
+        var mockUserRepository =mock(UserRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         int userGroupToDelete = 1;
 
         //system under test
-        var toTest = new UserGroupService(mockRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
         var exception = catchThrowable(() -> toTest.deleteUserGroup(userGroupToDelete));
@@ -394,13 +412,14 @@ class UserGroupServiceTest {
 
     @Test
     @DisplayName("should delete exists entity")
-    void deleteUserGroup_deleteEntity() throws UserGroupNotFoundException {
+    void deleteUserGroup_deleteEntity() throws UserGroupNotFoundException, UserNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //and
         int userGroupToDelete = 1;
@@ -414,13 +433,14 @@ class UserGroupServiceTest {
 
     @Test
     @DisplayName("should delete the first entity")
-    void deleteUserGroup_deleteTheFirstEntity() throws UserGroupNotFoundException {
+    void deleteUserGroup_deleteTheFirstEntity() throws UserGroupNotFoundException, UserNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //and
         int userGroupToDelete = 1;
@@ -434,13 +454,14 @@ class UserGroupServiceTest {
 
     @Test
     @DisplayName("should delete the last entity")
-    void deleteUserGroup_deleteTheLastEntity() throws UserGroupNotFoundException {
+    void deleteUserGroup_deleteTheLastEntity() throws UserGroupNotFoundException, UserNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
-        repositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        userGroupRepositoryWith(inMemoryUserGroupRepository, List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //and
         int userGroupToDelete = 1;
@@ -452,73 +473,4 @@ class UserGroupServiceTest {
         assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 
-
-    private String createLongString(int length){
-        if (length <=0 ){
-            return "";
-        }
-
-        return String.valueOf('A').repeat(length);
-    }
-
-    private void repositoryWith (InMemoryUserGroupRepository inMemoryUserGroupRepository, List<String> entities){
-        for (String entity : entities) {
-            UserGroupDTO userGroup = new UserGroupDTO();
-            userGroup.setName(entity);
-            inMemoryUserGroupRepository.save(userGroup.toUserGroup());
-        }
-    }
-
-    protected static InMemoryUserGroupRepository inMemoryUserGroupRepository(){
-        return new InMemoryUserGroupRepository();
-    }
-
-    protected static class InMemoryUserGroupRepository implements UserGroupRepository {
-        private final AtomicInteger index = new AtomicInteger(1);
-        private final Map<Integer,UserGroup> map = new HashMap<>();
-
-        public int count(){
-            return map.values().size();
-        }
-
-        @Override
-        public List<UserGroup> findAll() {
-            return new ArrayList<>(map.values());
-        }
-
-        @Override
-        public Optional<UserGroup> findById(Integer id) {
-            return Optional.ofNullable(map.get(id));
-        }
-
-        @Override
-        public boolean existsByName(String name) {
-            return map.values().stream()
-                    .anyMatch(userGroup -> name.equals(userGroup.getName()));
-        }
-
-        @Override
-        public UserGroup save(UserGroup entity) {
-            if (entity.getId() == 0) {
-                int id = index.getAndIncrement();
-                entity.setId(id);
-            }
-            try {
-                map.put(entity.getId(), entity);
-            } catch (Exception e){
-                throw new RuntimeException("Failed to save the entity to the database.");
-            }
-            return entity;
-        }
-
-        @Override
-        public void deleteById(int id) {
-            map.remove(id);
-        }
-
-        @Override
-        public void deleteAll() {
-            map.clear();
-        }
-    }
 }

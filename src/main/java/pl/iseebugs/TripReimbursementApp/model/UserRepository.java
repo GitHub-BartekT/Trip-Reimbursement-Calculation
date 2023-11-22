@@ -9,6 +9,8 @@ public interface UserRepository {
 
     List<User> findAllByUserGroup_Id(Integer userGroupId);
 
+    boolean existsByUserGroup_Id(int id);
+
     Optional<User> findById(Integer id);
 
     boolean existsById (int id);

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 
@@ -15,10 +16,13 @@ public class UserGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserGroupService.class);
     public final UserGroupRepository repository;
+    private final UserRepository userRepository;
 
-    public UserGroupService(UserGroupRepository repository) {
+    public UserGroupService(UserGroupRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
+
 
     public List<UserGroupDTO> readAll(){
         return repository.findAll().stream()
@@ -54,14 +58,18 @@ public class UserGroupService {
         return new UserGroupDTO(toUpdate);
     }
 
-    public void deleteUserGroup(int id) throws UserGroupNotFoundException {
+    public void deleteUserGroup(int id) throws UserGroupNotFoundException, UserNotFoundException {
         repository.findById(id).orElseThrow(UserGroupNotFoundException::new);
 
         try {
+            if (userRepository.existsByUserGroup_Id(id)){
+                throw new UserNotFoundException();
+            }
             repository.deleteById(id);
             logger.info("Deleted user group with ID {}", id);
         } catch (Exception e){
             logger.error("Error deleting user group with ID {}: {}", id, e.getMessage());
+            throw e;
         }
     }
 }

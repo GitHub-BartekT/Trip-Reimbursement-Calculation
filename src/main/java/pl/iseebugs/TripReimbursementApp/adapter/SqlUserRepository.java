@@ -13,4 +13,6 @@ interface SqlUserRepository extends UserRepository, JpaRepository<User, Integer>
     @Override
     List<User> findAllByUserGroup_Id(Integer userGroupId);
 
+    @Override
+    boolean existsByUserGroup_Id(int id);
 }

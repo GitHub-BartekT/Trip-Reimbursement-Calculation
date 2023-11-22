@@ -2,13 +2,13 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pl.iseebugs.TripReimbursementApp.model.*;
+import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserDTO;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -16,8 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static pl.iseebugs.TripReimbursementApp.logic.UserGroupServiceTest.InMemoryUserGroupRepository;
-import static pl.iseebugs.TripReimbursementApp.logic.UserGroupServiceTest.inMemoryUserGroupRepository;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.*;
 
 class UserServiceTest {
 
@@ -44,7 +43,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
@@ -84,7 +83,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
 
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -152,7 +151,7 @@ class UserServiceTest {
 
         //when
         UserDTO userToCheck = new UserDTO();
-        String userName = createLongString(101);
+        String userName = TestHelper.createLongString(101);
         userToCheck.setName(userName);
         // userToCheck.setId(1);
         var exception = catchThrowable(() -> toTest.createUser(userToCheck));
@@ -211,7 +210,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
@@ -288,7 +287,7 @@ class UserServiceTest {
 
         //when
         UserDTO userToCheck = new UserDTO();
-        String userName = createLongString(101);
+        String userName = TestHelper.createLongString(101);
         userToCheck.setName(userName);
         // userToCheck.setId(1);
         var exception = catchThrowable(() -> toTest.updateUserById(userToCheck));
@@ -347,7 +346,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
@@ -393,7 +392,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserRepository.count();
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -413,7 +412,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserRepository.count();
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -433,7 +432,7 @@ class UserServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
-        repositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
+        userRepositoryWith(inMemoryUserGroupRepository, inMemoryUserRepository, List.of("fooGroup","barGroup", "foobarGroup"), List.of("foo","bar", "foobar"));
         int beforeSize = inMemoryUserRepository.count();
         //system under test
         var toTest = new UserService(inMemoryUserRepository);
@@ -447,83 +446,5 @@ class UserServiceTest {
         assertThat(afterSize + 1).isEqualTo(beforeSize);
     }
 
-    private void repositoryWith(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, List<String> userGroups, List<String> users) throws UserGroupNotFoundException {
-        for (String entity : userGroups) {
-            UserGroupDTO userGroupDTO = new UserGroupDTO();
-            userGroupDTO.setName(entity);
-            UserGroup userGroup = inMemoryUserGroupRepository.save(userGroupDTO.toUserGroup());
-            for (String entityUser : users) {
-                UserDTO user = new UserDTO();
-                user.setName(entityUser);
-                user.setUserGroup(new UserGroupDTO(userGroup));
-                inMemoryUserRepository.save(user.toUser());
-            }
-        }
-    }
 
-    private String createLongString(int length){
-        if (length <=0 ){
-            return "";
-        }
-
-        return String.valueOf('A').repeat(length);
-    }
-
-    private UserServiceTest.InMemoryUserRepository inMemoryUserRepository(){
-        return new UserServiceTest.InMemoryUserRepository();
-    }
-
-    private static class InMemoryUserRepository implements UserRepository {
-        private final AtomicInteger index = new AtomicInteger(1);
-        private final Map<Integer, User> map = new HashMap<>();
-
-        public int count(){
-            return map.values().size();
-        }
-
-        @Override
-        public List<User> findAll() {
-            return new ArrayList<>(map.values());
-        }
-
-        @Override
-        public List<User> findAllByUserGroup_Id(Integer userGroupId) {
-            return map.values().stream()
-                    .filter((user) -> user.getUserGroup().getId() == userGroupId)
-                    .collect(Collectors.toList());
-        }
-
-        @Override
-        public Optional<User> findById(Integer id) {
-            return Optional.ofNullable(map.get(id));
-        }
-
-        @Override
-        public User save(User entity) {
-            if (entity.getId() == 0) {
-                int id = index.getAndIncrement();
-                entity.setId(id);
-            }
-            try {
-                map.put(entity.getId(), entity);
-            } catch (Exception e){
-                throw new RuntimeException("Failed to save the entity to the database.");
-            }
-            return entity;
-        }
-
-        @Override
-        public void deleteById(int id) {
-            map.remove(id);
-        }
-
-        @Override
-        public void deleteAll() {
-        }
-
-        @Override
-        public boolean existsById(int id) {
-            return map.containsKey(id);
-        }
-    }
 }

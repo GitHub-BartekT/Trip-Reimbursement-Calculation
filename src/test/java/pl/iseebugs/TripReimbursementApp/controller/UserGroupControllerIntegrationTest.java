@@ -10,8 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
+import pl.iseebugs.TripReimbursementApp.model.UserRepository;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -28,6 +30,9 @@ class UserGroupControllerIntegrationTest {
 
     @Autowired
     private UserGroupRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @Sql({"/sql/001-test-schema.sql"})
@@ -183,6 +188,11 @@ class UserGroupControllerIntegrationTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(userGroupDTO);
+        //and
+        int beforeSize = repository.findAll().size();
+        UserGroup userGroup = repository.findById(beforeSize).orElse(null);
+        assert userGroup != null;
+        int newUserGroupId = userGroup.getId() + 1;
 
         //when
         mockMvc.perform(post("/groups")
@@ -191,7 +201,7 @@ class UserGroupControllerIntegrationTest {
                 //then
                 .andExpect(status().isCreated())
                 .andExpect(header().
-                        string("Location", "http://localhost:" + "8080" + "/groups"));
+                        string("Location", "http://localhost:" + "8080" + "/groups/" + newUserGroupId));
     }
 
     @Test

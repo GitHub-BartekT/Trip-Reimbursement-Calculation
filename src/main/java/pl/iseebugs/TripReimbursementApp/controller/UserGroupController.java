@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
+import pl.iseebugs.TripReimbursementApp.logic.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import java.net.URI;
@@ -43,7 +44,7 @@ public class UserGroupController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteUserGroup(@PathVariable int id) throws UserGroupNotFoundException {
+    ResponseEntity<Void> deleteUserGroup(@PathVariable int id) throws UserGroupNotFoundException, UserNotFoundException {
         service.deleteUserGroup(id);
         return ResponseEntity.noContent().build();
     }
