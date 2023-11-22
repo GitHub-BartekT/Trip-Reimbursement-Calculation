@@ -7,8 +7,8 @@ import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.InMemoryReimbursementRepository;
-import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.inMemoryReimbursementRepository;
+import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.InMemoryReimbursementRepository;
+import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.inMemoryReimbursementRepository;
 
 class ReimbursementServiceTest {
 

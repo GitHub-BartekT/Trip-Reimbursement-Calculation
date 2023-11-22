@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.*;
+import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
 
 class UserServiceTest {
 

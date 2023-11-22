@@ -15,6 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
 import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.*;
 
 class UserGroupServiceTest {
