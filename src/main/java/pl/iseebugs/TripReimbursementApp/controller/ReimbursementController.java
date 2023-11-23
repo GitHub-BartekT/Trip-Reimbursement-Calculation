@@ -34,13 +34,13 @@ public class ReimbursementController {
     }
 
     @PostMapping
-    ResponseEntity<Void> createReimbursement(@RequestBody @Valid ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException {
+    ResponseEntity<Void> createReimbursement(@RequestBody @Valid ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException, UserNotFoundException {
         var result = service.createReimbursement(toWrite);
         return ResponseEntity.created(URI.create("http://localhost:8080/reimbursement/" + result.getId())).build();
     }
 
     @PutMapping()
-    ResponseEntity<ReimbursementReadModel> updateReimbursement(@RequestBody @Valid ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException {
+    ResponseEntity<ReimbursementReadModel> updateReimbursement(@RequestBody @Valid ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException, UserNotFoundException {
         ReimbursementReadModel updated = service.updateReimbursementById(toWrite);
         return ResponseEntity.ok(updated);
     }

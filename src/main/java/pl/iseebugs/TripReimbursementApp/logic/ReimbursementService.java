@@ -11,6 +11,8 @@ import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementMapper;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +21,9 @@ public class ReimbursementService {
 
     private static final Logger logger = LoggerFactory.getLogger(ReimbursementService.class);
     public final ReimbursementRepository repository;
+    public UserRepository userRepository;
 
-    public ReimbursementService(ReimbursementRepository repository) {
+    public ReimbursementService(ReimbursementRepository repository, UserRepository userRepository) {
         this.repository = repository;
     }
 
@@ -38,16 +41,20 @@ public class ReimbursementService {
         return toRead;
     }
 
-    public ReimbursementReadModel createReimbursement(ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException {
+    public ReimbursementReadModel createReimbursement(ReimbursementWriteModel toWrite) throws UserNotFoundException {
         if (repository.findById(toWrite.getId()).isPresent()) {
             throw new IllegalArgumentException("This Reimbursement already exists.");
+        }  else if (!userRepository.existsById(toWrite.getUserId())) {
+            throw new UserNotFoundException();
         }
         return ReimbursementMapper.toReadModel(repository.save(toEntity(toWrite)));
     }
 
-    public ReimbursementReadModel updateReimbursementById(ReimbursementWriteModel toUpdate) throws ReimbursementNotFoundException {
+    public ReimbursementReadModel updateReimbursementById(ReimbursementWriteModel toUpdate) throws ReimbursementNotFoundException, UserNotFoundException {
         if (repository.findById(toUpdate.getId()).isEmpty()) {
             throw new ReimbursementNotFoundException();
+        } else if (!userRepository.existsById(toUpdate.getUserId())) {
+            throw new UserNotFoundException();
         }
         return ReimbursementMapper.toReadModel(repository.save(toEntity(toUpdate)));
     }
@@ -63,7 +70,29 @@ public class ReimbursementService {
         }
     }
 
-    public static Reimbursement toEntity(ReimbursementWriteModel reimbursementWriteModel) {
+    private static boolean isValidDate(LocalDate localDate) {
+        int year = localDate.getYear();
+        int month = localDate.getMonthValue();
+        int day = localDate.getDayOfMonth();
+        try {
+            LocalDate.of(year, month, day);
+            return true;
+        } catch (DateTimeException e) {
+            return false;
+        }
+    }
+
+    private static void validate(ReimbursementWriteModel toValidate){
+        if (toValidate.getStartDate() != null && isValidDate(toValidate.getEndDate())){
+            throw new java.time.DateTimeException("Wrong data.");
+        }else if (isValidDate(toValidate.getEndDate())){
+            throw new java.time.DateTimeException("Wrong data.");
+        }
+    }
+
+    public Reimbursement toEntity(ReimbursementWriteModel reimbursementWriteModel) {
+        validate(reimbursementWriteModel);
+
         var result = new Reimbursement();
         result.setId(reimbursementWriteModel.getId());
         result.setName(reimbursementWriteModel.getName());
@@ -72,9 +101,7 @@ public class ReimbursementService {
         result.setDistance(reimbursementWriteModel.getDistance());
         result.setPushedToAccept(reimbursementWriteModel.isPushedToAccept());
 
-        UserRepository repository = null;
-        User user = new User();
-        user = repository.findById(reimbursementWriteModel.getUserId()).orElse(null);
+        User user = userRepository.findById(reimbursementWriteModel.getUserId()).orElse(null);
         assert user != null;
         result.setUser(user);
         return result;

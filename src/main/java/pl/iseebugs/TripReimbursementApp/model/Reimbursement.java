@@ -2,7 +2,6 @@ package pl.iseebugs.TripReimbursementApp.model;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 
@@ -12,7 +11,6 @@ public class Reimbursement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    @NotBlank(message = "User name must not be empty")
     String name;
     LocalDate startDate;
     LocalDate endDate;

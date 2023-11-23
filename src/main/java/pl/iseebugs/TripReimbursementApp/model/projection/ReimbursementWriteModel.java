@@ -1,14 +1,26 @@
 package pl.iseebugs.TripReimbursementApp.model.projection;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 
 import java.time.LocalDate;
 
 public class ReimbursementWriteModel {
     private int id;
+    @NotNull(message = "Reimbursement name couldn't be empty.")
+    @Size(max = 100, message = "Reimbursement name is too long.")
     private String name;
+    @PastOrPresent(message = "End date should be in the past or present.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull (message = "No end date.")
     private LocalDate endDate;
+    @Positive(message = "Distance should be positive.")
     private int distance;
     private boolean pushedToAccept;
     private int userId;

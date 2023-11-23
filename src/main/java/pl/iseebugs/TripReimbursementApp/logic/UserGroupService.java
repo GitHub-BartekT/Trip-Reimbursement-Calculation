@@ -63,7 +63,7 @@ public class UserGroupService {
 
         try {
             if (userRepository.existsByUserGroup_Id(id)){
-                throw new UserNotFoundException();
+                throw new IllegalStateException("User Group contains user.");
             }
             repository.deleteById(id);
             logger.info("Deleted user group with ID {}", id);
