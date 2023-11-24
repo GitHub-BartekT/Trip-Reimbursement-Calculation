@@ -25,6 +25,7 @@ public class ReimbursementService {
 
     public ReimbursementService(ReimbursementRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     public List<ReimbursementReadModel> readAll() {
@@ -41,17 +42,17 @@ public class ReimbursementService {
         return toRead;
     }
 
-    public ReimbursementReadModel createReimbursement(ReimbursementWriteModel toWrite) throws UserNotFoundException {
-        if (repository.findById(toWrite.getId()).isPresent()) {
+    public ReimbursementReadModel createReimbursement(ReimbursementWriteModel toCreate) throws UserNotFoundException {
+        if (repository.existsById(toCreate.getId())) {
             throw new IllegalArgumentException("This Reimbursement already exists.");
-        }  else if (!userRepository.existsById(toWrite.getUserId())) {
+        } else if (!userRepository.existsById(toCreate.getUserId())) {
             throw new UserNotFoundException();
         }
-        return ReimbursementMapper.toReadModel(repository.save(toEntity(toWrite)));
+        return ReimbursementMapper.toReadModel(repository.save(toEntity(toCreate)));
     }
 
     public ReimbursementReadModel updateReimbursementById(ReimbursementWriteModel toUpdate) throws ReimbursementNotFoundException, UserNotFoundException {
-        if (repository.findById(toUpdate.getId()).isEmpty()) {
+        if (!repository.existsById(toUpdate.getId())) {
             throw new ReimbursementNotFoundException();
         } else if (!userRepository.existsById(toUpdate.getUserId())) {
             throw new UserNotFoundException();
@@ -82,15 +83,31 @@ public class ReimbursementService {
         }
     }
 
-    private static void validate(ReimbursementWriteModel toValidate){
-        if (toValidate.getStartDate() != null && isValidDate(toValidate.getEndDate())){
-            throw new java.time.DateTimeException("Wrong data.");
-        }else if (isValidDate(toValidate.getEndDate())){
-            throw new java.time.DateTimeException("Wrong data.");
+    public static void validate(ReimbursementWriteModel toValidate){
+        if (toValidate.getStartDate() != null && !isValidDate(toValidate.getStartDate())) {
+            throw new java.time.DateTimeException("Wrong date data.");
+        } else if (toValidate.getEndDate() == null) {
+                throw new IllegalArgumentException("No end date.");
+        } else if (!isValidDate(toValidate.getEndDate())) {
+            throw new java.time.DateTimeException("Wrong date data.");
+        } else if (toValidate.getStartDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Start date should be in the past or present.");
+        } else if (toValidate.getEndDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("End date should be in the past or present.");
+        } else if (toValidate.getStartDate().isAfter(toValidate.getEndDate())) {
+            throw new IllegalArgumentException("Start Day is after End Day.");
+        }
+
+          else if (toValidate.getName() == null || toValidate.getName().trim().isEmpty()) {
+                throw new IllegalArgumentException("Reimbursement name couldn't be empty.");
+        } else if (toValidate.getName().length() > 100){
+            throw new IllegalArgumentException("Reimbursement name is too long.");
+        } else if (toValidate.getDistance() < 0){
+            throw new IllegalArgumentException("Distance should be positive.");
         }
     }
 
-    public Reimbursement toEntity(ReimbursementWriteModel reimbursementWriteModel) {
+    public Reimbursement toEntity(ReimbursementWriteModel reimbursementWriteModel) throws UserNotFoundException {
         validate(reimbursementWriteModel);
 
         var result = new Reimbursement();
@@ -101,8 +118,9 @@ public class ReimbursementService {
         result.setDistance(reimbursementWriteModel.getDistance());
         result.setPushedToAccept(reimbursementWriteModel.isPushedToAccept());
 
-        User user = userRepository.findById(reimbursementWriteModel.getUserId()).orElse(null);
-        assert user != null;
+        User user = userRepository
+                .findById(reimbursementWriteModel.getUserId())
+                        .orElseThrow(UserNotFoundException::new);
         result.setUser(user);
         return result;
     }

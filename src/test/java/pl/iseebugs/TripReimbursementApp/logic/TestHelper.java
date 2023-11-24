@@ -4,13 +4,11 @@ import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 import pl.iseebugs.TripReimbursementApp.model.User;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.InMemoryUserGroupRepository;
-import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.InMemoryUserRepository;
-import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.InMemoryReimbursementRepository;
+import static java.time.LocalDate.of;
+import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
 
 public class TestHelper {
 
@@ -164,73 +162,73 @@ public class TestHelper {
         List<Reimbursement> result = new ArrayList<>();
         Reimbursement reimbursement_01 = new Reimbursement(
                 "reimbursement_001_zeroDaysNoRefund", null,
-                LocalDate.of(2022,3,20), 0,
+                of(2022,3,20), 0,
                 false, inMemoryUserRepository.findById(1).orElse(null));
         result.add(reimbursement_01);
 
         Reimbursement reimbursement_02 = new Reimbursement(
-                "reimbursement_002_oneDayNoRefund", LocalDate.of(2022,3,21),
-                LocalDate.of(2022,3,21), 0,
+                "reimbursement_002_oneDayNoRefund", of(2022,3,21),
+                of(2022,3,21), 0,
                 false, inMemoryUserRepository.findById(1).orElse(null));
         result.add(reimbursement_02);
 
         Reimbursement reimbursement_03 = new Reimbursement(
-                "reimbursement_003_moreDaysNoRefund", LocalDate.of(2022,3,21),
-                LocalDate.of(2022,3,22), 0,
+                "reimbursement_003_moreDaysNoRefund", of(2022,3,21),
+                of(2022,3,22), 0,
                 false, inMemoryUserRepository.findById(1).orElse(null));
         result.add(reimbursement_03);
 
         Reimbursement reimbursement_04 = new Reimbursement(
                 "reimbursement_004_zeroDaysNoRefund", null,
-                LocalDate.of(2022,3,20), 0,
+                of(2022,3,20), 0,
                 false, inMemoryUserRepository.findById(5).orElse(null));
         result.add(reimbursement_04);
 
         Reimbursement reimbursement_05 = new Reimbursement(
-                "reimbursement_005_oneDayRefund", LocalDate.of(2022,3,21),
-                LocalDate.of(2022,3,21), 0,
+                "reimbursement_005_oneDayRefund", of(2022,3,21),
+                of(2022,3,21), 0,
                 false, inMemoryUserRepository.findById(5).orElse(null));
         result.add(reimbursement_05);
 
         Reimbursement reimbursement_06 = new Reimbursement(
-                "reimbursement_006_moreDaysRefund", LocalDate.of(2022,3,21),
-                LocalDate.of(2022,3,25), 0,
+                "reimbursement_006_moreDaysRefund", of(2022,3,21),
+                of(2022,3,25), 0,
                 false, inMemoryUserRepository.findById(5).orElse(null));
         result.add(reimbursement_06);
 
         Reimbursement reimbursement_07 = new Reimbursement(
-                "reimbursement_007_moreDaysRefundMaxRefund", LocalDate.of(2022,3,11),
-                LocalDate.of(2022,3,25), 0,
+                "reimbursement_007_moreDaysRefundMaxRefund", of(2022,3,11),
+                of(2022,3,25), 0,
                 false, inMemoryUserRepository.findById(5).orElse(null));
         result.add(reimbursement_07);
 
         Reimbursement reimbursement_08 = new Reimbursement(
                 "reimbursement_008_noCostPerKm", null,
-                LocalDate.of(2022,3,30), 100,
+                of(2022,3,30), 100,
                 false, inMemoryUserRepository.findById(2).orElse(null));
         result.add(reimbursement_08);
 
         Reimbursement reimbursement_09 = new Reimbursement(
                 "reimbursement_009_noMaxMileage", null,
-                LocalDate.of(2022,3,30), 100,
+                of(2022,3,30), 100,
                 false, inMemoryUserRepository.findById(3).orElse(null));
         result.add(reimbursement_09);
 
         Reimbursement reimbursement_10 = new Reimbursement(
                 "reimbursement_010_ok", null,
-                LocalDate.of(2022,3,30), 100,
+                of(2022,3,30), 100,
                 false, inMemoryUserRepository.findById(5).orElse(null));
         result.add(reimbursement_10);
 
         Reimbursement reimbursement_11 = new Reimbursement(
                 "reimbursement_011_noMaxMileage", null,
-                LocalDate.of(2022,3,30), 500,
+                of(2022,3,30), 500,
                 false, inMemoryUserRepository.findById(5).orElse(null));
         result.add(reimbursement_11);
 
         Reimbursement reimbursement_12 = new Reimbursement(
-                "reimbursement_012_noMaxRefund", LocalDate.of(2022,3,21),
-                LocalDate.of(2022,3,30), 100,
+                "reimbursement_012_noMaxRefund", of(2022,3,21),
+                of(2022,3,30), 100,
                 false, inMemoryUserRepository.findById(4).orElse(null));
         result.add(reimbursement_12);
         return result;
