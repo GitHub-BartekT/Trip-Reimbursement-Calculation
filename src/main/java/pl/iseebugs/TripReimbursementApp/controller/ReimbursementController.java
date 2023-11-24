@@ -36,7 +36,7 @@ public class ReimbursementController {
     @PostMapping
     ResponseEntity<Void> createReimbursement(@RequestBody @Valid ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException, UserNotFoundException {
         var result = service.createReimbursement(toWrite);
-        return ResponseEntity.created(URI.create("http://localhost:8080/reimbursement/" + result.getId())).build();
+        return ResponseEntity.created(URI.create("http://localhost:8080/reimbursements/" + result.getId())).build();
     }
 
     @PutMapping()
