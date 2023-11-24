@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/reimbursement")
+@RequestMapping(value = "/reimbursements")
 public class ReimbursementController {
 
     private final ReimbursementService service;

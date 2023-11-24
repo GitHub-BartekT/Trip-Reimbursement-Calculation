@@ -12,7 +12,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -30,9 +29,6 @@ class UserGroupControllerIntegrationTest {
 
     @Autowired
     private UserGroupRepository repository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Test
     @Sql({"/sql/001-test-schema.sql"})
