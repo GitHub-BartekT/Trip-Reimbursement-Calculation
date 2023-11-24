@@ -177,6 +177,82 @@ class ReimbursementServiceTest {
     }
 
     @Test
+    @DisplayName("should throws ReimbursementNotFoundException when reimbursement not found")
+    void updateReimbursementById_givenReimbursementIdNoFound_throwsReimbursementNotFoundException() {
+        //given
+        var mockRepository = mock(ReimbursementRepository.class);
+        var mockUserRepository = mock(UserRepository.class);
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(false);
+        //test under control
+        var toTest = new ReimbursementService(mockRepository,mockUserRepository);
+        //when
+        ReimbursementWriteModel reimbursement = new ReimbursementWriteModel();
+        var exception = catchThrowable(() -> toTest.updateReimbursementById(reimbursement));
+        //then
+        assertThat(exception).isInstanceOf(ReimbursementNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should throws UserNotFoundException when reimbursement not found")
+    void updateReimbursementById_givenUserNotFound_throwsUserNotFoundException() {
+        //given
+        var mockRepository = mock(ReimbursementRepository.class);
+        var mockUserRepository = mock(UserRepository.class);
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(true);
+        when(mockUserRepository.existsById(anyInt())).thenReturn(false);
+        //test under control
+        var toTest = new ReimbursementService(mockRepository,mockUserRepository);
+        //when
+        ReimbursementWriteModel reimbursement = new ReimbursementWriteModel();
+        var exception = catchThrowable(() -> toTest.updateReimbursementById(reimbursement));
+        //then
+        assertThat(exception).isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should update new Reimbursement")
+    void updateReimbursementById_updatesReimbursement() throws UserGroupNotFoundException, UserNotFoundException, ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        int beforeSize = inMemoryReimbursementRepository.count();
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        User user = inMemoryUserRepository.findById(2).orElseThrow(UserNotFoundException::new);
+
+        LocalDate startDay = LocalDate.of(2022, 1, 20);
+        LocalDate endDay = LocalDate.of(2022, 1, 21);
+        Reimbursement reimbursement = new Reimbursement("foo", startDay, endDay,
+                5, false,user);
+        reimbursement.setId(3);
+        //when
+        toTest.updateReimbursementById(ReimbursementMapper.toWriteModel(reimbursement));
+        int afterSize = toTest.readAll().size();
+        var result =toTest.readById(3);
+
+        //then
+        assertThat(afterSize).isEqualTo(beforeSize);
+        assertThat(result.getName()).isEqualTo("foo");
+        assertThat(result.getStartDate()).isEqualTo(LocalDate.of(2022,1,20));
+        assertThat(result.getEndDate()).isEqualTo(LocalDate.of(2022,1,21));
+        assertThat(result.getDistance()).isEqualTo(5);
+        assertThat(result.isPushedToAccept()).isEqualTo(false);
+    }
+
+    @Test
+    void deleteReimbursementById() {
+    }
+
+    @Test
+    void toEntity() {
+    }
+
+    @Test
     @DisplayName("should throws IllegalArgumentException when given EndDay is null")
     void validate_givenEndDayIsNull_throwsIllegalArgumentException(){
         //given
@@ -304,17 +380,5 @@ class ReimbursementServiceTest {
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Distance should be positive.");
-    }
-
-    @Test
-    void updateReimbursementById() {
-    }
-
-    @Test
-    void deleteReimbursementById() {
-    }
-
-    @Test
-    void toEntity() {
     }
 }
