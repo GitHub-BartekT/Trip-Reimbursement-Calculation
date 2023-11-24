@@ -245,12 +245,42 @@ class ReimbursementServiceTest {
     }
 
     @Test
-    void deleteReimbursementById() {
+    @DisplayName("should throw ReimbursementNotFoundException when given reimbursement id not found")
+    void deleteReimbursementById_givenReimbursementIdNotFound_throwsReimbursementNotFoundException() {
+        //given
+        var mockRepository = mock(ReimbursementRepository.class);
+        var mockUserRepository = mock(UserRepository.class);
+        //and
+        when(mockRepository.existsById(anyInt())).thenReturn(false);
+        //test under control
+        var toTest = new ReimbursementService(mockRepository,mockUserRepository);
+
+        //when
+        var exception = catchThrowable(() -> toTest.deleteReimbursementById(156));
+        //then
+        assertThat(exception).isInstanceOf(ReimbursementNotFoundException.class);
     }
 
     @Test
-    void toEntity() {
+    @DisplayName("should delete exists entity")
+    void deleteReimbursementById_deletesReimbursement() throws UserGroupNotFoundException, ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        int beforeSize = inMemoryReimbursementRepository.count();
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        int reimbursementToDelete = 1;
+        toTest.deleteReimbursementById(reimbursementToDelete);
+        int afterSize = inMemoryReimbursementRepository.count();
+        //then
+        assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
+
 
     @Test
     @DisplayName("should throws IllegalArgumentException when given EndDay is null")

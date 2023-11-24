@@ -61,7 +61,9 @@ public class ReimbursementService {
     }
 
     public void deleteReimbursementById(int id) throws ReimbursementNotFoundException {
-        repository.findById(id).orElseThrow(ReimbursementNotFoundException::new);
+        if (!repository.existsById(id)){
+            throw new ReimbursementNotFoundException();
+        }
 
         try {
             repository.deleteById(id);
