@@ -41,14 +41,14 @@ public class TestHelper {
         userGroup_01.setDailyAllowance(0);
         userGroup_01.setCostPerKm(0.1);
         userGroup_01.setMaxMileage(1000);
-        userGroup_01.setMaxRefund(10);
+        userGroup_01.setMaxRefund(100);
         result.add(userGroup_01);
 
         UserGroup userGroup_02 = new UserGroup();
         userGroup_02.setName("group_002_NoCostPerKm");
         userGroup_02.setDailyAllowance(10);
-        userGroup_02.setCostPerKm(0.1);
-        userGroup_02.setMaxMileage(1000);
+        userGroup_02.setCostPerKm(0);
+        userGroup_02.setMaxMileage(100);
         userGroup_02.setMaxRefund(10);
         result.add(userGroup_02);
 
@@ -72,9 +72,17 @@ public class TestHelper {
         userGroup_05.setName("group_005_Ok");
         userGroup_05.setDailyAllowance(10);
         userGroup_05.setCostPerKm(0.25);
-        userGroup_05.setMaxMileage(100);
+        userGroup_05.setMaxMileage(500);
         userGroup_05.setMaxRefund(100);
         result.add(userGroup_05);
+
+        UserGroup userGroup_06 = new UserGroup();
+        userGroup_06.setName("group_006_Ok");
+        userGroup_06.setDailyAllowance(10);
+        userGroup_06.setCostPerKm(0.25);
+        userGroup_06.setMaxMileage(100);
+        userGroup_06.setMaxRefund(100);
+        result.add(userGroup_06);
 
         return result;
     }
@@ -138,6 +146,11 @@ public class TestHelper {
         user_05.setName("user_ok");
         user_05.setUserGroup(inMemoryUserGroupRepository.findById(5).orElse(null));
         result.add(user_05);
+
+        User user_06 = new User();
+        user_06.setName("user_ok");
+        user_06.setUserGroup(inMemoryUserGroupRepository.findById(6).orElse(null));
+        result.add(user_06);
 
         return result;
     }
@@ -231,6 +244,12 @@ public class TestHelper {
                 of(2022,3,30), 100,
                 false, inMemoryUserRepository.findById(4).orElse(null));
         result.add(reimbursement_12);
+
+        Reimbursement reimbursement_13 = new Reimbursement(
+                "reimbursement_013_ok", null,
+                of(2022,3,30), 100,
+                false, inMemoryUserRepository.findById(6).orElse(null));
+        result.add(reimbursement_13);
         return result;
     }
 

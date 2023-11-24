@@ -12,7 +12,7 @@ insert into USERS (name, user_group_id) values
                                             ('user_noRefund', 4),
                                             ('user_ok', 5);
 
-insert into USERS (name, start_date, end_date,
+insert into REIMBURSEMENTS (name, start_date, end_date,
                    distance, pushed_to_accept, user_id) values
     ('reimbursement_001_zeroDaysNoRefund', null, 2022-03-20, 0, false, 1), // ShouldReturn 0
     ('reimbursement_002_oneDayNoRefund', 2022-03-21, 2022-03-21, 0, false, 1), //ShouldReturn 0

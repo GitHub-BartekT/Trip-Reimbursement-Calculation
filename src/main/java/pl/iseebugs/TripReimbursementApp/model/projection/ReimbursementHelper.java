@@ -13,6 +13,7 @@ public class ReimbursementHelper {
         double maxMileage = userGroup.getMaxMileage();
         double costPerKm = userGroup.getCostPerKm();
         double dailyAllowance = userGroup.getDailyAllowance();
+        double maxRefund = userGroup.getMaxRefund();
         long duration;
         LocalDate start = reimbursement.getStartDate();
         LocalDate end = reimbursement.getEndDate();
@@ -26,6 +27,9 @@ public class ReimbursementHelper {
             duration = ChronoUnit.DAYS.between(start,end) + 1;
         }
         double result = (duration * dailyAllowance) + (distance * costPerKm);
+        if (result > maxRefund){
+            result = maxRefund;
+        }
         return result;
     }
 }
