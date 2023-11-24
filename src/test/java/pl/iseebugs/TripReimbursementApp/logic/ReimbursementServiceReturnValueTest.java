@@ -27,7 +27,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_001_zeroDaysNoRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_noDailyRefund");
+        assertThat(resultUser.getName()).isEqualTo("user_01_noDailyRefund");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_001_NoDailyAllowance");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(0);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -51,7 +51,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_002_oneDayNoRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_noDailyRefund");
+        assertThat(resultUser.getName()).isEqualTo("user_01_noDailyRefund");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_001_NoDailyAllowance");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(0);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -59,7 +59,7 @@ class ReimbursementServiceReturnValueTest {
     }
 
     @Test
-    @DisplayName("should return Zero when DailyAllowance is equal Zero, and duration is equal more than one")
+    @DisplayName("should return Zero when DailyAllowance is equal Zero, and duration is equal more than one day")
     void readById_givenDailyAllowanceIs_Zero_durationIs_moreThanZero_returnsReturnValue_Zero() throws UserGroupNotFoundException, ReimbursementNotFoundException, UserNotFoundException {
         //given
         InMemoryRepositories.InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
@@ -75,7 +75,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_003_moreDaysNoRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_noDailyRefund");
+        assertThat(resultUser.getName()).isEqualTo("user_01_noDailyRefund");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_001_NoDailyAllowance");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(0);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -99,7 +99,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_004_zeroDaysNoRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_ok");
+        assertThat(resultUser.getName()).isEqualTo("user_05_ok");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_005_Ok");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(10);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -123,7 +123,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_005_oneDayRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_ok");
+        assertThat(resultUser.getName()).isEqualTo("user_05_ok");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_005_Ok");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(10);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -147,7 +147,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_006_moreDaysRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_ok");
+        assertThat(resultUser.getName()).isEqualTo("user_05_ok");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_005_Ok");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(10);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -156,7 +156,7 @@ class ReimbursementServiceReturnValueTest {
 
     @Test
     @DisplayName("should return maxRefund (100) when DailyAllowance is equal Ten, and duration is 15")
-    void readById_givenDailyAllowanceIs_Ten_durationIs_Five_returnsMaxRefund_50() throws UserGroupNotFoundException, ReimbursementNotFoundException, UserNotFoundException {
+    void readById_givenDailyAllowanceIs_Ten_durationIs_Fifteen_returnsMaxRefund_50() throws UserGroupNotFoundException, ReimbursementNotFoundException, UserNotFoundException {
         //given
         InMemoryRepositories.InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryRepositories.InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
@@ -171,7 +171,7 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_007_moreDaysRefundMaxRefund");
-        assertThat(resultUser.getName()).isEqualTo("user_ok");
+        assertThat(resultUser.getName()).isEqualTo("user_05_ok");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_005_Ok");
         assertThat(resultUser.getUserGroup().getDailyAllowance()).isEqualTo(10);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
@@ -195,10 +195,12 @@ class ReimbursementServiceReturnValueTest {
                 .orElseThrow(UserNotFoundException::new);
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_008_noCostPerKm");
-        assertThat(resultUser.getName()).isEqualTo("user_noCostPerKm");
+        assertThat(result.getDistance()).isEqualTo(100);
+        assertThat(resultUser.getName()).isEqualTo("user_02_noCostPerKm");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_002_NoCostPerKm");
         assertThat(resultUser.getUserGroup().getCostPerKm()).isEqualTo(0);
         assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(100);
+        assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(10);
         assertThat(result.getReturnValue()).isEqualTo(0);
     }
 
@@ -220,10 +222,11 @@ class ReimbursementServiceReturnValueTest {
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_009_noMaxMileage");
         assertThat(result.getDistance()).isEqualTo(100);
-        assertThat(resultUser.getName()).isEqualTo("user_noMaxMileage");
+        assertThat(resultUser.getName()).isEqualTo("user_03_noMaxMileage");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_003_NoMaxMileage");
         assertThat(resultUser.getUserGroup().getCostPerKm()).isEqualTo(0.25);
         assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(0);
+        assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(500);
         assertThat(result.getReturnValue()).isEqualTo(0);
     }
 
@@ -238,17 +241,17 @@ class ReimbursementServiceReturnValueTest {
         //system under test
         var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
         //when
-        var result = toTest.readById(13);
+        var result = toTest.readById(10);
         User resultUser = inMemoryUserRepository
                 .findById(result.getUserId())
                 .orElseThrow(UserNotFoundException::new);
         //then
-        assertThat(result.getName()).isEqualTo("reimbursement_013_ok");
+        assertThat(result.getName()).isEqualTo("reimbursement_010_ok");
         assertThat(result.getDistance()).isEqualTo(100);
-        assertThat(resultUser.getName()).isEqualTo("user_ok");
-        assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_006_Ok");
+        assertThat(resultUser.getName()).isEqualTo("user_05_ok");
+        assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_005_Ok");
         assertThat(resultUser.getUserGroup().getCostPerKm()).isEqualTo(0.25);
-        assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(100);
+        assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(500);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(100);
         assertThat(result.getReturnValue()).isEqualTo(25);
     }
@@ -271,7 +274,7 @@ class ReimbursementServiceReturnValueTest {
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_011_noMaxMileage");
         assertThat(result.getDistance()).isEqualTo(500);
-        assertThat(resultUser.getName()).isEqualTo("user_ok");
+        assertThat(resultUser.getName()).isEqualTo("user_05_ok");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_005_Ok");
         assertThat(resultUser.getUserGroup().getCostPerKm()).isEqualTo(0.25);
         assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(500);
@@ -297,12 +300,38 @@ class ReimbursementServiceReturnValueTest {
         //then
         assertThat(result.getName()).isEqualTo("reimbursement_012_noMaxRefund");
         assertThat(result.getDistance()).isEqualTo(100);
-        assertThat(resultUser.getName()).isEqualTo("user_noRefund");
+        assertThat(resultUser.getName()).isEqualTo("user_04_noRefund");
         assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_004_NoMaxRefund");
         assertThat(resultUser.getUserGroup().getCostPerKm()).isEqualTo(0.25);
         assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(100);
         assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(0);
         assertThat(result.getReturnValue()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("should return (125) when all parameters are not zero")
+    void readById_givenAllParametersAreNotZero_returnsReturnValue_125() throws UserGroupNotFoundException, ReimbursementNotFoundException, UserNotFoundException {
+        //given
+        InMemoryRepositories.InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryRepositories.InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryRepositories.InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+        //when
+        var result = toTest.readById(13);
+        User resultUser = inMemoryUserRepository
+                .findById(result.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+        //then
+        assertThat(result.getName()).isEqualTo("reimbursement_013_ok");
+        assertThat(result.getDistance()).isEqualTo(100);
+        assertThat(resultUser.getName()).isEqualTo("user_06_ok");
+        assertThat(resultUser.getUserGroup().getName()).isEqualTo("group_006_Ok");
+        assertThat(resultUser.getUserGroup().getCostPerKm()).isEqualTo(0.25);
+        assertThat(resultUser.getUserGroup().getMaxMileage()).isEqualTo(500);
+        assertThat(resultUser.getUserGroup().getMaxRefund()).isEqualTo(200);
+        assertThat(result.getReturnValue()).isEqualTo(125);
     }
 
 }

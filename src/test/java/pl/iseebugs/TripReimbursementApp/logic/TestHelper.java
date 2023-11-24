@@ -80,8 +80,8 @@ public class TestHelper {
         userGroup_06.setName("group_006_Ok");
         userGroup_06.setDailyAllowance(10);
         userGroup_06.setCostPerKm(0.25);
-        userGroup_06.setMaxMileage(100);
-        userGroup_06.setMaxRefund(100);
+        userGroup_06.setMaxMileage(500);
+        userGroup_06.setMaxRefund(200);
         result.add(userGroup_06);
 
         return result;
@@ -123,32 +123,32 @@ public class TestHelper {
     private static List<User> userDataAllParams(InMemoryUserGroupRepository inMemoryUserGroupRepository){
         List<User> result = new ArrayList<>();
         User user_01 = new User();
-        user_01.setName("user_noDailyRefund");
+        user_01.setName("user_01_noDailyRefund");
         user_01.setUserGroup(inMemoryUserGroupRepository.findById(1).orElse(null));
         result.add(user_01);
 
         User user_02 = new User();
-        user_02.setName("user_noCostPerKm");
+        user_02.setName("user_02_noCostPerKm");
         user_02.setUserGroup(inMemoryUserGroupRepository.findById(2).orElse(null));
         result.add(user_02);
 
         User user_03 = new User();
-        user_03.setName("user_noMaxMileage");
+        user_03.setName("user_03_noMaxMileage");
         user_03.setUserGroup(inMemoryUserGroupRepository.findById(3).orElse(null));
         result.add(user_03);
 
         User user_04 = new User();
-        user_04.setName("user_noRefund");
+        user_04.setName("user_04_noRefund");
         user_04.setUserGroup(inMemoryUserGroupRepository.findById(4).orElse(null));
         result.add(user_04);
 
         User user_05 = new User();
-        user_05.setName("user_ok");
+        user_05.setName("user_05_ok");
         user_05.setUserGroup(inMemoryUserGroupRepository.findById(5).orElse(null));
         result.add(user_05);
 
         User user_06 = new User();
-        user_06.setName("user_ok");
+        user_06.setName("user_06_ok");
         user_06.setUserGroup(inMemoryUserGroupRepository.findById(6).orElse(null));
         result.add(user_06);
 
@@ -246,7 +246,7 @@ public class TestHelper {
         result.add(reimbursement_12);
 
         Reimbursement reimbursement_13 = new Reimbursement(
-                "reimbursement_013_ok", null,
+                "reimbursement_013_ok", of(2022,3,21),
                 of(2022,3,30), 100,
                 false, inMemoryUserRepository.findById(6).orElse(null));
         result.add(reimbursement_13);
