@@ -1,5 +1,6 @@
 package pl.iseebugs.TripReimbursementApp.model.projection;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -16,6 +17,7 @@ public class ReimbursementWriteModel {
     private String name;
     @PastOrPresent(message = "Start date should be in the past or present.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @PastOrPresent(message = "End date should be in the past or present.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

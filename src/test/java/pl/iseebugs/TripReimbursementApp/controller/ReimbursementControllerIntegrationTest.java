@@ -18,8 +18,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -178,10 +177,114 @@ class ReimbursementControllerIntegrationTest {
     }
 
     @Test
-    void updateReimbursement() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void updateReimbursementById_throwsReimbursementNotFoundException() throws Exception {
+        //given
+        ReimbursementWriteModel reimbursementWriteModel = new ReimbursementWriteModel();
+        reimbursementWriteModel.setId(824);
+        reimbursementWriteModel.setName("CreateNew");
+        reimbursementWriteModel.setStartDate(null);
+        reimbursementWriteModel.setEndDate(LocalDate.of(2022,5,21));
+        reimbursementWriteModel.setDistance(153);
+        reimbursementWriteModel.setPushedToAccept(false);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = objectMapper.writeValueAsString(reimbursementWriteModel);
+
+        //when
+        mockMvc.perform(put("/reimbursements")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Reimbursement not found."));
     }
 
     @Test
-    void deleteReimbursement() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void updateReimbursementById_throwsUserNotFoundException() throws Exception {
+        //given
+        ReimbursementWriteModel reimbursementWriteModel = new ReimbursementWriteModel();
+        reimbursementWriteModel.setId(7);
+        reimbursementWriteModel.setName("CreateNew");
+        reimbursementWriteModel.setStartDate(null);
+        reimbursementWriteModel.setEndDate(LocalDate.of(2022,5,21));
+        reimbursementWriteModel.setDistance(153);
+        reimbursementWriteModel.setPushedToAccept(false);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = objectMapper.writeValueAsString(reimbursementWriteModel);
+
+        //when
+        mockMvc.perform(put("/reimbursements")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void updateReimbursementById_updatesReimbursement() throws Exception {
+        //given
+        ReimbursementWriteModel reimbursementWriteModel = new ReimbursementWriteModel();
+        reimbursementWriteModel.setId(7);
+        reimbursementWriteModel.setName("CreateNew");
+        reimbursementWriteModel.setStartDate(null);
+        reimbursementWriteModel.setEndDate(LocalDate.of(2022,5,21));
+        reimbursementWriteModel.setDistance(153);
+        reimbursementWriteModel.setPushedToAccept(false);
+        reimbursementWriteModel.setUserId(2);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = objectMapper.writeValueAsString(reimbursementWriteModel);
+
+        //when
+        mockMvc.perform(put("/reimbursements")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(get("/reimbursements/7"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("CreateNew"))
+                .andExpect(jsonPath("$.startDate").isEmpty())
+                .andExpect(jsonPath("$.endDate").value("2022-05-21"))
+                .andExpect(jsonPath("$.distance").value(153))
+                .andExpect(jsonPath("$.pushedToAccept").value(false))
+                .andExpect(jsonPath("$.userId").value(2));
+
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void deleteReimbursement_throwsReimbursementNotFoundException() throws Exception {
+        mockMvc.perform(delete("/reimbursements/1565")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Reimbursement not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void deleteReimbursement_deletesReimbursement() throws Exception {
+        //given
+        int beforeSize = reimbursementRepository.findAll().size();
+        //when
+        mockMvc.perform(delete("/reimbursements/3")
+                        .contentType(MediaType.APPLICATION_JSON))
+            //then
+            .andExpect(status().isNoContent());
+
+        int afterSize = reimbursementRepository.findAll().size();
+        assertThat(afterSize + 1).isEqualTo(beforeSize);
     }
 }
