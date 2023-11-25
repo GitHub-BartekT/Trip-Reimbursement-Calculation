@@ -34,12 +34,14 @@ public class ReimbursementService {
                 .collect(Collectors.toList());
     }
 
-    public List<ReimbursementReadModel> readAllByUser_Id(int id) {
+    public List<ReimbursementReadModel> readAllByUser_Id(int id) throws UserNotFoundException {
+        if (!userRepository.existsById(id)){
+           throw new UserNotFoundException();
+        }
         return repository.findAllByUser_Id(id).stream()
                 .map(ReimbursementMapper::toReadModel)
                 .collect(Collectors.toList());
     }
-    
 
     public ReimbursementReadModel readById(int id) throws ReimbursementNotFoundException {
         Reimbursement reimbursement =

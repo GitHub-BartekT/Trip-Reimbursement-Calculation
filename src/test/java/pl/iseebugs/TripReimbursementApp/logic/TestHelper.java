@@ -152,6 +152,11 @@ public class TestHelper {
         user_06.setUserGroup(inMemoryUserGroupRepository.findById(6).orElse(null));
         result.add(user_06);
 
+        User user_07 = new User();
+        user_07.setName("user_07_no_reimbursements");
+        user_07.setUserGroup(inMemoryUserGroupRepository.findById(6).orElse(null));
+        result.add(user_07);
+
         return result;
     }
 

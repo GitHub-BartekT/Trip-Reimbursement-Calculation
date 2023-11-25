@@ -70,6 +70,68 @@ class ReimbursementServiceTest {
     }
 
     @Test
+    @DisplayName("should throws UserNotFoundException when user not found")
+    void readAllByUser_Id_givenUserNotFound_throwsUserNotFoundException() throws UserNotFoundException {
+        //given
+        var mockRepository = mock(ReimbursementRepository.class);
+        var mockUserRepository = mock(UserRepository.class);
+        when(mockUserRepository.existsById(anyInt())).thenReturn(false);
+
+        //test under control
+        var toTest = new ReimbursementService(mockRepository,mockUserRepository);
+
+        //when
+        var exception = catchThrowable(() ->toTest.readAllByUser_Id(1));
+        //then
+        assertThat(exception).isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should returns empty list when no objects")
+    void readAllByUserId_returnsEmptyList() throws ReimbursementNotFoundException, UserNotFoundException, UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        List<ReimbursementReadModel> result = toTest.readAllByUser_Id(7);
+        //then
+        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("should returns all objects")
+    void readAllById_readAllReimbursements() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        int beforeSize = inMemoryReimbursementRepository.count();
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        var result = toTest.readAllByUser_Id(5);
+        int afterSize = result.size();
+
+        //then
+        assertThat(afterSize).isNotEqualTo(beforeSize);
+        assertThat(result.get(0).getName()).isEqualTo("reimbursement_004_zeroDaysNoRefund");
+        assertThat(result.get(0).getStartDate()).isNull();
+        assertThat(result.get(0).getEndDate()).isEqualTo(LocalDate.of(2022,3,20));
+        assertThat(result.get(0).getDistance()).isEqualTo(0);
+        assertThat(result.get(0).isPushedToAccept()).isEqualTo(false);
+        assertThat(result.get(1).getName()).isEqualTo("reimbursement_005_oneDayRefund");
+        assertThat(result.get(5).getName()).isEqualTo("reimbursement_011_noMaxMileage");
+    }
+
+    @Test
     @DisplayName("should throws ReimbursementNotFoundException when given id not found")
     void readById_givenIdNotFound_throwsReimbursementNotFoundException() {
         //given
