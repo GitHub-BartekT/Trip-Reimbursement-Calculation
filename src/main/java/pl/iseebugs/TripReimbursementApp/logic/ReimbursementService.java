@@ -34,6 +34,13 @@ public class ReimbursementService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReimbursementReadModel> readAllByUser_Id(int id) {
+        return repository.findAllByUser_Id(id).stream()
+                .map(ReimbursementMapper::toReadModel)
+                .collect(Collectors.toList());
+    }
+    
+
     public ReimbursementReadModel readById(int id) throws ReimbursementNotFoundException {
         Reimbursement reimbursement =
                 repository.findById(id).orElseThrow(ReimbursementNotFoundException::new);
