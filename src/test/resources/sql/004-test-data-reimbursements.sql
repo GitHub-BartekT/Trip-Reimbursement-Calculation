@@ -12,7 +12,8 @@ insert into USERS (name, user_group_id) values
                                             ('user_03_noMaxMileage', 3),
                                             ('user_04_noRefund', 4),
                                             ('user_05_ok', 5),
-                                            ('user_06_ok', 6);
+                                            ('user_06_ok', 6),
+                                            ('user_07_no_reimbursements', 6);
 
 insert into REIMBURSEMENTS (name, start_date, end_date,
                    distance, pushed_to_accept, user_id) values

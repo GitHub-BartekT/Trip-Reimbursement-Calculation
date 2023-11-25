@@ -106,7 +106,7 @@ class ReimbursementServiceTest {
 
     @Test
     @DisplayName("should returns all objects")
-    void readAllById_readAllReimbursements() throws UserGroupNotFoundException, UserNotFoundException {
+    void readAllByUserId_readAllReimbursements() throws UserGroupNotFoundException, UserNotFoundException {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
