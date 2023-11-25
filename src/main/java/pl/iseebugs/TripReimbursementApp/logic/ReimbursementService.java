@@ -92,11 +92,11 @@ public class ReimbursementService {
                 throw new IllegalArgumentException("No end date.");
         } else if (!isValidDate(toValidate.getEndDate())) {
             throw new java.time.DateTimeException("Wrong date data.");
-        } else if (toValidate.getStartDate().isAfter(LocalDate.now())) {
+        } else if (toValidate.getStartDate() != null && toValidate.getStartDate().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Start date should be in the past or present.");
         } else if (toValidate.getEndDate().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("End date should be in the past or present.");
-        } else if (toValidate.getStartDate().isAfter(toValidate.getEndDate())) {
+        } else if (toValidate.getStartDate() != null && toValidate.getStartDate().isAfter(toValidate.getEndDate())) {
             throw new IllegalArgumentException("Start Day is after End Day.");
         }
 

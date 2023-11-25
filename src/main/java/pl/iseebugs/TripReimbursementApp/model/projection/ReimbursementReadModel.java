@@ -1,5 +1,6 @@
 package pl.iseebugs.TripReimbursementApp.model.projection;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 
 import java.time.LocalDate;
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 public class ReimbursementReadModel {
     private int id;
     private String name;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     private LocalDate endDate;
     private int distance;

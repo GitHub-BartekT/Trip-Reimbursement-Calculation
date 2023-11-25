@@ -16,6 +16,7 @@ import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,7 +97,7 @@ class ReimbursementControllerIntegrationTest {
 
     @Test
     @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
-    void createReimbursement_throws() throws Exception {
+    void createReimbursement_throwsIllegalArgumentException() throws Exception {
         //given
         ReimbursementWriteModel reimbursementWriteModel = new ReimbursementWriteModel();
         reimbursementWriteModel.setId(1);
@@ -117,6 +118,63 @@ class ReimbursementControllerIntegrationTest {
                 //then
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("This Reimbursement already exists."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void createReimbursement_throwsUserNotFoundException() throws Exception {
+        //given
+        ReimbursementWriteModel reimbursementWriteModel = new ReimbursementWriteModel();
+        reimbursementWriteModel.setName("CreateNew");
+        reimbursementWriteModel.setStartDate(null);
+        reimbursementWriteModel.setEndDate(LocalDate.of(2022,5,21));
+        reimbursementWriteModel.setDistance(153);
+        reimbursementWriteModel.setPushedToAccept(false);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = objectMapper.writeValueAsString(reimbursementWriteModel);
+
+        //when
+        mockMvc.perform(post("/reimbursements")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void createReimbursement_createsReimbursement() throws Exception {
+        //given
+        ReimbursementWriteModel reimbursementWriteModel = new ReimbursementWriteModel();
+        reimbursementWriteModel.setName("CreateNew");
+        reimbursementWriteModel.setStartDate(null);
+        reimbursementWriteModel.setEndDate(LocalDate.of(2022,5,21));
+        reimbursementWriteModel.setDistance(153);
+        reimbursementWriteModel.setPushedToAccept(false);
+        reimbursementWriteModel.setUserId(1);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = objectMapper.writeValueAsString(reimbursementWriteModel);
+
+        //and
+        int beforeSize = reimbursementRepository.findAll().size();
+        int newReimbursementId = beforeSize + 1;
+        //when
+        mockMvc.perform(post("/reimbursements")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isCreated())
+                .andExpect(header().
+                        string("Location", "http://localhost:8080/reimbursements/" + newReimbursementId));
+
+        int afterSize = reimbursementRepository.findAll().size();
+        assertThat(afterSize).isEqualTo(beforeSize + 1);
     }
 
     @Test
