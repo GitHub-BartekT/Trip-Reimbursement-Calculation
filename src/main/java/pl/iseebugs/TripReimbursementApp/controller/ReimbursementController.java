@@ -33,6 +33,11 @@ public class ReimbursementController {
         return ResponseEntity.ok(service.readById(id));
     }
 
+    @GetMapping("/user/{id}")
+    ResponseEntity<List<ReimbursementReadModel>> readAllByUserId(@PathVariable int id) throws UserNotFoundException {
+        return ResponseEntity.ok(service.readAllByUser_Id(id));
+    }
+
     @PostMapping
     ResponseEntity<Void> createReimbursement(@RequestBody @Valid ReimbursementWriteModel toWrite) throws ReimbursementNotFoundException, UserNotFoundException {
         var result = service.createReimbursement(toWrite);
