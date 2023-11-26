@@ -23,7 +23,7 @@ public class Reimbursement {
     User user;
     @ManyToMany
     @JoinTable(
-            name = "reimbursement_cost_type",
+            name = "reimbursements_cost_types",
             joinColumns = @JoinColumn(name = "reimbursement_id"),
             inverseJoinColumns = @JoinColumn(name = "cost_type_id")
     )

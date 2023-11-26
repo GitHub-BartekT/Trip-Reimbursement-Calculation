@@ -3,6 +3,7 @@ create table COST_TYPES(
                               name varchar(100) not null,
                               max_value double default (null)
 );
+
 create table reimbursements_cost_types (
     reimbursement_id int not null,
     cost_type_id int not null,

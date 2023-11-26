@@ -382,6 +382,7 @@ class ReimbursementControllerIntegrationTest {
     void deleteReimbursement_deletesReimbursement() throws Exception {
         //given
         int beforeSize = reimbursementRepository.findAll().size();
+
         //when
         mockMvc.perform(delete("/reimbursements/3")
                         .contentType(MediaType.APPLICATION_JSON))
