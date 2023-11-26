@@ -1,6 +1,5 @@
 package pl.iseebugs.TripReimbursementApp.model.projection;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 
 import java.time.LocalDate;
@@ -57,6 +56,7 @@ public class ReimbursementReadModel {
     public double getReturnValue() {
         return returnValue;
     }
+
     private double returnValue(Reimbursement reimbursement){
         return ReimbursementHelper.returnValue(reimbursement);
     }
