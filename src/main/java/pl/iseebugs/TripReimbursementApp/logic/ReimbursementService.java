@@ -9,6 +9,7 @@ import pl.iseebugs.TripReimbursementApp.model.User;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementMapper;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModelShort;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
 
 import java.time.DateTimeException;
@@ -40,6 +41,21 @@ public class ReimbursementService {
         }
         return repository.findAllByUser_Id(id).stream()
                 .map(ReimbursementMapper::toReadModel)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReimbursementReadModelShort> readAllShort() {
+        return repository.findAll().stream()
+                .map(ReimbursementMapper::toReadModelShort)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReimbursementReadModelShort> readAllShortByUser_Id(int id) throws UserNotFoundException {
+        if (!userRepository.existsById(id)){
+            throw new UserNotFoundException();
+        }
+        return repository.findAllByUser_Id(id).stream()
+                .map(ReimbursementMapper::toReadModelShort)
                 .collect(Collectors.toList());
     }
 

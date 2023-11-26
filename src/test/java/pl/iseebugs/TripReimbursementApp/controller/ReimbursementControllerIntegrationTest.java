@@ -69,6 +69,31 @@ class ReimbursementControllerIntegrationTest {
 
     @Test
     @Sql({"/sql/001-test-schema.sql"})
+    void testReadAllShortReimbursements_returnsEmptyList() throws Exception {
+        //when
+        mockMvc.perform(get("/reimbursements/short"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void testReadAllShortReimbursements_returnsAllReimbursements() throws Exception {
+        //when
+        mockMvc.perform(get("/reimbursements/short"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("reimbursement_001_zeroDaysNoRefund"))
+                .andExpect(jsonPath("$[0].returnValue").value(0))
+                .andExpect(jsonPath("$[12].returnValue").value(125));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql"})
     void testReadAllByUserId_throwsReimbursementNotFoundException() throws Exception {
         //when
         mockMvc.perform(get("/reimbursements/user/748"))
@@ -103,6 +128,43 @@ class ReimbursementControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].distance").value(0))
                 .andExpect(jsonPath("$[0].pushedToAccept").value(false))
                 .andExpect(jsonPath("$[0].userId").value(5))
+                .andExpect(jsonPath("$[0].returnValue").value(0))
+                .andExpect(jsonPath("$[1].name").value("reimbursement_005_oneDayRefund"))
+                .andExpect(jsonPath("$[2].name").value("reimbursement_006_moreDaysRefund"))
+                .andExpect(jsonPath("$[5].name").value("reimbursement_011_noMaxMileage"));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql"})
+    void testReadAllShortByUserId_throwsReimbursementNotFoundException() throws Exception {
+        //when
+        mockMvc.perform(get("/reimbursements/user/short/748"))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void testReadAllShortByUserId_returnsEmptyList() throws Exception {
+        //when
+        mockMvc.perform(get("/reimbursements/user/short/7"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/004-test-data-reimbursements.sql"})
+    void testReadAllShortByUserId_returnsAllReimbursements() throws Exception {
+        //when
+        mockMvc.perform(get("/reimbursements/user/short/5"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("reimbursement_004_zeroDaysNoRefund"))
                 .andExpect(jsonPath("$[0].returnValue").value(0))
                 .andExpect(jsonPath("$[1].name").value("reimbursement_005_oneDayRefund"))
                 .andExpect(jsonPath("$[2].name").value("reimbursement_006_moreDaysRefund"))

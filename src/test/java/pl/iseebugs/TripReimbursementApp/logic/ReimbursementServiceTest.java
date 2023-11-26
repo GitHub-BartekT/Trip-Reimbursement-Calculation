@@ -8,6 +8,7 @@ import pl.iseebugs.TripReimbursementApp.model.User;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementMapper;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModelShort;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
 
 import java.time.LocalDate;
@@ -70,6 +71,45 @@ class ReimbursementServiceTest {
     }
 
     @Test
+    @DisplayName("should returns empty list when no objects")
+    void readAllShort_returnsEmptyList() throws ReimbursementNotFoundException{
+        //given
+        InMemoryReimbursementRepository inMemoryReimbursementRepository =
+                inMemoryReimbursementRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        List<ReimbursementReadModelShort> result = toTest.readAllShort();
+        //then
+        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("should returns all objects")
+    void readAllShort_readAllReimbursements() throws UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        int beforeSize = inMemoryReimbursementRepository.count();
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        var result = toTest.readAllShort();
+        int afterSize = result.size();
+
+        //then
+        assertThat(afterSize).isEqualTo(beforeSize);
+        assertThat(result.get(0).getName()).isEqualTo("reimbursement_001_zeroDaysNoRefund");
+        assertThat(result.get(0).getReturnValue()).isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("should throws UserNotFoundException when user not found")
     void readAllByUser_Id_givenUserNotFound_throwsUserNotFoundException() throws UserNotFoundException {
         //given
@@ -127,6 +167,64 @@ class ReimbursementServiceTest {
         assertThat(result.get(0).getEndDate()).isEqualTo(LocalDate.of(2022,3,20));
         assertThat(result.get(0).getDistance()).isEqualTo(0);
         assertThat(result.get(0).isPushedToAccept()).isEqualTo(false);
+        assertThat(result.get(1).getName()).isEqualTo("reimbursement_005_oneDayRefund");
+        assertThat(result.get(5).getName()).isEqualTo("reimbursement_011_noMaxMileage");
+    }
+
+    @Test
+    @DisplayName("should throws UserNotFoundException when user not found")
+    void readAllShortByUser_Id_givenUserNotFound_throwsUserNotFoundException() throws UserNotFoundException {
+        //given
+        var mockRepository = mock(ReimbursementRepository.class);
+        var mockUserRepository = mock(UserRepository.class);
+        when(mockUserRepository.existsById(anyInt())).thenReturn(false);
+
+        //test under control
+        var toTest = new ReimbursementService(mockRepository,mockUserRepository);
+
+        //when
+        var exception = catchThrowable(() ->toTest.readAllShortByUser_Id(1));
+        //then
+        assertThat(exception).isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should returns empty list when no objects")
+    void readAllShortByUserId_returnsEmptyList() throws ReimbursementNotFoundException, UserNotFoundException, UserGroupNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        List<ReimbursementReadModelShort> result = toTest.readAllShortByUser_Id(7);
+        //then
+        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("should returns all objects")
+    void readAllShortByUserId_readAllReimbursements() throws UserGroupNotFoundException, UserNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        reimbursementRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        int beforeSize = inMemoryReimbursementRepository.count();
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+
+        //when
+        var result = toTest.readAllShortByUser_Id(5);
+        int afterSize = result.size();
+
+        //then
+        assertThat(afterSize).isNotEqualTo(beforeSize);
+        assertThat(result.get(0).getName()).isEqualTo("reimbursement_004_zeroDaysNoRefund");
         assertThat(result.get(1).getName()).isEqualTo("reimbursement_005_oneDayRefund");
         assertThat(result.get(5).getName()).isEqualTo("reimbursement_011_noMaxMileage");
     }

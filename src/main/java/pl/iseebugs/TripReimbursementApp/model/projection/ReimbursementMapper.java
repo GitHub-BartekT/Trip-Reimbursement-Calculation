@@ -10,4 +10,8 @@ public class ReimbursementMapper {
     public static ReimbursementReadModel toReadModel(Reimbursement reimbursement){
         return new ReimbursementReadModel(reimbursement);
     }
+
+    public static ReimbursementReadModelShort toReadModelShort(Reimbursement reimbursement){
+        return new ReimbursementReadModelShort(reimbursement);
+    }
 }

@@ -8,6 +8,7 @@ import pl.iseebugs.TripReimbursementApp.logic.ReimbursementService;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModelShort;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
 
 import java.net.URI;
@@ -28,6 +29,7 @@ public class ReimbursementController {
         return ResponseEntity.ok(service.readAll());
     }
 
+
     @GetMapping("/{id}")
     ResponseEntity<ReimbursementReadModel> readById(@PathVariable int id) throws ReimbursementNotFoundException {
         return ResponseEntity.ok(service.readById(id));
@@ -36,6 +38,15 @@ public class ReimbursementController {
     @GetMapping("/user/{id}")
     ResponseEntity<List<ReimbursementReadModel>> readAllByUserId(@PathVariable int id) throws UserNotFoundException {
         return ResponseEntity.ok(service.readAllByUser_Id(id));
+    }
+
+    @GetMapping("/short")
+    ResponseEntity<List<ReimbursementReadModelShort>> readAllReimbursementShort(){
+        return ResponseEntity.ok(service.readAllShort());
+    }
+    @GetMapping("/user/short/{id}")
+    ResponseEntity<List<ReimbursementReadModelShort>> readAllShortByUserId(@PathVariable int id) throws UserNotFoundException {
+        return ResponseEntity.ok(service.readAllShortByUser_Id(id));
     }
 
     @PostMapping
