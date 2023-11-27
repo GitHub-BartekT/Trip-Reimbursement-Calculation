@@ -3,14 +3,14 @@ package pl.iseebugs.TripReimbursementApp.model;
 import java.util.List;
 import java.util.Optional;
 
-public interface CostTypeRepository {
-    List<CostType> findAll();
+public interface UserCostRepository {
+    List<UserCost> findAll();
 
-    Optional<CostType> findById(Integer id);
+    Optional<UserCost> findById(Integer id);
 
     boolean existsById(int id);
 
-    CostType save(CostType entity);
+    UserCost save(UserCost entity);
 
     void deleteById(int id);
 

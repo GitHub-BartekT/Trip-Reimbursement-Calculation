@@ -23,11 +23,11 @@ public class Reimbursement {
     User user;
     @ManyToMany
     @JoinTable(
-            name = "reimbursements_cost_types",
+            name = "reimbursements_user_costs",
             joinColumns = @JoinColumn(name = "reimbursement_id"),
-            inverseJoinColumns = @JoinColumn(name = "cost_type_id")
+            inverseJoinColumns = @JoinColumn(name = "user_cost_id")
     )
-    private Set<CostType> costTypes = new HashSet<>();
+    private Set<UserCost> userCosts = new HashSet<>();
 
     public Reimbursement() {
     }
@@ -97,11 +97,11 @@ public class Reimbursement {
         this.user = user;
     }
 
-    public Set<CostType> getCostTypes() {
-        return costTypes;
+    public Set<UserCost> getUserCosts() {
+        return userCosts;
     }
 
-    public void setCostTypes(Set<CostType> costTypes) {
-        this.costTypes = costTypes;
+    public void setUserCosts(Set<UserCost> costTypes) {
+        this.userCosts = costTypes;
     }
 }

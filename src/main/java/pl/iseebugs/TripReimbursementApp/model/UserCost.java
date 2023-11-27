@@ -6,17 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "cost_types")
-public class CostType {
+@Table(name = "user_costs")
+public class UserCost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
-    double maxValue;
-    @ManyToMany(mappedBy = "costTypes")
+    double cost_value;
+    @ManyToMany(mappedBy = "userCosts")
     private Set<Reimbursement> reimbursements = new HashSet<>();
 
-    protected CostType() {
+    protected UserCost() {
     }
 
     public int getId() {
@@ -35,15 +35,15 @@ public class CostType {
         this.name = name;
     }
 
-    public double getMaxValue() {
-        return maxValue;
+    public double getCost_value() {
+        return cost_value;
     }
 
-    void setMaxValue(double maxValue) {
+    void setCost_value(double maxValue) {
         if (maxValue < 0){
-            this.maxValue = 0;
+            this.cost_value = 0;
         } else {
-        this.maxValue = maxValue;
+        this.cost_value = maxValue;
         }
     }
 

@@ -3,23 +3,23 @@ package pl.iseebugs.TripReimbursementApp.model.projection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import pl.iseebugs.TripReimbursementApp.model.CostType;
+import pl.iseebugs.TripReimbursementApp.model.UserCost;
 
-public class CostTypeDTO {
+public class UserCostDTO {
     private int id;
     @NotBlank(message = "Cost type must not be empty")
     @Size(max = 100, message = "Reimbursement name is too long.")
     private String name;
     @Positive(message = "Max value should be positive.")
-    private double maxValue;
+    private double cost_value;
 
-    public CostTypeDTO() {
+    public UserCostDTO() {
     }
 
-    public CostTypeDTO(CostType costType) {
+    public UserCostDTO(UserCost costType) {
         this.id = costType.getId();
         this.name = costType.getName();
-        this.maxValue = costType.getMaxValue();
+        this.cost_value = costType.getCost_value();
     }
 
     public int getId() {
@@ -38,11 +38,11 @@ public class CostTypeDTO {
         this.name = name;
     }
 
-    public double getMaxValue() {
-        return maxValue;
+    public double getCost_value() {
+        return cost_value;
     }
 
-    public void setMaxValue(double maxValue) {
-        this.maxValue = maxValue;
+    public void setCost_value(double cost_value) {
+        this.cost_value = cost_value;
     }
 }
