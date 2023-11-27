@@ -3,6 +3,7 @@ package pl.iseebugs.TripReimbursementApp.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,6 +20,13 @@ public class UserGroup {
     double maxRefund;
     @OneToMany(mappedBy = "userGroup")
     private Set<User> users;
+    @ManyToMany
+    @JoinTable(
+            name = "user_groups_receipt_types",
+            joinColumns = @JoinColumn(name = "receipt_type_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_group_id")
+    )
+    private Set<ReceiptType> receiptTypes = new HashSet<>();
 
     public UserGroup() {
     }
@@ -77,5 +85,13 @@ public class UserGroup {
 
     void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<ReceiptType> getReceiptTypes() {
+        return receiptTypes;
+    }
+
+    public void setReceiptTypes(Set<ReceiptType> receiptTypes) {
+        this.receiptTypes = receiptTypes;
     }
 }

@@ -8,6 +8,8 @@ public interface UserCostRepository {
 
     Optional<UserCost> findById(Integer id);
 
+    List<UserCost> findAllByReimbursement_Id(int reimbursements_id);
+
     boolean existsById(int id);
 
     UserCost save(UserCost entity);

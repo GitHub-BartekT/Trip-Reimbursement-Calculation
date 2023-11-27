@@ -2,9 +2,6 @@ package pl.iseebugs.TripReimbursementApp.model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "user_costs")
 public class UserCost {
@@ -13,8 +10,12 @@ public class UserCost {
     int id;
     String name;
     double cost_value;
-    @ManyToMany(mappedBy = "userCosts")
-    private Set<Reimbursement> reimbursements = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "reimbursement_id")
+    Reimbursement reimbursement;
+    @ManyToOne
+    @JoinColumn(name = "receipt_type_id")
+    private ReceiptType receiptType;
 
     protected UserCost() {
     }
@@ -23,7 +24,7 @@ public class UserCost {
         return id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -31,12 +32,28 @@ public class UserCost {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     public double getCost_value() {
         return cost_value;
+    }
+
+    public Reimbursement getReimbursement() {
+        return reimbursement;
+    }
+
+    public void setReimbursement(Reimbursement reimbursements) {
+        this.reimbursement = reimbursements;
+    }
+
+    public ReceiptType getReceiptType() {
+        return receiptType;
+    }
+
+    public void setReceiptType(ReceiptType receiptType) {
+        this.receiptType = receiptType;
     }
 
     void setCost_value(double maxValue) {
@@ -45,13 +62,5 @@ public class UserCost {
         } else {
         this.cost_value = maxValue;
         }
-    }
-
-    public Set<Reimbursement> getReimbursements() {
-        return reimbursements;
-    }
-
-    public void setReimbursements(Set<Reimbursement> reimbursements) {
-        this.reimbursements = reimbursements;
     }
 }

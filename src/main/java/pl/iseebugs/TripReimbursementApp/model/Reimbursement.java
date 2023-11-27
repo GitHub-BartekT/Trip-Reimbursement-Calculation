@@ -4,7 +4,6 @@ package pl.iseebugs.TripReimbursementApp.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,13 +20,8 @@ public class Reimbursement {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
-    @ManyToMany
-    @JoinTable(
-            name = "reimbursements_user_costs",
-            joinColumns = @JoinColumn(name = "reimbursement_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_cost_id")
-    )
-    private Set<UserCost> userCosts = new HashSet<>();
+    @OneToMany(mappedBy = "reimbursement")
+    private Set<UserCost> userCosts;
 
     public Reimbursement() {
     }
