@@ -38,6 +38,11 @@ public class InMemoryRepositories {
         }
 
         @Override
+        public boolean existsById(int id) {
+            return false;
+        }
+
+        @Override
         public UserGroup save(UserGroup entity) {
             if (entity.getId() == 0) {
                 int id = index.getAndIncrement();

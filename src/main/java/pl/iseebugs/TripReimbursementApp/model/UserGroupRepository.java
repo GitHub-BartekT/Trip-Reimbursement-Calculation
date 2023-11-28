@@ -11,6 +11,8 @@ public interface UserGroupRepository {
 
     boolean existsByName(String name);
 
+    boolean existsById(int id);
+
     UserGroup save(UserGroup entity);
 
     void deleteById(int id);

@@ -18,7 +18,15 @@ public class ReceiptType {
     @OneToMany(mappedBy = "receiptType")
     private Set<UserCost> userCosts;
 
-    protected ReceiptType() {
+    public ReceiptType() {
+    }
+
+    public ReceiptType(ReceiptType receiptType) {
+        setId(receiptType.getId());
+        setName(receiptType.getName());
+        setMaxValue(receiptType.getMaxValue());
+        setUserGroups(receiptType.getUserGroups());
+        setUserCosts(receiptType.getUserCosts());
     }
 
     public int getId() {
@@ -57,7 +65,7 @@ public class ReceiptType {
         this.userCosts = userCosts;
     }
 
-    void setMaxValue(double maxValue) {
+    public void setMaxValue(double maxValue) {
         if (maxValue < 0){
             this.maxValue = 0;
         } else {

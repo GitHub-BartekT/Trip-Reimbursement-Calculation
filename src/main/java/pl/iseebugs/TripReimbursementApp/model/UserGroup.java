@@ -31,6 +31,17 @@ public class UserGroup {
     public UserGroup() {
     }
 
+    public UserGroup(UserGroup userGroup) {
+        setId(userGroup.getId());
+        setName(userGroup.getName());
+        setDailyAllowance(userGroup.getDailyAllowance());
+        setCostPerKm(userGroup.getCostPerKm());
+        setMaxRefund(userGroup.getMaxRefund());
+        setMaxMileage(userGroup.getMaxMileage());
+        setReceiptTypes(userGroup.getReceiptTypes());
+        setUsers(userGroup.getUsers());
+    }
+
     public int getId() {
         return id;
     }
