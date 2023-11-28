@@ -5,10 +5,11 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 public class UserGroupDTO {
     private int id;
     private String name;
-    double dailyAllowance;
-    double costPerKm;
-    double maxMileage;
-    double maxRefund;
+    private double dailyAllowance;
+    private double costPerKm;
+    private double maxMileage;
+    private double maxRefund;
+
 
     public UserGroupDTO() {    }
 
