@@ -1,5 +1,6 @@
 package pl.iseebugs.TripReimbursementApp.logic;
 
+import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 import pl.iseebugs.TripReimbursementApp.model.User;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;

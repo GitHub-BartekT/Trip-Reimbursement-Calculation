@@ -1,4 +1,4 @@
-package pl.iseebugs.TripReimbursementApp.logic;
+package pl.iseebugs.TripReimbursementApp.exception;
 
 public class ReceiptTypeNotFoundException extends Exception {
     public ReceiptTypeNotFoundException() {

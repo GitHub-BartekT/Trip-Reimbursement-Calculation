@@ -3,6 +3,8 @@ package pl.iseebugs.TripReimbursementApp.logic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 import pl.iseebugs.TripReimbursementApp.model.ReimbursementRepository;
 import pl.iseebugs.TripReimbursementApp.model.User;

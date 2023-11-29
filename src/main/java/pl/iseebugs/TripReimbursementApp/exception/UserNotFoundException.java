@@ -1,4 +1,4 @@
-package pl.iseebugs.TripReimbursementApp.logic;
+package pl.iseebugs.TripReimbursementApp.exception;
 
 public class UserNotFoundException extends Exception {
     public UserNotFoundException() {

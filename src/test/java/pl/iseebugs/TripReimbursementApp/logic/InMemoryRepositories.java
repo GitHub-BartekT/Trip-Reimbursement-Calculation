@@ -32,6 +32,11 @@ public class InMemoryRepositories {
         }
 
         @Override
+        public List<UserGroup> findAllById(Iterable<Integer> idList) {
+            return null;
+        }
+
+        @Override
         public boolean existsByName(String name) {
             return map.values().stream()
                     .anyMatch(userGroup -> name.equals(userGroup.getName()));

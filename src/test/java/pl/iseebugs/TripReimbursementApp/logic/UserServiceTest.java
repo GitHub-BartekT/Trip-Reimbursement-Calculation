@@ -2,6 +2,8 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserDTO;
@@ -23,7 +25,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("should returns empty list when no objects")
-    void readAll_returnsEmptyList() throws UserGroupNotFoundException{
+    void readAll_returnsEmptyList() throws UserGroupNotFoundException {
         //given
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
 

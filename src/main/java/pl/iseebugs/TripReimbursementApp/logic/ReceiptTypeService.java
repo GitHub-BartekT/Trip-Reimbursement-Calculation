@@ -3,6 +3,8 @@ package pl.iseebugs.TripReimbursementApp.logic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
@@ -87,7 +89,7 @@ public class ReceiptTypeService {
         return ReceiptMapper.toReadModel(result);
     }
 
-    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws ReceiptTypeNotFoundException {
+    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, Set<Integer> userGroupIds) throws ReceiptTypeNotFoundException {
         ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
                 .orElseThrow(ReceiptTypeNotFoundException::new);
 

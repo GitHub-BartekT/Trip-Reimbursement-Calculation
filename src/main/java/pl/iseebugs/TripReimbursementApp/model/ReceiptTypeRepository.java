@@ -8,7 +8,7 @@ public interface ReceiptTypeRepository {
 
     Optional<ReceiptType> findById(Integer id);
 
-    List<ReceiptType> findAllById(List<Integer> idList);
+    List<ReceiptType> findAllById(Iterable<Integer> id);
 
     List<ReceiptType>  findAllByUserGroups_Id(int id);
 

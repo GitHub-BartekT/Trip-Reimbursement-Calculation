@@ -2,6 +2,9 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.User;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

@@ -3,9 +3,9 @@ package pl.iseebugs.TripReimbursementApp.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.iseebugs.TripReimbursementApp.logic.UserGroupNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
-import pl.iseebugs.TripReimbursementApp.logic.UserNotFoundException;
+import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 
 import java.net.URI;

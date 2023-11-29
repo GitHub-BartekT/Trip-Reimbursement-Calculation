@@ -9,7 +9,7 @@ public interface UserGroupRepository {
 
     Optional<UserGroup> findById(Integer id);
 
-    List<UserGroup> findAllById(List<Integer> idList);
+    List<UserGroup> findAllById(Iterable<Integer> idList);
 
     boolean existsByName(String name);
 
