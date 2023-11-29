@@ -33,7 +33,24 @@ public class InMemoryRepositories {
 
         @Override
         public List<UserGroup> findAllById(Iterable<Integer> idList) {
-            return null;
+            List<UserGroup> result = new ArrayList<>();
+            for (Integer id : idList) {
+                UserGroup userGroup = map.get(id);
+                if (userGroup != null) {
+                    result.add(userGroup);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public List<UserGroup> findAllByReceiptTypes_Id(int id) {
+            List<UserGroup> result = new ArrayList<>();
+            result = map.values().stream()
+                    .filter(userGroup -> userGroup.getReceiptTypes().stream()
+                            .anyMatch(receiptType -> receiptType.getId() == id))
+                    .toList();
+            return result;
         }
 
         @Override
@@ -44,11 +61,87 @@ public class InMemoryRepositories {
 
         @Override
         public boolean existsById(int id) {
-            return false;
+            return map.containsKey(id);
         }
 
         @Override
         public UserGroup save(UserGroup entity) {
+            if (entity.getId() == 0) {
+                int id = index.getAndIncrement();
+                entity.setId(id);
+            }
+            try {
+                map.put(entity.getId(), entity);
+            } catch (Exception e){
+                throw new RuntimeException("Failed to save the entity to the database.");
+            }
+            return entity;
+        }
+
+        @Override
+        public void deleteById(int id) {
+            map.remove(id);
+        }
+        @Override
+        public void deleteAll() {
+            map.clear();
+        }
+
+    }
+
+
+    protected static InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository(){
+        return new InMemoryReceiptTypeRepository();
+    }
+
+    protected static class InMemoryReceiptTypeRepository implements ReceiptTypeRepository {
+        private final AtomicInteger index = new AtomicInteger(1);
+
+        private final Map<Integer, ReceiptType> map = new HashMap<>();
+
+        public int count(){
+            return map.values().size();
+        }
+
+        @Override
+        public List<ReceiptType> findAll() {
+            return new ArrayList<>(map.values());
+        }
+
+        @Override
+        public Optional<ReceiptType> findById(Integer id) {
+            return Optional.ofNullable(map.get(id));
+        }
+
+        @Override
+        public List<ReceiptType> findAllById(Iterable<Integer> idList) {
+            List<ReceiptType> result = new ArrayList<>();
+            for (Integer id : idList) {
+                ReceiptType receiptType = map.get(id);
+                if (receiptType != null) {
+                    result.add(receiptType);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public List<ReceiptType> findAllByUserGroups_Id(int id) {
+            List<ReceiptType> result = new ArrayList<>();
+            result = map.values().stream()
+                    .filter(receiptType -> receiptType.getUserGroups().stream()
+                            .anyMatch(userGroup -> userGroup.getId() == id))
+                    .toList();
+            return result;
+        }
+
+        @Override
+        public boolean existsById(int id) {
+            return map.containsKey(id);
+        }
+
+        @Override
+        public ReceiptType save(ReceiptType entity) {
             if (entity.getId() == 0) {
                 int id = index.getAndIncrement();
                 entity.setId(id);
