@@ -9,6 +9,8 @@ public interface UserGroupRepository {
 
     Optional<UserGroup> findById(Integer id);
 
+    List<UserGroup> findAllById(List<Integer> idList);
+
     boolean existsByName(String name);
 
     boolean existsById(int id);

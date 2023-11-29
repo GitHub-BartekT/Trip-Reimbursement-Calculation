@@ -8,6 +8,8 @@ public interface ReceiptTypeRepository {
 
     Optional<ReceiptType> findById(Integer id);
 
+    List<ReceiptType> findAllById(List<Integer> idList);
+
     List<ReceiptType>  findAllByUserGroups_Id(int id);
 
     boolean existsById(int id);

@@ -52,7 +52,6 @@ public class ReceiptTypeService {
         return result;
     }
 
-
     public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws UserGroupNotFoundException {
         ReceiptType receiptType = new ReceiptType();
         receiptType.setName(receiptTypeWriteModel.getName());
@@ -86,5 +85,40 @@ public class ReceiptTypeService {
         ReceiptType result = receiptTypeRepository.save(receiptType);
         logger.info("Create Receipt Type wit ID: {}", result.getId());
         return ReceiptMapper.toReadModel(result);
+    }
+
+    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws ReceiptTypeNotFoundException {
+        ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        toUpdate.setName(receiptTypeWriteModel.getName());
+        toUpdate.setMaxValue(receiptTypeWriteModel.getMaxValue());
+
+        Set<UserGroup> currentUserGroups = new HashSet<>(toUpdate.getUserGroups());
+        Set<UserGroup> newUserGroups = new HashSet<>(userGroupRepository.findAllById(userGroupIds));
+
+        Set<UserGroup> addedUserGroups = new HashSet<>(newUserGroups);
+        addedUserGroups.removeAll(currentUserGroups);
+
+        Set<UserGroup> removedUserGroups = new HashSet<>(currentUserGroups);
+        removedUserGroups.removeAll(newUserGroups);
+
+        toUpdate.getUserGroups().addAll(addedUserGroups);
+        toUpdate.getUserGroups().removeAll(removedUserGroups);
+
+        ReceiptType result = receiptTypeRepository.save(toUpdate);
+        logger.info("Updated Receipt Type with ID: {}", result.getId());
+        return ReceiptMapper.toReadModel(result);
+    }
+
+    public void deleteById (int id) throws ReceiptTypeNotFoundException {
+        ReceiptType receiptType = receiptTypeRepository.findById(id)
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        receiptType.getUserGroups().clear();
+
+        receiptTypeRepository.deleteById(id);
+
+        logger.info("Read All Receipt Type with User Id: {}",id);
     }
 }
