@@ -160,6 +160,11 @@ public class TestHelper {
         receiptType_05.getUserGroups().add(inMemoryUserGroupRepository.findById(2).orElse(null));
         result.add(receiptType_05);
 
+        ReceiptType receiptType_06 = new ReceiptType();
+        receiptType_06.setName("Other_Directors");
+        receiptType_06.setMaxValue(450);
+        result.add(receiptType_06);
+
         return result;
     }
 
