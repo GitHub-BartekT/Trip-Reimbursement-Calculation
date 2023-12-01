@@ -96,6 +96,19 @@ public class ReceiptTypeService {
         return ReceiptMapper.toReadModel(result);
     }
 
+    public ReceiptTypeReadModel updateReceiptType (ReceiptTypeWriteModel receiptTypeWriteModel)
+            throws ReceiptTypeNotFoundException {
+        ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        toUpdate.setName(receiptTypeWriteModel.getName());
+        toUpdate.setMaxValue(receiptTypeWriteModel.getMaxValue());
+
+        ReceiptType result = receiptTypeRepository.save(toUpdate);
+        logger.info("Updated Receipt Type with ID: {}", result.getId());
+        return ReceiptMapper.toReadModel(result);
+    }
+
     public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds
             (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
             throws ReceiptTypeNotFoundException {
