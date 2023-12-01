@@ -261,6 +261,48 @@ class ReceiptTypeServiceTest {
 
     @Test
     @DisplayName("should throws ReceiptTypeNotFoundException")
+    void updateReceiptType_throwsReceiptTypeNotFoundException(){
+        //given
+        var mockRepository = mock(ReceiptTypeRepository.class);
+        var mockUserGroupRepository = mock(UserGroupRepository.class);
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
+        var toTest = new ReceiptTypeService(mockRepository, mockUserGroupRepository);
+
+        //when
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
+        var exception = catchThrowable(() -> toTest.updateReceiptType(toUpdate));
+
+        //then
+        assertThat(exception).isInstanceOf(ReceiptTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should updates ReceiptType")
+    void updateReceiptType_updatesReceiptType() throws ReceiptTypeNotFoundException {
+        //given
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        receiptTypesRepositoryInitialDataAllParams(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+        //system under test
+        var toTest = new ReceiptTypeService(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+
+        //when
+        int receiptIndexToUpdate = 1;
+
+        //and
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
+        toUpdate.setName("UpdatedReceiptType");
+        toUpdate.setMaxValue(777);
+        toUpdate.setId(receiptIndexToUpdate);
+        ReceiptTypeReadModel result = toTest.updateReceiptType(toUpdate);
+
+        //then
+        assertThat(result.getName()).isEqualTo("UpdatedReceiptType");
+        assertThat(result.getMaxValue()).isEqualTo(777);
+    }
+
+    @Test
+    @DisplayName("should throws ReceiptTypeNotFoundException")
     void updateReceiptTypeWithUserGroupIds_throwsReceiptTypeNotFoundException() {
         //given
         var mockRepository = mock(ReceiptTypeRepository.class);
