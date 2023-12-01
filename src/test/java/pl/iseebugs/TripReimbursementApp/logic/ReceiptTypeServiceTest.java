@@ -278,7 +278,7 @@ class ReceiptTypeServiceTest {
 
     @Test
     @DisplayName("should updates Receipt Type")
-    void updateReceiptTypeWithUserGroupIds_returnsReceiptType() throws UserGroupNotFoundException, ReceiptTypeNotFoundException {
+    void updateReceiptTypeWithUserGroupIds_returnsReceiptType() throws ReceiptTypeNotFoundException {
         //given
         InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
@@ -307,6 +307,39 @@ class ReceiptTypeServiceTest {
     }
 
     @Test
-    void deleteById() {
+    @DisplayName("should throws ReceiptTypeNotFound")
+    void deleteById_throwsReceiptTypeNotFound() {
+        //given
+        var mockRepository = mock(ReceiptTypeRepository.class);
+        var mockUserGroupRepository = mock(UserGroupRepository.class);
+        when(mockRepository.existsById(anyInt())).thenReturn(false);
+
+        //when
+        var toTest = new ReceiptTypeService(mockRepository, mockUserGroupRepository);
+        int receiptIndexToDelete = 1;
+        var exception = catchThrowable(() -> toTest.deleteById(receiptIndexToDelete));
+
+        //then
+        assertThat(exception).isInstanceOf(ReceiptTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("deletes ReceiptType")
+    void deleteById_deletesReceiptTypeNotFound() throws ReceiptTypeNotFoundException {  //given
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        receiptTypesRepositoryInitialDataAllParams(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+        //system under test
+        var toTest = new ReceiptTypeService(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+
+        //when
+        int receiptIndexToDelete = 1;
+        int sizeBeforeDelete = inMemoryReceiptTypeRepository.findAll().size();
+        //and
+        toTest.deleteById(receiptIndexToDelete);
+        int sizeAfterDelete = inMemoryReceiptTypeRepository.findAll().size();
+
+        //then
+        assertThat(sizeAfterDelete + 1).isEqualTo(sizeBeforeDelete);
     }
 }
