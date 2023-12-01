@@ -49,12 +49,17 @@ public class ReceiptTypeService {
     }
 
     public ReceiptTypeReadModel readById(int id) throws ReceiptTypeNotFoundException {
-        ReceiptTypeReadModel result = ReceiptMapper.toReadModel(receiptTypeRepository.findById(id).orElseThrow(ReceiptTypeNotFoundException::new));
+        ReceiptTypeReadModel result = ReceiptMapper.toReadModel(receiptTypeRepository
+                .findById(id).orElseThrow(ReceiptTypeNotFoundException::new));
         logger.info("Read Receipt Type with ID: {}", result.getId());
         return result;
     }
 
-    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws UserGroupNotFoundException {
+    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws UserGroupNotFoundException{
+        if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
+            throw new IllegalArgumentException("This Receipt Type already exists");
+        }
+
         ReceiptType receiptType = new ReceiptType();
         receiptType.setName(receiptTypeWriteModel.getName());
         receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
@@ -72,16 +77,16 @@ public class ReceiptTypeService {
         return ReceiptMapper.toReadModel(result);
     }
 
-    public ReceiptTypeReadModel saveReceiptTypeToAllUserGroup(ReceiptTypeWriteModel receiptTypeWriteModel) throws UserGroupNotFoundException {
+    public ReceiptTypeReadModel saveReceiptTypeToAllUserGroup(ReceiptTypeWriteModel receiptTypeWriteModel) {
+        if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
+            throw new IllegalArgumentException("This Receipt Type already exists");
+        }
+
         ReceiptType receiptType = new ReceiptType();
         receiptType.setName(receiptTypeWriteModel.getName());
         receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
 
         List<UserGroup> allUserGroups = userGroupRepository.findAll();
-
-        if (allUserGroups.isEmpty()){
-            throw new UserGroupNotFoundException("No UserGroups found.");
-        }
 
         receiptType.setUserGroups(new HashSet<>(allUserGroups));
         ReceiptType result = receiptTypeRepository.save(receiptType);
