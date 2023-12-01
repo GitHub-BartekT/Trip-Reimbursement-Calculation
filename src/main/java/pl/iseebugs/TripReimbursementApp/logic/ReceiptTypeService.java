@@ -55,7 +55,9 @@ public class ReceiptTypeService {
         return result;
     }
 
-    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws UserGroupNotFoundException{
+    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds
+            (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
+            throws UserGroupNotFoundException{
         if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
             throw new IllegalArgumentException("This Receipt Type already exists");
         }
@@ -94,7 +96,9 @@ public class ReceiptTypeService {
         return ReceiptMapper.toReadModel(result);
     }
 
-    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, Set<Integer> userGroupIds) throws ReceiptTypeNotFoundException {
+    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds
+            (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
+            throws ReceiptTypeNotFoundException {
         ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
                 .orElseThrow(ReceiptTypeNotFoundException::new);
 
