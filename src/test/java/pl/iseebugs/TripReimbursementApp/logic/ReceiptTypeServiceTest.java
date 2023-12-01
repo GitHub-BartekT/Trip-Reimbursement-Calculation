@@ -111,7 +111,7 @@ class ReceiptTypeServiceTest {
     }
 
     @Test
-    @DisplayName("should returns ReceiptTypeNotFoundException")
+    @DisplayName("should throws ReceiptTypeNotFoundException")
     void readById_throwsReceiptTypeNotFoundException(){
         //given
         var mockRepository = mock(InMemoryReceiptTypeRepository.class);
@@ -151,7 +151,7 @@ class ReceiptTypeServiceTest {
     }
 
     @Test
-    @DisplayName("should returns IllegalArgumentException")
+    @DisplayName("should throws IllegalArgumentException")
     void saveReceiptTypeToAllUserGroup_throwsIllegalArgumentException() {
         //given
         var mockRepository = mock(ReceiptTypeRepository.class);
@@ -191,9 +191,9 @@ class ReceiptTypeServiceTest {
         assertThat(result.getMaxValue()).isEqualTo(777);
         assertThat(result.getUserGroups().size()).isEqualTo(userGroupsSize);
     }
-    
+
     @Test
-    @DisplayName("should returns IllegalArgumentException")
+    @DisplayName("should throws IllegalArgumentException")
     void saveReceiptTypeWithUserGroupIds_throwsIllegalArgumentException() {
         //given
         var mockRepository = mock(ReceiptTypeRepository.class);
@@ -211,7 +211,7 @@ class ReceiptTypeServiceTest {
     }
 
     @Test
-    @DisplayName("should returns UserGroupNotFoundException")
+    @DisplayName("should throws UserGroupNotFoundException")
     void saveReceiptTypeWithUserGroupIds_throwsUserGroupNotFoundException() {
         //given
         InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
@@ -235,7 +235,7 @@ class ReceiptTypeServiceTest {
 
     @Test
     @DisplayName("should creates Receipt Type")
-    void saveByUserGroup_Id_returnsReceiptType() throws UserGroupNotFoundException {
+    void saveReceiptTypeWithUserGroupIds_returnsReceiptType() throws UserGroupNotFoundException {
         //given
         InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
@@ -260,7 +260,50 @@ class ReceiptTypeServiceTest {
     }
 
     @Test
-    void updateReceiptTypeWithUserGroupIds() {
+    @DisplayName("should throws ReceiptTypeNotFoundException")
+    void updateReceiptTypeWithUserGroupIds_throwsReceiptTypeNotFoundException() {
+        //given
+        var mockRepository = mock(ReceiptTypeRepository.class);
+        var mockUserGroupRepository = mock(UserGroupRepository.class);
+        when(mockRepository.existsById(anyInt())).thenReturn(false);
+
+        //when
+        var toTest = new ReceiptTypeService(mockRepository, mockUserGroupRepository);
+        var receiptType = new ReceiptTypeWriteModel();
+        var exception = catchThrowable(() -> toTest.updateReceiptTypeWithUserGroupIds(receiptType,List.of(1)));
+
+        //then
+        assertThat(exception).isInstanceOf(ReceiptTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should updates Receipt Type")
+    void updateReceiptTypeWithUserGroupIds_returnsReceiptType() throws UserGroupNotFoundException, ReceiptTypeNotFoundException {
+        //given
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        receiptTypesRepositoryInitialDataAllParams(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+        //system under test
+        var toTest = new ReceiptTypeService(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+
+        //when
+        int receiptIndexToUpdate = 1;
+        int userGroupsSizeBefore = inMemoryReceiptTypeRepository.findById(receiptIndexToUpdate).get().getUserGroups().size();
+
+        List<Integer> integerList = List.of(1,2);
+        //and
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
+        toUpdate.setName("UpdatedReceiptType");
+        toUpdate.setMaxValue(777);
+        toUpdate.setId(receiptIndexToUpdate);
+        ReceiptTypeReadModel result = toTest.updateReceiptTypeWithUserGroupIds(toUpdate, integerList);
+
+        //then
+        assertThat(result.getName()).isEqualTo("UpdatedReceiptType");
+        assertThat(result.getMaxValue()).isEqualTo(777);
+        assertThat(result.getUserGroups().size()).isEqualTo(integerList.size());
+        assertThat(result.getUserGroups().size()).isEqualTo(2);
+        assertThat(result.getUserGroups().size()).isNotEqualTo(userGroupsSizeBefore);
     }
 
     @Test
