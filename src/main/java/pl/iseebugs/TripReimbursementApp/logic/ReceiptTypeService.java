@@ -130,6 +130,6 @@ public class ReceiptTypeService {
 
         receiptTypeRepository.deleteById(id);
 
-        logger.info("Read All Receipt Type with User Id: {}",id);
+        logger.info("Read All Receipt Type with User Group Id: {}",id);
     }
 }
