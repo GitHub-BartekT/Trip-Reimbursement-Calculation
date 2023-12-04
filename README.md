@@ -55,7 +55,7 @@ User can:
         - Maven
         - Spring Boot
     - Databases
-        - SQL - H2
+        - HSQLDB
         - Hibernate
         - FlyWay
     - Testing
@@ -63,7 +63,7 @@ User can:
         - AssertJ
         - Postman
 2.  Communication
-    - HTTP
+  - HTTP
 3. Frontend
    - HTML
    - CSS
