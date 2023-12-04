@@ -97,9 +97,29 @@ class ReceiptTypeControllerIntegrationTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
+    @Test
+    @Sql({"/sql/001-test-schema.sql"})
+    void readById_throwsReceiptTypeNotFoundException() throws Exception {
+        //when
+        mockMvc.perform(get("/receipts/855"))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Receipt Type not found."));
+    }
 
     @Test
-    void readById() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void readById_returnsReceiptType() throws Exception {
+        //when
+        mockMvc.perform(get("/receipts/2"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Aeroplane_CEO"))
+                .andExpect(jsonPath("$.maxValue").value(2000))
+                .andExpect(jsonPath("$.userGroups[*].id", containsInAnyOrder(1)))
+                .andExpect(jsonPath("$.userGroups[*].name", containsInAnyOrder("CEO")))
+                .andExpect(jsonPath("$.userGroups", hasSize(1)));
     }
 
     @Test
