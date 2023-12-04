@@ -55,30 +55,6 @@ public class ReceiptTypeService {
         return result;
     }
 
-    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds
-            (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
-            throws UserGroupNotFoundException{
-        if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
-            throw new IllegalArgumentException("This Receipt Type already exists");
-        }
-
-        ReceiptType receiptType = new ReceiptType();
-        receiptType.setName(receiptTypeWriteModel.getName());
-        receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
-
-        Set<UserGroup> userGroups = new HashSet<>();
-        for (Integer userGroupId : userGroupIds) {
-            UserGroup userGroup = userGroupRepository.findById(userGroupId)
-                    .orElseThrow(UserGroupNotFoundException::new);
-            userGroups.add(userGroup);
-        }
-
-        receiptType.setUserGroups(userGroups);
-        ReceiptType result = receiptTypeRepository.save(receiptType);
-        logger.info("Create Receipt Type with ID: {}", result.getId());
-        return ReceiptMapper.toReadModel(result);
-    }
-
     public ReceiptTypeReadModel saveReceiptTypeToAllUserGroup(ReceiptTypeWriteModel receiptTypeWriteModel) {
         if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
             throw new IllegalArgumentException("This Receipt Type already exists");
@@ -100,6 +76,30 @@ public class ReceiptTypeService {
 
         ReceiptType result = receiptTypeRepository.save(receiptType);
         logger.info("Create Receipt Type wit ID: {}", result.getId());
+        return ReceiptMapper.toReadModel(result);
+    }
+
+    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds
+            (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
+            throws UserGroupNotFoundException{
+        if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
+            throw new IllegalArgumentException("This Receipt Type already exists");
+        }
+
+        ReceiptType receiptType = new ReceiptType();
+        receiptType.setName(receiptTypeWriteModel.getName());
+        receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
+
+        Set<UserGroup> userGroups = new HashSet<>();
+        for (Integer userGroupId : userGroupIds) {
+            UserGroup userGroup = userGroupRepository.findById(userGroupId)
+                    .orElseThrow(UserGroupNotFoundException::new);
+            userGroups.add(userGroup);
+        }
+
+        receiptType.setUserGroups(userGroups);
+        ReceiptType result = receiptTypeRepository.save(receiptType);
+        logger.info("Create Receipt Type with ID: {}", result.getId());
         return ReceiptMapper.toReadModel(result);
     }
 
