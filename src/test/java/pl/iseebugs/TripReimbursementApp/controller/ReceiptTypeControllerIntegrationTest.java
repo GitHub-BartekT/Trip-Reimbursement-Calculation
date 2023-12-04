@@ -32,9 +32,6 @@ class ReceiptTypeControllerIntegrationTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-    //TODO: change database - Hibernate changing foreign keys in association entity
-    //TODO: Hibernate: alter table if exists user_groups_receipt_types add constraint FKajlggmt2etj82h5l6279mta06 foreign key (user_group_id) references receipt_types
-
     @Test
     @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
     void readAll_returnsObjects() throws Exception {
@@ -62,8 +59,44 @@ class ReceiptTypeControllerIntegrationTest {
     }
 
     @Test
-    void readAllByUserGroup_Id() {
+    @Sql({"/sql/001-test-schema.sql"})
+    void readAllByUserGroup_Id_throwsUserGroupNotFound() throws Exception {
+        //when
+        mockMvc.perform(get("/receipts/userGroup/855"))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
     }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void readAllByUserGroup_Id_returnsEmptyList() throws Exception {
+        //when
+        mockMvc.perform(get("/receipts/userGroup/5"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void readAllByUserGroup_Id_returnsObjects() throws Exception {
+        //when
+        mockMvc.perform(get("/receipts/userGroup/3"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("Train_AllUsers"))
+                .andExpect(jsonPath("$[0].maxValue").value(100))
+                .andExpect(jsonPath("$[0].userGroups[*].id", containsInAnyOrder(1, 2, 3, 4)))
+                .andExpect(jsonPath("$[0].userGroups[*].name", containsInAnyOrder("CEO", "Sellers", "Regular employee", "Office employee")))
+                .andExpect(jsonPath("$[1].name").value("Food_AllUsers"))
+                .andExpect(jsonPath("$[1].maxValue").value(45))
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
 
     @Test
     void readById() {
