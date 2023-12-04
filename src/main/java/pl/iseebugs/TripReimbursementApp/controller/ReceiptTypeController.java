@@ -46,7 +46,7 @@ public class ReceiptTypeController {
 
     @PostMapping
     ResponseEntity<Void> saveReceiptTypeWithUserGroupIds
-            (@RequestBody @Valid ReceiptTypeWriteModel toWrite, List<Integer> integerList)
+            (@RequestBody @Valid ReceiptTypeWriteModel toWrite, @RequestParam("integerList") List<Integer> integerList)
             throws UserGroupNotFoundException {
         var result = service.saveReceiptTypeWithUserGroupIds(toWrite, integerList);
         return ResponseEntity.created(URI.create("http://localhost:8080/receipts/" + result.getId())).build();

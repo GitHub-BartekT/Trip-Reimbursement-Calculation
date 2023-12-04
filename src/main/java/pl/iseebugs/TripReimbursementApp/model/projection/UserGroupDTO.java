@@ -10,10 +10,10 @@ public class UserGroupDTO {
     private double maxMileage;
     private double maxRefund;
 
+        public UserGroupDTO(){
+        }
 
-    public UserGroupDTO() {    }
-
-    public UserGroupDTO(UserGroup userGroup) {
+        public UserGroupDTO (UserGroup userGroup) {
         this.id = userGroup.getId();
         this.name = userGroup.getName();
         setDailyAllowance(userGroup.getDailyAllowance());

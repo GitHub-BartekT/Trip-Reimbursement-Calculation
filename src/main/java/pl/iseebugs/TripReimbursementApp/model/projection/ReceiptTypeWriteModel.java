@@ -7,8 +7,8 @@ import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
 
 public class ReceiptTypeWriteModel {
     private int id;
-    @NotNull(message = "Reimbursement name couldn't be empty.")
-    @Size(max = 100, message = "Reimbursement name is too long.")
+    @NotNull(message = "Receipt Type name couldn't be empty.")
+    @Size(max = 100, message = "Receipt Type name is too long.")
     String name;
     @Positive(message = "Max value should be positive.")
     double maxValue;

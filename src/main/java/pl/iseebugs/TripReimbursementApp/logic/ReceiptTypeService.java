@@ -88,9 +88,16 @@ public class ReceiptTypeService {
         receiptType.setName(receiptTypeWriteModel.getName());
         receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
 
+        receiptType = receiptTypeRepository.save(receiptType);
+
         List<UserGroup> allUserGroups = userGroupRepository.findAll();
 
-        receiptType.setUserGroups(new HashSet<>(allUserGroups));
+        for(UserGroup userGroup : allUserGroups) {
+            receiptType.getUserGroups().add(userGroup);
+            userGroup.getReceiptTypes().add(receiptType);
+            userGroupRepository.save(userGroup);
+        }
+
         ReceiptType result = receiptTypeRepository.save(receiptType);
         logger.info("Create Receipt Type wit ID: {}", result.getId());
         return ReceiptMapper.toReadModel(result);

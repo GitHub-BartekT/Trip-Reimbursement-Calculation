@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -23,8 +24,8 @@ public class UserGroup {
     @ManyToMany
     @JoinTable(
             name = "user_groups_receipt_types",
-            joinColumns = @JoinColumn(name = "receipt_type_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_group_id")
+            joinColumns = @JoinColumn(name = "user_group_id"),
+            inverseJoinColumns = @JoinColumn(name = "receipt_type_id")
     )
     private Set<ReceiptType> receiptTypes = new HashSet<>();
 
@@ -90,11 +91,11 @@ public class UserGroup {
         this.maxRefund = maxRefund;
     }
 
-    Set<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    void setUsers(Set<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
@@ -104,5 +105,18 @@ public class UserGroup {
 
     public void setReceiptTypes(Set<ReceiptType> receiptTypes) {
         this.receiptTypes = receiptTypes;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "UserGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
