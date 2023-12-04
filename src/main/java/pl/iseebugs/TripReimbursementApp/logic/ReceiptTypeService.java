@@ -49,64 +49,112 @@ public class ReceiptTypeService {
     }
 
     public ReceiptTypeReadModel readById(int id) throws ReceiptTypeNotFoundException {
-        ReceiptTypeReadModel result = ReceiptMapper.toReadModel(receiptTypeRepository.findById(id).orElseThrow(ReceiptTypeNotFoundException::new));
+        ReceiptTypeReadModel result = ReceiptMapper.toReadModel(receiptTypeRepository
+                .findById(id).orElseThrow(ReceiptTypeNotFoundException::new));
         logger.info("Read Receipt Type with ID: {}", result.getId());
         return result;
     }
 
-    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds) throws UserGroupNotFoundException {
-        ReceiptType receiptType = new ReceiptType();
-        receiptType.setName(receiptTypeWriteModel.getName());
-        receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
-
-        Set<UserGroup> userGroups = new HashSet<>();
-        for (Integer userGroupId : userGroupIds) {
-            UserGroup userGroup = userGroupRepository.findById(userGroupId)
-                    .orElseThrow(UserGroupNotFoundException::new);
-            userGroups.add(userGroup);
+    public ReceiptTypeReadModel saveReceiptTypeToAllUserGroup(ReceiptTypeWriteModel receiptTypeWriteModel) {
+        if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
+            throw new IllegalArgumentException("This Receipt Type already exists");
         }
 
-        receiptType.setUserGroups(userGroups);
-        ReceiptType result = receiptTypeRepository.save(receiptType);
-        logger.info("Create Receipt Type with ID: {}", result.getId());
-        return ReceiptMapper.toReadModel(result);
-    }
-
-    public ReceiptTypeReadModel saveReceiptTypeToAllUserGroup(ReceiptTypeWriteModel receiptTypeWriteModel) throws UserGroupNotFoundException {
         ReceiptType receiptType = new ReceiptType();
         receiptType.setName(receiptTypeWriteModel.getName());
         receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
+
+        receiptType = receiptTypeRepository.save(receiptType);
 
         List<UserGroup> allUserGroups = userGroupRepository.findAll();
 
-        if (allUserGroups.isEmpty()){
-            throw new UserGroupNotFoundException("No UserGroups found.");
+        for(UserGroup userGroup : allUserGroups) {
+            receiptType.getUserGroups().add(userGroup);
+            userGroup.getReceiptTypes().add(receiptType);
+            userGroupRepository.save(userGroup);
         }
 
-        receiptType.setUserGroups(new HashSet<>(allUserGroups));
         ReceiptType result = receiptTypeRepository.save(receiptType);
         logger.info("Create Receipt Type wit ID: {}", result.getId());
         return ReceiptMapper.toReadModel(result);
     }
 
-    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds(ReceiptTypeWriteModel receiptTypeWriteModel, Set<Integer> userGroupIds) throws ReceiptTypeNotFoundException {
+    public ReceiptTypeReadModel saveReceiptTypeWithUserGroupIds
+            (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
+            throws UserGroupNotFoundException{
+        if (receiptTypeRepository.existsById(receiptTypeWriteModel.getId())){
+            throw new IllegalArgumentException("This Receipt Type already exists");
+        }
+
+        ReceiptType receiptType = new ReceiptType();
+        receiptType.setName(receiptTypeWriteModel.getName());
+        receiptType.setMaxValue(receiptTypeWriteModel.getMaxValue());
+
+        receiptType = receiptTypeRepository.save(receiptType);
+
+        for (Integer id : userGroupIds) {
+            UserGroup userGroup = userGroupRepository.findById(id)
+                    .orElseThrow(UserGroupNotFoundException::new);
+            receiptType.getUserGroups().add(userGroup);
+            userGroup.getReceiptTypes().add(receiptType);
+            userGroupRepository.save(userGroup);
+        }
+
+        ReceiptType result = receiptTypeRepository.save(receiptType);
+        logger.info("Create Receipt Type with ID: {}", result.getId());
+        return ReceiptMapper.toReadModel(result);
+    }
+
+    public ReceiptTypeReadModel updateReceiptType (ReceiptTypeWriteModel receiptTypeWriteModel)
+            throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
         ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
                 .orElseThrow(ReceiptTypeNotFoundException::new);
 
         toUpdate.setName(receiptTypeWriteModel.getName());
         toUpdate.setMaxValue(receiptTypeWriteModel.getMaxValue());
 
-        Set<UserGroup> currentUserGroups = new HashSet<>(toUpdate.getUserGroups());
-        Set<UserGroup> newUserGroups = new HashSet<>(userGroupRepository.findAllById(userGroupIds));
+        List<Integer> userGroupIds = toUpdate.getUserGroups().stream().map(UserGroup::getId).toList();
 
-        Set<UserGroup> addedUserGroups = new HashSet<>(newUserGroups);
-        addedUserGroups.removeAll(currentUserGroups);
+        for (int userGroupId : userGroupIds){
+            UserGroup userGroup = userGroupRepository.findById(userGroupId)
+                    .orElseThrow(UserGroupNotFoundException::new);
+            userGroup.getReceiptTypes().add(toUpdate);
+            userGroupRepository.save(userGroup);
+        }
 
-        Set<UserGroup> removedUserGroups = new HashSet<>(currentUserGroups);
-        removedUserGroups.removeAll(newUserGroups);
+        ReceiptType result = receiptTypeRepository.save(toUpdate);
+        logger.info("Updated Receipt Type with ID: {}", result.getId());
+        return ReceiptMapper.toReadModel(result);
+    }
 
-        toUpdate.getUserGroups().addAll(addedUserGroups);
-        toUpdate.getUserGroups().removeAll(removedUserGroups);
+    public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds
+            (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
+            throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
+        ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        Set<UserGroup> currentUserGroups = toUpdate.getUserGroups();
+        Set<UserGroup> newUserGroups =
+                new HashSet<>(userGroupRepository.findAllById(userGroupIds));
+
+        for (UserGroup userGroup : currentUserGroups){
+            if(!newUserGroups.contains(userGroup)){
+                userGroup.getReceiptTypes().add(toUpdate);
+                userGroupRepository.save(userGroup);
+            }
+        }
+
+        for(UserGroup userGroup : newUserGroups){
+            if(!currentUserGroups.contains(userGroup)){
+                userGroup.getReceiptTypes().remove(toUpdate);
+                userGroupRepository.save(userGroup);
+            }
+        }
+
+        toUpdate.setUserGroups(newUserGroups);
+        toUpdate.setName(receiptTypeWriteModel.getName());
+        toUpdate.setMaxValue(receiptTypeWriteModel.getMaxValue());
+
 
         ReceiptType result = receiptTypeRepository.save(toUpdate);
         logger.info("Updated Receipt Type with ID: {}", result.getId());
@@ -114,13 +162,18 @@ public class ReceiptTypeService {
     }
 
     public void deleteById (int id) throws ReceiptTypeNotFoundException {
-        ReceiptType receiptType = receiptTypeRepository.findById(id)
+        ReceiptType toDelete = receiptTypeRepository.findById(id)
                 .orElseThrow(ReceiptTypeNotFoundException::new);
 
-        receiptType.getUserGroups().clear();
+        Set<UserGroup> currentUserGroups =
+                new HashSet<>(toDelete.getUserGroups());
+
+        for (UserGroup userGroup : currentUserGroups){
+                userGroup.getReceiptTypes().remove(toDelete);
+                userGroupRepository.save(userGroup);
+            }
 
         receiptTypeRepository.deleteById(id);
-
-        logger.info("Read All Receipt Type with User Id: {}",id);
+        logger.info("Read All Receipt Type with User Group Id: {}",id);
     }
 }

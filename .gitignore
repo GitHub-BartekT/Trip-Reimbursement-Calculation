@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/db/trip_db.tmp/
+/src/main/resources/db/database/trip_db.tmp.script
+/src/main/resources/db/database/trip_db.script
+/src/main/resources/db/database/trip_db.log
+/src/main/resources/db/database/trip_db.properties
+/src/main/resources/db/database/trip_db.lck
+/src/main/resources/db/database/trip_db.tmp.properties
+/src/main/resources/db/database/
