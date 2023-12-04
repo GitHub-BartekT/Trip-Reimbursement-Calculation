@@ -52,18 +52,18 @@ public class ReceiptTypeController {
         return ResponseEntity.created(URI.create("http://localhost:8080/receipts/" + result.getId())).build();
     }
 
-    @PutMapping("/all")
+    @PutMapping()
     ResponseEntity<ReceiptTypeReadModel> updateReceiptType
-            (@RequestBody @Valid ReceiptTypeWriteModel toWrite) throws ReceiptTypeNotFoundException {
+            (@RequestBody @Valid ReceiptTypeWriteModel toWrite) throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
         var updated = service.updateReceiptType(toWrite);
         return ResponseEntity.ok(updated);
     }
 
-    @PutMapping()
+    @PutMapping("/{userGroups}")
     ResponseEntity<ReceiptTypeReadModel> updateReceiptTypeWithUserGroupIds
-            (@RequestBody @Valid ReceiptTypeWriteModel toWrite, List<Integer> integerList)
-            throws ReceiptTypeNotFoundException {
-        var updated = service.updateReceiptTypeWithUserGroupIds(toWrite, integerList);
+            (@RequestBody @Valid ReceiptTypeWriteModel toWrite, @PathVariable List<Integer> userGroups)
+            throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
+        var updated = service.updateReceiptTypeWithUserGroupIds(toWrite, userGroups);
         return ResponseEntity.ok(updated);
     }
 

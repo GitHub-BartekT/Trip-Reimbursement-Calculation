@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -258,41 +259,39 @@ class ReceiptTypeControllerIntegrationTest {
     @Test
     @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
     void updateReceiptType_throwsReceiptTypeNotFoundException() throws Exception {
-        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
-        toCreate.setId(1684);
-        toCreate.setName("NewReceipt");
-        toCreate.setMaxValue(167);
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
+        toUpdate.setId(1684);
+        toUpdate.setName("NewReceipt");
+        toUpdate.setMaxValue(167);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(toCreate);
+        String json = objectMapper.writeValueAsString(toUpdate);
 
         //when
-        mockMvc.perform(put("/receipts/all")
+        mockMvc.perform(put("/receipts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 //then
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Receipt Type not found."));
-
     }
 
     @Test
     @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
-    void updateReceiptType_updatesReceiptTypeNotFoundException() throws Exception {
-        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+    void updateReceiptType_updatesReceiptType() throws Exception {
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
         String name = "NewReceipt";
         int receiptId = 1;
-        toCreate.setId(receiptId);
-        toCreate.setName(name);
-        toCreate.setMaxValue(167);
+        toUpdate.setId(receiptId);
+        toUpdate.setName(name);
+        toUpdate.setMaxValue(167);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(toCreate);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //and
 
-
         //when
-        mockMvc.perform(put("/receipts/all")
+        mockMvc.perform(put("/receipts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 //then
@@ -310,10 +309,102 @@ class ReceiptTypeControllerIntegrationTest {
     }
 
     @Test
-    void updateReceiptType() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateReceiptTypeWithUserGroupIds_throwsReceiptTypeNotFoundException() throws Exception {
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
+        toUpdate.setId(1684);
+        toUpdate.setName("NewReceipt");
+        toUpdate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/receipts/1,2,3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Receipt Type not found."));
     }
 
     @Test
-    void deleteReceiptType() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateReceiptTypeWithUserGroupIds_updatesReceiptType() throws Exception {
+        ReceiptTypeWriteModel toUpdate = new ReceiptTypeWriteModel();
+        toUpdate.setId(2);
+        String name = "UpdatedReceipt";
+        toUpdate.setName(name);
+        toUpdate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(get("/receipts/2"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Aeroplane_CEO"))
+                .andExpect(jsonPath("$.maxValue").value(2000))
+                .andExpect(jsonPath("$.userGroups[*].id", containsInAnyOrder(1)))
+                .andExpect(jsonPath("$.userGroups[*].name", containsInAnyOrder("CEO")))
+                .andExpect(jsonPath("$.userGroups", hasSize(1)));
+
+        //when
+        mockMvc.perform(put("/receipts/1,2,3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.maxValue").value(167))
+                .andExpect(jsonPath("$.userGroups[*].id", containsInAnyOrder(1,2,3)))
+                .andExpect(jsonPath("$.userGroups[*].name",
+                        containsInAnyOrder("CEO","Regular employee", "Sellers")))
+                .andExpect(jsonPath("$.userGroups", hasSize(3)));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void deleteReceiptType_throwsReceiptTypeNotFoundException() throws Exception {
+        //when
+        mockMvc.perform(delete("/receipts/1456")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Receipt Type not found."));
+    }
+
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void deleteReceiptType_deletesReceiptType() throws Exception {
+        //given
+        int beforeSize = receiptTypeRepository.findAll().size();
+        //and
+        mockMvc.perform(get("/receipts/2"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Aeroplane_CEO"))
+                .andExpect(jsonPath("$.maxValue").value(2000))
+                .andExpect(jsonPath("$.userGroups[*].id", containsInAnyOrder(1)))
+                .andExpect(jsonPath("$.userGroups[*].name", containsInAnyOrder("CEO")))
+                .andExpect(jsonPath("$.userGroups", hasSize(1)));
+
+        //when
+        mockMvc.perform(delete("/receipts/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isNoContent());
+        //and
+        int afterSize = receiptTypeRepository.findAll().size();
+        assertThat(afterSize + 1).isEqualTo(beforeSize);
+        //and
+        mockMvc.perform(get("/receipts/2"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Receipt Type not found."));
     }
 }
