@@ -184,7 +184,76 @@ class ReceiptTypeControllerIntegrationTest {
     }
 
     @Test
-    void saveReceiptTypeWithUserGroupIds() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void createReceiptTypeWithUserGroupIds_throwsIllegalArgumentException() throws Exception{
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        toCreate.setId(1);
+        toCreate.setName("NewReceipt");
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+
+        //when
+        mockMvc.perform(post("/receipts?integerList=1,2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("This Receipt Type already exists"));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql"})
+    void createReceiptTypeWithUserGroupIds_throwsUserGroupNotFoundException() throws Exception{
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        toCreate.setId(1);
+        toCreate.setName("NewReceipt");
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+
+        //when
+        mockMvc.perform(post("/receipts?integerList=1,25")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void createReceiptTypeWithUserGroupIds_createsReceiptType() throws Exception{
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        String name = "NewReceipt";
+        toCreate.setName(name);
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+        //and
+        int beforeSize = receiptTypeRepository.findAll().size();
+        int newReceiptId = beforeSize + 1;
+
+        //when
+        mockMvc.perform(post("/receipts?integerList=1,2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isCreated())
+                .andExpect(header().
+                        string("Location", "http://localhost:8080/receipts/" + newReceiptId));
+
+        //and when
+        mockMvc.perform(get("/receipts/" + newReceiptId))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.maxValue").value(167))
+                .andExpect(jsonPath("$.userGroups", hasSize(2)));
     }
 
     @Test
