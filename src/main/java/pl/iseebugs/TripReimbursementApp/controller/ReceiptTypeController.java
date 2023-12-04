@@ -45,7 +45,7 @@ public class ReceiptTypeController {
     }
 
     @PostMapping
-    ResponseEntity<Void> saveReceiptTypeWithUserGroupIds
+    ResponseEntity<Void> createReceiptTypeWithUserGroupIds
             (@RequestBody @Valid ReceiptTypeWriteModel toWrite, @RequestParam("integerList") List<Integer> integerList)
             throws UserGroupNotFoundException {
         var result = service.saveReceiptTypeWithUserGroupIds(toWrite, integerList);
@@ -53,14 +53,14 @@ public class ReceiptTypeController {
     }
 
     @PutMapping("/all")
-    ResponseEntity<ReceiptTypeReadModel> updateReceiptTypeToAllUserGroups
+    ResponseEntity<ReceiptTypeReadModel> updateReceiptType
             (@RequestBody @Valid ReceiptTypeWriteModel toWrite) throws ReceiptTypeNotFoundException {
         var updated = service.updateReceiptType(toWrite);
         return ResponseEntity.ok(updated);
     }
 
     @PutMapping()
-    ResponseEntity<ReceiptTypeReadModel> updateReceiptType
+    ResponseEntity<ReceiptTypeReadModel> updateReceiptTypeWithUserGroupIds
             (@RequestBody @Valid ReceiptTypeWriteModel toWrite, List<Integer> integerList)
             throws ReceiptTypeNotFoundException {
         var updated = service.updateReceiptTypeWithUserGroupIds(toWrite, integerList);

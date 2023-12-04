@@ -12,6 +12,9 @@ public class ReceiptTypeReadModel {
     private double maxValue;
     private Set<UserGroupReadModelShort> userGroups = new HashSet<>();
 
+    public ReceiptTypeReadModel() {
+    }
+
     public ReceiptTypeReadModel(ReceiptType receiptType) {
         id = receiptType.getId();
         name = receiptType.getName();

@@ -13,8 +13,7 @@ import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -257,7 +256,57 @@ class ReceiptTypeControllerIntegrationTest {
     }
 
     @Test
-    void updateReceiptTypeToAllUserGroups() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateReceiptType_throwsReceiptTypeNotFoundException() throws Exception {
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        toCreate.setId(1684);
+        toCreate.setName("NewReceipt");
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+
+        //when
+        mockMvc.perform(put("/receipts/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Receipt Type not found."));
+
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateReceiptType_updatesReceiptTypeNotFoundException() throws Exception {
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        String name = "NewReceipt";
+        int receiptId = 1;
+        toCreate.setId(receiptId);
+        toCreate.setName(name);
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+        //and
+
+
+        //when
+        mockMvc.perform(put("/receipts/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        //and when
+        mockMvc.perform(get("/receipts/" + receiptId))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.maxValue").value(167))
+                .andExpect(jsonPath("$.userGroups", hasSize(4)));
     }
 
     @Test
