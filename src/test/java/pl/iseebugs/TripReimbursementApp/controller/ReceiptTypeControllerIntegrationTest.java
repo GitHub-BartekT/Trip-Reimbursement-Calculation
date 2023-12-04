@@ -1,5 +1,6 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -7,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
+import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -19,6 +23,9 @@ class ReceiptTypeControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ReceiptTypeRepository receiptTypeRepository;
 
     @Test
     @Sql({"/sql/001-test-schema.sql"})
@@ -123,7 +130,57 @@ class ReceiptTypeControllerIntegrationTest {
     }
 
     @Test
-    void createReceiptTypeToAllUserGroup() {
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void createReceiptTypeToAllUserGroup_throwsIllegalArgumentException() throws Exception {
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        toCreate.setId(1);
+        toCreate.setName("NewReceipt");
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+
+        //when
+        mockMvc.perform(post("/receipts/all")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("This Receipt Type already exists"));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void createReceiptTypeToAllUserGroup_createsReceiptType() throws Exception {
+        ReceiptTypeWriteModel toCreate = new ReceiptTypeWriteModel();
+        String name = "NewReceipt";
+        toCreate.setName(name);
+        toCreate.setMaxValue(167);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toCreate);
+
+        //and
+        int beforeSize = receiptTypeRepository.findAll().size();
+        int newReceiptId = beforeSize + 1;
+
+        //when
+        mockMvc.perform(post("/receipts/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isCreated())
+                .andExpect(header().
+                        string("Location", "http://localhost:8080/receipts/" + newReceiptId));
+
+        //and when
+        mockMvc.perform(get("/receipts/" + newReceiptId))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.maxValue").value(167))
+                .andExpect(jsonPath("$.userGroups", hasSize(5)));
     }
 
     @Test
