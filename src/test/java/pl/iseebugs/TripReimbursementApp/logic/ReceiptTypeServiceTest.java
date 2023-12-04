@@ -5,15 +5,12 @@ import org.junit.jupiter.api.Test;
 import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
-import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -54,15 +51,14 @@ class ReceiptTypeServiceTest {
 
         //when
         List<ReceiptTypeReadModel> result = toTest.readAll();
-        Set<UserGroup> userGroupList =
-        result.stream().flatMap(receiptType -> receiptType.getUserGroups().stream()).collect(Collectors.toSet());
 
         //then
         assertThat(result.get(0).getName()).isEqualTo("Train_AllUsers");
         assertThat(result.get(1).getName()).isEqualTo("Aeroplane_CEO");
+        assertThat(result.get(1).getUserGroups().size()).isEqualTo(1);
         assertThat(result.get(2).getName()).isEqualTo("Food_AllUsers");
         assertThat(result.get(2).getMaxValue()).isEqualTo(45);
-        assertThat(result.get(2).getUserGroups().size()).isEqualTo(userGroupList.size());
+        assertThat(result.get(2).getUserGroups().size()).isEqualTo(4);
         assertThat(result.get(3).getName()).isEqualTo("Food_CEO");
         assertThat(result.get(4).getName()).isEqualTo("Hotels_Sellers");
         assertThat(result.get(4).getUserGroups().size()).isEqualTo(1);

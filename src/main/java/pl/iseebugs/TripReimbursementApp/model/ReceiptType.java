@@ -3,6 +3,7 @@ package pl.iseebugs.TripReimbursementApp.model;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,7 +26,7 @@ public class ReceiptType {
         setId(receiptType.getId());
         setName(receiptType.getName());
         setMaxValue(receiptType.getMaxValue());
-        setUserGroups(receiptType.getUserGroups());
+        getUserGroups().addAll(receiptType.getUserGroups());
         setUserCosts(receiptType.getUserCosts());
     }
 
@@ -71,5 +72,31 @@ public class ReceiptType {
         } else {
         this.maxValue = maxValue;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ReceiptType other = (ReceiptType) obj;
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder beginning = new StringBuilder(("ReceiptType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", maxValue=" + maxValue +
+                ", userGroups="));
+        for (UserGroup userGroup: userGroups) {
+            beginning.append("{id =").append(userGroup.getId()).append(", name=").append(userGroup.getName()).append("}");
+        }
+       return beginning.toString();
     }
 }
