@@ -274,7 +274,7 @@ class ReceiptTypeServiceTest {
 
     @Test
     @DisplayName("should updates ReceiptType")
-    void updateReceiptType_updatesReceiptType() throws ReceiptTypeNotFoundException {
+    void updateReceiptType_updatesReceiptType() throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
         //given
         InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
@@ -316,7 +316,7 @@ class ReceiptTypeServiceTest {
 
     @Test
     @DisplayName("should updates Receipt Type")
-    void updateReceiptTypeWithUserGroupIds_returnsReceiptType() throws ReceiptTypeNotFoundException {
+    void updateReceiptTypeWithUserGroupIds_returnsReceiptType() throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
         //given
         InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
