@@ -8,6 +8,7 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,17 +111,17 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setId(1);
+        toCreate.setName("foo");
+        UserGroup entity = toCreate.toUserGroup();
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        UserGroupWriteModel userGroupToCheck = new UserGroupWriteModel();
         userGroupToCheck.setId(1);
 
         var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
@@ -142,7 +143,7 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
+        UserGroupWriteModel userGroupToCheck = new UserGroupWriteModel();
         userGroupToCheck.setName("   ");
 
         var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
@@ -164,12 +165,12 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
+        UserGroupWriteModel toWrite = new UserGroupWriteModel();
+        toWrite.setId(1);
         String groupName = TestHelper.createLongString(101);
-        userGroupDTO.setName(groupName);
+        toWrite.setName(groupName);
 
-        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupDTO));
+        var exception = catchThrowable(() -> toTest.createUserGroup(toWrite));
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
@@ -191,11 +192,11 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
-        userGroupToCheck.setName("bar");
+        UserGroupWriteModel toCheck = new UserGroupWriteModel();
+        toCheck.setId(1);
+        toCheck.setName("bar");
 
-        var exception = catchThrowable(() -> toTest.createUserGroup(userGroupToCheck));
+        var exception = catchThrowable(() -> toTest.createUserGroup(toCheck));
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
@@ -214,19 +215,19 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("foobar");
-        toTest.createUserGroup(userGroupDTO);
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("foobar");
+        toTest.createUserGroup(toCreate);
         var afterCreate = inMemoryUserGroupRepository.count();
         UserGroup afterSave = inMemoryUserGroupRepository.findById(inMemoryUserGroupRepository.count()).orElse(null);
 
         assert afterSave != null;
-        UserGroupDTO userGroupDTOAfter  = new UserGroupDTO(afterSave);
+        UserGroupWriteModel userGroupDTOAfter  = new UserGroupWriteModel(afterSave);
 
         //then
         assertThat(afterCreate).isEqualTo(beforeSize + 1);
-        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO);
-        assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
+        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(toCreate);
+        assertThat(userGroupDTOAfter.getName()).isEqualTo(toCreate.getName());
     }
 
     @Test
@@ -242,21 +243,21 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
         String groupName = TestHelper.createLongString(100);
-        userGroupDTO.setName(groupName);
+        toCreate.setName(groupName);
 
-        toTest.createUserGroup(userGroupDTO);
+        toTest.createUserGroup(toCreate);
         var afterCreate = inMemoryUserGroupRepository.count();
         UserGroup afterSave = inMemoryUserGroupRepository.findById(inMemoryUserGroupRepository.count()).orElse(null);
 
         assert afterSave != null;
-        UserGroupDTO userGroupDTOAfter  = new UserGroupDTO(afterSave);
+        UserGroupWriteModel userGroupDTOAfter  = new UserGroupWriteModel(afterSave);
 
         //then
         assertThat(afterCreate).isEqualTo(beforeSize + 1);
-        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(userGroupDTO.getId());
-        assertThat(userGroupDTOAfter.getName()).isEqualTo(userGroupDTO.getName());
+        assertThat(userGroupDTOAfter.getId()).isNotEqualTo(toCreate.getId());
+        assertThat(userGroupDTOAfter.getName()).isEqualTo(toCreate.getName());
     }
 
     @Test
@@ -267,15 +268,15 @@ class UserGroupServiceTest {
         var mockUserRepository =mock(UserRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("bar");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("bar");
 
         //system under test
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupDTO));
+        var exception = catchThrowable(() -> toTest.updateUserGroupById(toUpdate));
 
         //then
         assertThat(exception).isInstanceOf(UserGroupNotFoundException.class);
@@ -287,21 +288,21 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
+        UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
+        dataUserGroup.setId(1);
+        dataUserGroup.setName("foo");
+        UserGroup entity = dataUserGroup.toUserGroup();
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
-        userGroupToCheck.setName("   ");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("   ");
 
-        var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupToCheck));
+        var exception = catchThrowable(() -> toTest.updateUserGroupById(toUpdate));
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
@@ -314,10 +315,10 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
+        UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
+        dataUserGroup.setId(1);
+        dataUserGroup.setName("foo");
+        UserGroup entity = dataUserGroup.toUserGroup();
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //and
@@ -327,12 +328,12 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupDTOtoCheck = new UserGroupDTO();
-        userGroupDTOtoCheck.setId(1);
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(1);
         String groupName = TestHelper.createLongString(101);
-        userGroupDTOtoCheck.setName(groupName);
+        toUpdate.setName(groupName);
 
-        var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupDTOtoCheck));
+        var exception = catchThrowable(() -> toTest.updateUserGroupById(toUpdate));
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
@@ -345,10 +346,10 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(1);
-        userGroupDTO.setName("foo");
-        UserGroup entity = userGroupDTO.toUserGroup();
+        UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
+        dataUserGroup.setId(1);
+        dataUserGroup.setName("foo");
+        UserGroup entity = dataUserGroup.toUserGroup();
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //and
@@ -358,11 +359,11 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(mockRepository, mockUserRepository);
 
         //when
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
-        userGroupToCheck.setName("bar");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("bar");
 
-        var exception = catchThrowable(() -> toTest.updateUserGroupById(userGroupToCheck));
+        var exception = catchThrowable(() -> toTest.updateUserGroupById(toUpdate));
 
         //then
         assertThat(exception).isInstanceOf(IllegalArgumentException.class)
@@ -381,12 +382,12 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //and
-        UserGroupDTO userGroupToCheck = new UserGroupDTO();
-        userGroupToCheck.setId(1);
-        userGroupToCheck.setName("foo");
+        UserGroupWriteModel toCheck = new UserGroupWriteModel();
+        toCheck.setId(1);
+        toCheck.setName("foo");
 
         //when
-        UserGroupDTO result = toTest.updateUserGroupById(userGroupToCheck);
+        UserGroupDTO result = toTest.updateUserGroupById(toCheck);
         int afterSize = inMemoryUserGroupRepository.count();
         //then
         assertThat(result.getName()).isEqualTo("foo");

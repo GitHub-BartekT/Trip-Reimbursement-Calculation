@@ -7,6 +7,7 @@ import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import java.net.URI;
 import java.util.List;
@@ -32,14 +33,14 @@ public class UserGroupController {
     }
 
     @PostMapping
-    ResponseEntity<Void> createUserGroup(@RequestBody @Valid UserGroupDTO userGroupDTO){
-        var result = service.createUserGroup(userGroupDTO);
+    ResponseEntity<Void> createUserGroup(@RequestBody @Valid UserGroupWriteModel toCreate){
+        var result = service.createUserGroup(toCreate);
         return ResponseEntity.created(URI.create("http://localhost:8080/groups/" + result.getId())).build();
     }
 
     @PutMapping()
-    ResponseEntity<UserGroupDTO> updateUserGroup(@RequestBody @Valid UserGroupDTO userGroupDTO) throws UserGroupNotFoundException {
-        UserGroupDTO updated = service.updateUserGroupById(userGroupDTO);
+    ResponseEntity<UserGroupDTO> updateUserGroup(@RequestBody @Valid UserGroupWriteModel toUpdate) throws UserGroupNotFoundException {
+        UserGroupDTO updated = service.updateUserGroupById(toUpdate);
         return ResponseEntity.ok(updated);
     }
 

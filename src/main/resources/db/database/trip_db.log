@@ -1,4 +1,4 @@
-/*C12*/SET SCHEMA PUBLIC
+/*C22*/SET SCHEMA PUBLIC
 SET SCHEMA "PUBLIC"
 drop table if exists receipt_types cascade 
 drop table if exists reimbursements cascade 
@@ -1925,7 +1925,7 @@ INSERT INTO USER_GROUPS VALUES(1,'fooGroup',0.0E0,0.0E0,0.0E0,0.0E0)
 INSERT INTO USER_GROUPS VALUES(2,'barGroup',0.0E0,0.0E0,0.0E0,0.0E0)
 INSERT INTO USER_GROUPS VALUES(3,'foobarGroup',0.0E0,0.0E0,0.0E0,0.0E0)
 COMMIT
-/*C22*/SET SCHEMA PUBLIC
+/*C32*/SET SCHEMA PUBLIC
 SET SCHEMA "PUBLIC"
 drop table if exists receipt_types cascade 
 drop table if exists reimbursements cascade 
@@ -1945,31 +1945,6 @@ alter table user_costs add constraint FK8b4xytbhegah1tmqpsa48qafk foreign key (r
 alter table user_groups_receipt_types add constraint FKfvlobrh1etmxwij3ygtm5ly00 foreign key (receipt_type_id) references receipt_types
 alter table user_groups_receipt_types add constraint FK9ocj3urytf3fhjn3p8f8jg0fg foreign key (user_group_id) references user_groups
 alter table users add constraint FK5exbg1aqwx4y94fk3md3ji5sf foreign key (user_group_id) references user_groups
-/*C12*/drop table if exists receipt_types cascade 
-drop table if exists reimbursements cascade 
-drop table if exists user_costs cascade 
-drop table if exists user_groups cascade 
-drop table if exists user_groups_receipt_types cascade 
-drop table if exists users cascade 
-DISCONNECT
-/*C13*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C14*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C15*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C16*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C17*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C18*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C19*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C20*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C21*/SET SCHEMA PUBLIC
-DISCONNECT
 /*C22*/drop table if exists receipt_types cascade 
 drop table if exists reimbursements cascade 
 drop table if exists user_costs cascade 
@@ -1994,4 +1969,29 @@ DISCONNECT
 /*C30*/SET SCHEMA PUBLIC
 DISCONNECT
 /*C31*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C32*/drop table if exists receipt_types cascade 
+drop table if exists reimbursements cascade 
+drop table if exists user_costs cascade 
+drop table if exists user_groups cascade 
+drop table if exists user_groups_receipt_types cascade 
+drop table if exists users cascade 
+DISCONNECT
+/*C33*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C34*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C35*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C36*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C37*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C38*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C39*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C40*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C41*/SET SCHEMA PUBLIC
 DISCONNECT
