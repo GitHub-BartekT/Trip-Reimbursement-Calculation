@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
-import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.*;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupMapper;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
@@ -22,11 +21,12 @@ public class UserGroupService {
     private static final Logger logger = LoggerFactory.getLogger(UserGroupService.class);
     private final UserGroupRepository repository;
     private final UserRepository userRepository;
-    private ReceiptTypeRepository receiptTypeRepository;
+    private final ReceiptTypeRepository receiptTypeRepository;
 
-    public UserGroupService(UserGroupRepository repository, UserRepository userRepository) {
+    public UserGroupService(UserGroupRepository repository, UserRepository userRepository, ReceiptTypeRepository receiptTypeRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.receiptTypeRepository = receiptTypeRepository;
     }
 
 
@@ -102,13 +102,20 @@ public class UserGroupService {
         return UserGroupMapper.toReadModelFull(result);
    }
 
-    public void deleteUserGroup(int id) throws UserGroupNotFoundException, UserNotFoundException {
-        repository.findById(id).orElseThrow(UserGroupNotFoundException::new);
+    public void deleteUserGroup(int id) throws UserGroupNotFoundException {
+        UserGroup toDelete = repository.findById(id).orElseThrow(UserGroupNotFoundException::new);
 
         try {
             if (userRepository.existsByUserGroup_Id(id)){
                 throw new IllegalStateException("User Group contains user.");
             }
+            Set<ReceiptType> currentReceiptTypes = toDelete.getReceiptTypes();
+
+            for (ReceiptType receiptType : currentReceiptTypes){
+                receiptType.getUserGroups().remove(toDelete);
+                receiptTypeRepository.save(receiptType);
+            }
+
             repository.deleteById(id);
             logger.info("Deleted user group with ID {}", id);
         } catch (Exception e){

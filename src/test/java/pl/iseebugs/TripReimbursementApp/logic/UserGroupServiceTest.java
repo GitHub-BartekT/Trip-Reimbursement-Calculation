@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
+import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
@@ -30,8 +31,9 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //when
         List<UserGroupReadModel> result = toTest.readAll();
@@ -47,11 +49,12 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //when
         List<UserGroupReadModel> result = toTest.readAll();
@@ -74,9 +77,10 @@ class UserGroupServiceTest {
         //given
         var mockRepository = mock(UserGroupRepository.class);
         var mockUserRepository = mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         when(mockRepository.findById(any())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
         //when
         var exception = catchThrowable(() -> toTest.readById(7));
         //then
@@ -89,10 +93,11 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //when
         UserGroupReadModelFull result = toTest.readById(2);
@@ -112,6 +117,7 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         UserGroupWriteModel toCreate = new UserGroupWriteModel();
         toCreate.setId(1);
         toCreate.setName("foo");
@@ -119,7 +125,7 @@ class UserGroupServiceTest {
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel userGroupToCheck = new UserGroupWriteModel();
@@ -138,10 +144,11 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel userGroupToCheck = new UserGroupWriteModel();
@@ -160,10 +167,11 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toWrite = new UserGroupWriteModel();
@@ -184,13 +192,14 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         //and
         when(mockRepository.existsByName(anyString())).thenReturn(true);
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toCheck = new UserGroupWriteModel();
@@ -210,10 +219,11 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toCreate = new UserGroupWriteModel();
@@ -237,11 +247,12 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
 
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toCreate = new UserGroupWriteModel();
@@ -267,6 +278,7 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         UserGroupWriteModel toUpdate = new UserGroupWriteModel();
@@ -274,7 +286,7 @@ class UserGroupServiceTest {
         toUpdate.setName("bar");
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         var exception = catchThrowable(() -> toTest.updateUserGroupById(toUpdate));
@@ -289,6 +301,7 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
         dataUserGroup.setId(1);
         dataUserGroup.setName("foo");
@@ -296,7 +309,7 @@ class UserGroupServiceTest {
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toUpdate = new UserGroupWriteModel();
@@ -316,6 +329,7 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
         dataUserGroup.setId(1);
         dataUserGroup.setName("foo");
@@ -326,7 +340,7 @@ class UserGroupServiceTest {
         when(mockRepository.existsByName(anyString())).thenReturn(false);
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toUpdate = new UserGroupWriteModel();
@@ -347,6 +361,7 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
         dataUserGroup.setId(1);
         dataUserGroup.setName("foo");
@@ -357,7 +372,7 @@ class UserGroupServiceTest {
         when(mockRepository.existsByName(anyString())).thenReturn(true);
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toUpdate = new UserGroupWriteModel();
@@ -377,10 +392,11 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //and
         UserGroupWriteModel toCheck = new UserGroupWriteModel();
@@ -401,12 +417,13 @@ class UserGroupServiceTest {
         //given
         var mockRepository =mock(UserGroupRepository.class);
         var mockUserRepository =mock(UserRepository.class);
+        var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         int userGroupToDelete = 1;
 
         //system under test
-        var toTest = new UserGroupService(mockRepository, mockUserRepository);
+        var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         var exception = catchThrowable(() -> toTest.deleteUserGroup(userGroupToDelete));
@@ -421,10 +438,11 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //and
         int userGroupToDelete = 1;
@@ -442,10 +460,11 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //and
         int userGroupToDelete = 1;
@@ -463,10 +482,11 @@ class UserGroupServiceTest {
         //given
         InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         int beforeSize = inMemoryUserGroupRepository.count();
         //system under test
-        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
+        var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReceiptTypeRepository);
 
         //and
         int userGroupToDelete = 1;
