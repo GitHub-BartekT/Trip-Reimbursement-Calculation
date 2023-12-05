@@ -10,11 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,6 +31,9 @@ class UserGroupControllerIntegrationTest {
 
     @Autowired
     private UserGroupRepository repository;
+
+    @Autowired
+    private ReceiptTypeRepository receiptTypeRepository;
 
     @Test
     @Sql({"/sql/001-test-schema.sql"})
@@ -66,15 +71,18 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
-    @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
     void testReadById_readUserGroup() throws Exception {
         //when
         mockMvc.perform(get("/groups/2"))
                 //then
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("barGroup"))
-                .andExpect(jsonPath("$.id").value("2"));
+                .andExpect(jsonPath("$.name").value("Sellers"))
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.receiptTypes[*].id", containsInAnyOrder(1, 3, 5)))
+                .andExpect(jsonPath("$.receiptTypes[*].name", containsInAnyOrder("Train_AllUsers", "Food_AllUsers", "Hotels_Sellers")))
+                .andExpect(jsonPath("$.receiptTypes", hasSize(3)));
     }
 
     @Test
@@ -201,18 +209,101 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
-    @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateUserGroupWithReceiptTypesIds_throwsUserGroupNotFoundException() throws Exception {
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(1684);
+        toUpdate.setName("NewUserGroup");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/groups/1,2,3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateUserGroupWithReceiptTypesIds_throwsIllegalArgumentException() throws Exception {
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("CEO");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/groups/1,2,3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group with that name already exist."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateReceiptType_updatesUserGroup() throws Exception {
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        String name = "toUpdate";
+        int receiptId = 5;
+        toUpdate.setName(name);
+        toUpdate.setId(receiptId);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/groups/1,2,6,4")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        //and when
+        mockMvc.perform(get("/groups/" + receiptId))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.id").value(receiptId))
+                .andExpect(jsonPath("$.receiptTypes[*].id", containsInAnyOrder(1, 2, 4, 6)))
+                .andExpect(jsonPath("$.receiptTypes[*].name", containsInAnyOrder("Train_AllUsers", "Aeroplane_CEO", "Food_CEO", "Other_Directors")))
+                .andExpect(jsonPath("$.receiptTypes", hasSize(4)));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
     void testDeleteUserGroup_deletesUserGroup() throws Exception {
         //given
+        int userGroupId = 2;
         int beforeSize = repository.findAll().size();
+        int beforeReceiptNr1size = receiptTypeRepository.findAllByUserGroups_Id(userGroupId).size();
         //when
-        mockMvc.perform(delete("/groups/2")
+        mockMvc.perform(delete("/groups/" + userGroupId)
                         .contentType(MediaType.APPLICATION_JSON))
                 //then
                 .andExpect(status().isNoContent());
 
+        mockMvc.perform(get("/groups/" + userGroupId))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+
+        mockMvc.perform(get("/receipts/userGroup/" + userGroupId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+
         int afterSize = repository.findAll().size();
+
         assertThat(afterSize + 1).isEqualTo(beforeSize);
+        assertThat(beforeReceiptNr1size).isNotEqualTo(0);
     }
 
     @Test
