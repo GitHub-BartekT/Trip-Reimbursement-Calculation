@@ -84,7 +84,7 @@ public class UserCostService {
             logger.error("Error deleting User Cost with ID {}: {}", id, e.getMessage());
         }
     }
-    
+
     private UserCost toEntity(UserCostWriteModel toWrite) throws ReceiptTypeNotFoundException, ReimbursementNotFoundException {
         UserCost userCost = new UserCost();
 

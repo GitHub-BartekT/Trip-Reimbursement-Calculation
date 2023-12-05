@@ -294,4 +294,70 @@ public class InMemoryRepositories {
             map.clear();
         }
     }
+
+    protected static InMemoryUserCostRepository inMemoryUserCostRepository(){
+        return new InMemoryUserCostRepository();
+    }
+
+    protected static class InMemoryUserCostRepository implements UserCostRepository {
+        private final AtomicInteger index = new AtomicInteger(1);
+        private final Map<Integer, UserCost> map = new HashMap<>();
+
+        public int count(){
+            return map.values().size();
+        }
+
+        @Override
+        public List<UserCost> findAll() {
+            return new ArrayList<>(map.values());
+        }
+
+        @Override
+        public Optional<UserCost> findById(Integer id) {
+            return Optional.ofNullable(map.get(id));
+        }
+
+        @Override
+        public List<UserCost> findAllByReimbursement_Id(int reimbursements_id) {
+            return map.values().stream()
+                    .filter((userCost) -> userCost.getReimbursement().getId() == reimbursements_id)
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<UserCost> findAllByReceiptType_Id(int receiptTypeId) {
+            return map.values().stream()
+                    .filter((userCost) -> userCost.getReceiptType().getId() == receiptTypeId)
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public boolean existsById(int id) {
+            return map.containsKey(id);
+        }
+
+        @Override
+        public UserCost save(UserCost entity) {
+            if (entity.getId() == 0) {
+                int id = index.getAndIncrement();
+                entity.setId(id);
+            }
+            try {
+                map.put(entity.getId(), entity);
+            } catch (Exception e){
+                throw new RuntimeException("Failed to save the entity to the database.");
+            }
+            return entity;
+        }
+
+        @Override
+        public void deleteById(int id) {
+            map.remove(id);
+        }
+
+        @Override
+        public void deleteAll() {
+            map.clear();
+        }
+    }
 }
