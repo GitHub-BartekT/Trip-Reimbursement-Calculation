@@ -17,7 +17,7 @@ public class UserCost {
     @JoinColumn(name = "receipt_type_id")
     private ReceiptType receiptType;
 
-    protected UserCost() {
+    public UserCost() {
     }
 
     public int getId() {
@@ -56,7 +56,7 @@ public class UserCost {
         this.receiptType = receiptType;
     }
 
-    void setCostValue(double maxValue) {
+    public void setCostValue(double maxValue) {
         if (maxValue < 0){
             this.costValue = 0;
         } else {

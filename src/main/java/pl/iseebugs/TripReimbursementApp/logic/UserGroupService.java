@@ -29,7 +29,6 @@ public class UserGroupService {
         this.receiptTypeRepository = receiptTypeRepository;
     }
 
-
     public List<UserGroupReadModel> readAll(){
         return repository.findAll().stream()
                 .map(UserGroupMapper::toReadModel)

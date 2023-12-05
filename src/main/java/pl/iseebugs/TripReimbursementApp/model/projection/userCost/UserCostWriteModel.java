@@ -12,6 +12,10 @@ public class UserCostWriteModel {
     String name;
     @Positive(message = "Cost Value should be positive.")
     double costValue;
+    @NotNull
+    private int reimbursementId;
+    @NotNull
+    private int receiptTypeId;
 
     public UserCostWriteModel() {
     }
@@ -19,7 +23,9 @@ public class UserCostWriteModel {
     public UserCostWriteModel(UserCost userCost) {
         setId(userCost.getId());
         setName(userCost.getName());
-        setMaxValue(userCost.getCostValue());
+        setCostValue(userCost.getCostValue());
+        setReimbursementId(userCost.getReimbursement().getId());
+        setReceiptTypeId(userCost.getReceiptType().getId());
     }
 
     public int getId() {
@@ -38,11 +44,27 @@ public class UserCostWriteModel {
         this.name = name;
     }
 
-    public double getMaxValue() {
+    public double getCostValue() {
         return costValue;
     }
 
-    public void setMaxValue(double maxValue) {
-        this.costValue = maxValue;
+    public void setCostValue(double costValue) {
+        this.costValue = costValue;
+    }
+
+    public int getReimbursementId() {
+        return reimbursementId;
+    }
+
+    public void setReimbursementId(int reimbursementId) {
+        this.reimbursementId = reimbursementId;
+    }
+
+    public int getReceiptTypeId() {
+        return receiptTypeId;
+    }
+
+    public void setReceiptTypeId(int receiptTypeId) {
+        this.receiptTypeId = receiptTypeId;
     }
 }
