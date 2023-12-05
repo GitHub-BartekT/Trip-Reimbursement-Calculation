@@ -7,7 +7,7 @@ import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
-import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.*;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.userGroupRepositoryInitialDataOnlyNames;
 
 class UserGroupServiceTest {
 
@@ -33,7 +33,7 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
-        List<UserGroupDTO> result = toTest.readAll();
+        List<UserGroupReadModel> result = toTest.readAll();
 
         //then
         assertThat(result.size()).isEqualTo(0);
@@ -53,7 +53,7 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
-        List<UserGroupDTO> result = toTest.readAll();
+        List<UserGroupReadModel> result = toTest.readAll();
         int afterSize = result.size();
 
         //then
@@ -94,7 +94,7 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
-        UserGroupDTO result = toTest.readById(2);
+        UserGroupReadModel result = toTest.readById(2);
 
         //then
         assertThat(result.getName()).isEqualTo("barGroup");
@@ -387,7 +387,7 @@ class UserGroupServiceTest {
         toCheck.setName("foo");
 
         //when
-        UserGroupDTO result = toTest.updateUserGroupById(toCheck);
+        UserGroupReadModel result = toTest.updateUserGroupById(toCheck);
         int afterSize = inMemoryUserGroupRepository.count();
         //then
         assertThat(result.getName()).isEqualTo("foo");

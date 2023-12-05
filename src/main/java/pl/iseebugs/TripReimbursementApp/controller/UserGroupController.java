@@ -4,9 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
-import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import java.net.URI;
@@ -23,12 +23,12 @@ public class UserGroupController {
     }
 
     @GetMapping
-    ResponseEntity<List<UserGroupDTO>> readAllUserGroups(){
+    ResponseEntity<List<UserGroupReadModel>> readAllUserGroups(){
         return ResponseEntity.ok(service.readAll());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<UserGroupDTO> readById(@PathVariable int id) throws UserGroupNotFoundException {
+    ResponseEntity<UserGroupReadModel> readById(@PathVariable int id) throws UserGroupNotFoundException {
         return ResponseEntity.ok(service.readById(id));
     }
 
@@ -39,8 +39,8 @@ public class UserGroupController {
     }
 
     @PutMapping()
-    ResponseEntity<UserGroupDTO> updateUserGroup(@RequestBody @Valid UserGroupWriteModel toUpdate) throws UserGroupNotFoundException {
-        UserGroupDTO updated = service.updateUserGroupById(toUpdate);
+    ResponseEntity<UserGroupReadModel> updateUserGroup(@RequestBody @Valid UserGroupWriteModel toUpdate) throws UserGroupNotFoundException {
+        UserGroupReadModel updated = service.updateUserGroupById(toUpdate);
         return ResponseEntity.ok(updated);
     }
 
