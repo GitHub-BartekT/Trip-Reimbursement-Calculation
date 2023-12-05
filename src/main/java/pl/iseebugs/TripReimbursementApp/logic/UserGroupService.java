@@ -5,22 +5,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
-import pl.iseebugs.TripReimbursementApp.model.UserGroup;
-import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.UserRepository;
+import pl.iseebugs.TripReimbursementApp.model.*;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupMapper;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelFull;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class UserGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserGroupService.class);
-    public final UserGroupRepository repository;
+    private final UserGroupRepository repository;
     private final UserRepository userRepository;
+    private ReceiptTypeRepository receiptTypeRepository;
 
     public UserGroupService(UserGroupRepository repository, UserRepository userRepository) {
         this.repository = repository;
@@ -34,8 +36,8 @@ public class UserGroupService {
                 .collect(Collectors.toList());
     }
 
-    public UserGroupReadModel readById(int id) throws UserGroupNotFoundException {
-        UserGroupReadModel toRead = repository.findById(id).map(UserGroupMapper::toReadModel)
+    public UserGroupReadModelFull readById(int id) throws UserGroupNotFoundException {
+        UserGroupReadModelFull toRead = repository.findById(id).map(UserGroupMapper::toReadModelFull)
                 .orElseThrow(UserGroupNotFoundException::new);
         logger.info("Read User Group with ID {}", toRead.getId());
         return toRead;
@@ -52,15 +54,53 @@ public class UserGroupService {
         return UserGroupMapper.toReadModel(userGroup);
     }
 
-    public UserGroupReadModel updateUserGroupById(UserGroupWriteModel group) throws UserGroupNotFoundException{
-        if(repository.findById(group.getId()).isEmpty()){
+    public UserGroupReadModel updateUserGroupById(UserGroupWriteModel toWrite) throws UserGroupNotFoundException{
+        if(repository.findById(toWrite.getId()).isEmpty()){
             throw new UserGroupNotFoundException();
-        } else if (repository.existsByName(group.getName())) {
+        } else if (repository.existsByName(toWrite.getName())) {
             throw new IllegalArgumentException("User Group with that name already exist.");
         }
-        UserGroup toUpdate = repository.save(group.toUserGroup());
+        UserGroup toUpdate = repository.save(toWrite.toUserGroup());
         return UserGroupMapper.toReadModel(toUpdate);
     }
+
+    public UserGroupReadModelFull updateUserGroupWithReceiptTypesIds
+            (UserGroupWriteModel userGroupWriteModel, List<Integer> receiptTypesIds) throws UserGroupNotFoundException {
+        UserGroup toUpdate = repository.findById(userGroupWriteModel.getId())
+                .orElseThrow(UserGroupNotFoundException::new);
+        if (repository.existsByName(userGroupWriteModel.getName())) {
+            throw new IllegalArgumentException("User Group with that name already exist.");
+        }
+
+        Set<ReceiptType> currentReceiptTypes = toUpdate.getReceiptTypes();
+        Set<ReceiptType> newReceiptTypes =
+                new HashSet<>(receiptTypeRepository.findAllById(receiptTypesIds));
+
+        for (ReceiptType receiptType : currentReceiptTypes){
+            if (!newReceiptTypes.contains(receiptType)){
+                receiptType.getUserGroups().add(toUpdate);
+                receiptTypeRepository.save(receiptType);
+            }
+        }
+
+        for (ReceiptType receiptType : newReceiptTypes){
+            if (!currentReceiptTypes.contains(receiptType)){
+                receiptType.getUserGroups().remove(toUpdate);
+                receiptTypeRepository.save(receiptType);
+            }
+        }
+
+        toUpdate.setName(userGroupWriteModel.getName());
+        toUpdate.setDailyAllowance(userGroupWriteModel.getDailyAllowance());
+        toUpdate.setCostPerKm(userGroupWriteModel.getCostPerKm());
+        toUpdate.setMaxMileage(userGroupWriteModel.getMaxMileage());
+        toUpdate.setMaxRefund(userGroupWriteModel.getMaxRefund());
+        toUpdate.setReceiptTypes(newReceiptTypes);
+
+        UserGroup result = repository.save(toUpdate);
+        logger.info("Updated UserGroup with ID: {}", result.getId());
+        return UserGroupMapper.toReadModelFull(result);
+   }
 
     public void deleteUserGroup(int id) throws UserGroupNotFoundException, UserNotFoundException {
         repository.findById(id).orElseThrow(UserGroupNotFoundException::new);
