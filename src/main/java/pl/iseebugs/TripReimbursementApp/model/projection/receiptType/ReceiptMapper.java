@@ -1,4 +1,4 @@
-package pl.iseebugs.TripReimbursementApp.model.projection;
+package pl.iseebugs.TripReimbursementApp.model.projection.receiptType;
 
 import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
 
@@ -8,5 +8,8 @@ public class ReceiptMapper {
     }
     public static ReceiptTypeReadModel toReadModel(ReceiptType receiptType){
         return new ReceiptTypeReadModel(receiptType);
+    }
+    public static ReceiptTypeReadModelShort toReadModelShort(ReceiptType receiptType){
+        return new ReceiptTypeReadModelShort(receiptType);
     }
 }

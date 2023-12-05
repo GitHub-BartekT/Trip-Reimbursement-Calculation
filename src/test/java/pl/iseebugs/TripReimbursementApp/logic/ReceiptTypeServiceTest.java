@@ -6,8 +6,8 @@ import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeWriteModel;
 
 import java.util.List;
 import java.util.Optional;

@@ -13,7 +13,7 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserDTO;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupDTO;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;

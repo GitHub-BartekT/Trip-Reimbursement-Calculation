@@ -9,10 +9,10 @@ import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 import pl.iseebugs.TripReimbursementApp.model.ReimbursementRepository;
 import pl.iseebugs.TripReimbursementApp.model.User;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementMapper;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementReadModelShort;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.ReimbursementMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.ReimbursementReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.ReimbursementReadModelShort;
+import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.ReimbursementWriteModel;
 
 import java.time.LocalDate;
 import java.util.List;

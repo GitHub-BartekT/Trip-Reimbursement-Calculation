@@ -2,6 +2,7 @@ package pl.iseebugs.TripReimbursementApp.model.projection;
 
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.User;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupDTO;
 
 public class UserDTO {
     private int id;

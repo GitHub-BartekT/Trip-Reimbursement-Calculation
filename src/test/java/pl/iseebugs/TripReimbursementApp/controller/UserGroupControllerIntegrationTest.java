@@ -10,11 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,6 +31,9 @@ class UserGroupControllerIntegrationTest {
 
     @Autowired
     private UserGroupRepository repository;
+
+    @Autowired
+    private ReceiptTypeRepository receiptTypeRepository;
 
     @Test
     @Sql({"/sql/001-test-schema.sql"})
@@ -66,26 +71,29 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
-    @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
     void testReadById_readUserGroup() throws Exception {
         //when
         mockMvc.perform(get("/groups/2"))
                 //then
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("barGroup"))
-                .andExpect(jsonPath("$.id").value("2"));
+                .andExpect(jsonPath("$.name").value("Sellers"))
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.receiptTypes[*].id", containsInAnyOrder(1, 3, 5)))
+                .andExpect(jsonPath("$.receiptTypes[*].name", containsInAnyOrder("Train_AllUsers", "Food_AllUsers", "Hotels_Sellers")))
+                .andExpect(jsonPath("$.receiptTypes", hasSize(3)));
     }
 
     @Test
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameAlreadyExist_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("fooGroup");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("fooGroup");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -100,11 +108,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("   ");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("   ");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -119,12 +127,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
         String name = createLongString(101);
-        userGroupDTO.setName(name);
+        toCreate.setName(name);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -139,11 +147,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameExists_throwIllegalArgumentException() throws Exception {
        //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("fooGroup");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("fooGroup");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -158,11 +166,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_createsUsersGroup() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("barfoo");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("barfoo");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -178,12 +186,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameHasMaxChar_createsUsersGroup() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
         var name = createLongString(100);
-        userGroupDTO.setName(name);
+        toCreate.setName(name);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
         //and
         int beforeSize = repository.findAll().size();
         UserGroup userGroup = repository.findById(beforeSize).orElse(null);
@@ -201,18 +209,101 @@ class UserGroupControllerIntegrationTest {
     }
 
     @Test
-    @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateUserGroupWithReceiptTypesIds_throwsUserGroupNotFoundException() throws Exception {
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(1684);
+        toUpdate.setName("NewUserGroup");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/groups/1,2,3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateUserGroupWithReceiptTypesIds_throwsIllegalArgumentException() throws Exception {
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("CEO");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/groups/1,2,3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group with that name already exist."));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
+    void updateReceiptType_updatesUserGroup() throws Exception {
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        String name = "toUpdate";
+        int receiptId = 5;
+        toUpdate.setName(name);
+        toUpdate.setId(receiptId);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(toUpdate);
+
+        //when
+        mockMvc.perform(put("/groups/1,2,6,4")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        //and when
+        mockMvc.perform(get("/groups/" + receiptId))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.id").value(receiptId))
+                .andExpect(jsonPath("$.receiptTypes[*].id", containsInAnyOrder(1, 2, 4, 6)))
+                .andExpect(jsonPath("$.receiptTypes[*].name", containsInAnyOrder("Train_AllUsers", "Aeroplane_CEO", "Food_CEO", "Other_Directors")))
+                .andExpect(jsonPath("$.receiptTypes", hasSize(4)));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/005-test-data-receipt-types.sql"})
     void testDeleteUserGroup_deletesUserGroup() throws Exception {
         //given
+        int userGroupId = 2;
         int beforeSize = repository.findAll().size();
+        int beforeReceiptNr1size = receiptTypeRepository.findAllByUserGroups_Id(userGroupId).size();
         //when
-        mockMvc.perform(delete("/groups/2")
+        mockMvc.perform(delete("/groups/" + userGroupId)
                         .contentType(MediaType.APPLICATION_JSON))
                 //then
                 .andExpect(status().isNoContent());
 
+        mockMvc.perform(get("/groups/" + userGroupId))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+
+        mockMvc.perform(get("/receipts/userGroup/" + userGroupId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User Group not found."));
+
         int afterSize = repository.findAll().size();
+
         assertThat(afterSize + 1).isEqualTo(beforeSize);
+        assertThat(beforeReceiptNr1size).isNotEqualTo(0);
     }
 
     @Test
@@ -275,11 +366,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUserGroup_throwsUserGroupNotFoundException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(10);
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(10);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //when
         mockMvc.perform(put("/groups")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -293,12 +384,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(2);
-        userGroupDTO.setName("   ");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("   ");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
 
         //when
         mockMvc.perform(put("/groups")
@@ -313,13 +404,13 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
         String name = createLongString(101);
-        userGroupDTO.setId(2);
-        userGroupDTO.setName(name);
+        toUpdate.setId(2);
+        toUpdate.setName(name);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
 
         //when
         mockMvc.perform(put("/groups")
@@ -334,12 +425,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_whenGivenNameExists_throwIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(2);
-        userGroupDTO.setName("fooGroup");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("fooGroup");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //when
         mockMvc.perform(put("/groups")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -353,12 +444,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_updatesUsersGroup() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(2);
-        userGroupDTO.setName("barFoo");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("barFoo");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //when
         mockMvc.perform(put("/groups")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -1,6 +1,8 @@
-package pl.iseebugs.TripReimbursementApp.model.projection;
+package pl.iseebugs.TripReimbursementApp.model.projection.receiptType;
 
 import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelShort;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +22,7 @@ public class ReceiptTypeReadModel {
         name = receiptType.getName();
         maxValue = receiptType.getMaxValue();
         Set<UserGroupReadModelShort> userGroupDTOS = receiptType.getUserGroups().stream()
-                .map(UserGroupReadModelShort::new).collect(Collectors.toSet());
+                .map(UserGroupMapper::toReadModelShort).collect(Collectors.toSet());
         getUserGroups().addAll(userGroupDTOS);
     }
 

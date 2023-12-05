@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.ReceiptTypeService;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
+
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeWriteModel;
 
 import java.net.URI;
 import java.util.List;
@@ -61,7 +62,8 @@ public class ReceiptTypeController {
 
     @PutMapping("/{userGroups}")
     ResponseEntity<ReceiptTypeReadModel> updateReceiptTypeWithUserGroupIds
-            (@RequestBody @Valid ReceiptTypeWriteModel toWrite, @PathVariable List<Integer> userGroups)
+            (@RequestBody @Valid ReceiptTypeWriteModel toWrite,
+             @PathVariable List<Integer> userGroups)
             throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
         var updated = service.updateReceiptTypeWithUserGroupIds(toWrite, userGroups);
         return ResponseEntity.ok(updated);
