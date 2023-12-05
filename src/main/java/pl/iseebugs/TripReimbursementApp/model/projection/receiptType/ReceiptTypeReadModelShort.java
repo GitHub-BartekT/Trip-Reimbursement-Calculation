@@ -1,4 +1,4 @@
-package pl.iseebugs.TripReimbursementApp.model.projection;
+package pl.iseebugs.TripReimbursementApp.model.projection.receiptType;
 
 import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
 

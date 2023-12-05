@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import java.net.URI;
 import java.util.List;
