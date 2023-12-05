@@ -9,4 +9,7 @@ public class ReceiptMapper {
     public static ReceiptTypeReadModel toReadModel(ReceiptType receiptType){
         return new ReceiptTypeReadModel(receiptType);
     }
+    public static ReceiptTypeReadModelShort toReadModelShort(ReceiptType receiptType){
+        return new ReceiptTypeReadModelShort(receiptType);
+    }
 }

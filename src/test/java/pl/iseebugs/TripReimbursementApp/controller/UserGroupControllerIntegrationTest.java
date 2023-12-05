@@ -12,7 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -81,11 +81,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameAlreadyExist_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("fooGroup");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("fooGroup");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -100,11 +100,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("   ");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("   ");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -119,12 +119,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
         String name = createLongString(101);
-        userGroupDTO.setName(name);
+        toCreate.setName(name);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -139,11 +139,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameExists_throwIllegalArgumentException() throws Exception {
        //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("fooGroup");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("fooGroup");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -158,11 +158,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_createsUsersGroup() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setName("barfoo");
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
+        toCreate.setName("barfoo");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
 
         //when
         mockMvc.perform(post("/groups")
@@ -178,12 +178,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testCreateUsersGroup_whenGivenNameHasMaxChar_createsUsersGroup() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toCreate = new UserGroupWriteModel();
         var name = createLongString(100);
-        userGroupDTO.setName(name);
+        toCreate.setName(name);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toCreate);
         //and
         int beforeSize = repository.findAll().size();
         UserGroup userGroup = repository.findById(beforeSize).orElse(null);
@@ -275,11 +275,11 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUserGroup_throwsUserGroupNotFoundException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(10);
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(10);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //when
         mockMvc.perform(put("/groups")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -293,12 +293,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_whenEmptyNameParam_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(2);
-        userGroupDTO.setName("   ");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("   ");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
 
         //when
         mockMvc.perform(put("/groups")
@@ -313,13 +313,13 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_whenGivenNameHasMoreThen_100_characters_throwsIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
         String name = createLongString(101);
-        userGroupDTO.setId(2);
-        userGroupDTO.setName(name);
+        toUpdate.setId(2);
+        toUpdate.setName(name);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
 
         //when
         mockMvc.perform(put("/groups")
@@ -334,12 +334,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_whenGivenNameExists_throwIllegalArgumentException() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(2);
-        userGroupDTO.setName("fooGroup");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("fooGroup");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //when
         mockMvc.perform(put("/groups")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -353,12 +353,12 @@ class UserGroupControllerIntegrationTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/003-test-data-user-groups.sql"})
     void testUpdateUsersGroup_updatesUsersGroup() throws Exception {
         //given
-        UserGroupDTO userGroupDTO = new UserGroupDTO();
-        userGroupDTO.setId(2);
-        userGroupDTO.setName("barFoo");
+        UserGroupWriteModel toUpdate = new UserGroupWriteModel();
+        toUpdate.setId(2);
+        toUpdate.setName("barFoo");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userGroupDTO);
+        String json = objectMapper.writeValueAsString(toUpdate);
         //when
         mockMvc.perform(put("/groups")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -20,7 +20,7 @@ public class ReceiptTypeReadModel {
         name = receiptType.getName();
         maxValue = receiptType.getMaxValue();
         Set<UserGroupReadModelShort> userGroupDTOS = receiptType.getUserGroups().stream()
-                .map(UserGroupReadModelShort::new).collect(Collectors.toSet());
+                .map(UserGroupMapper::toReadModelShort).collect(Collectors.toSet());
         getUserGroups().addAll(userGroupDTOS);
     }
 

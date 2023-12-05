@@ -6,9 +6,10 @@ import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
-import pl.iseebugs.TripReimbursementApp.model.UserRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
+import pl.iseebugs.TripReimbursementApp.model.UserRepository;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import java.util.List;
@@ -27,20 +28,20 @@ public class UserGroupService {
     }
 
 
-    public List<UserGroupDTO> readAll(){
+    public List<UserGroupReadModel> readAll(){
         return repository.findAll().stream()
-                .map(UserGroupDTO::new)
+                .map(UserGroupMapper::toReadModel)
                 .collect(Collectors.toList());
     }
 
-    public UserGroupDTO readById(int id) throws UserGroupNotFoundException {
-        UserGroupDTO toRead = repository.findById(id).map(UserGroupDTO::new)
+    public UserGroupReadModel readById(int id) throws UserGroupNotFoundException {
+        UserGroupReadModel toRead = repository.findById(id).map(UserGroupMapper::toReadModel)
                 .orElseThrow(UserGroupNotFoundException::new);
         logger.info("Read User Group with ID {}", toRead.getId());
         return toRead;
     }
 
-    public UserGroupDTO createUserGroup(UserGroupWriteModel group){
+    public UserGroupReadModel createUserGroup(UserGroupWriteModel group){
         if(repository.findById(group.getId()).isPresent()){
             throw new IllegalArgumentException("This User Group already exists.");
         } else if (repository.existsByName(group.getName())){
@@ -48,17 +49,17 @@ public class UserGroupService {
         }
         UserGroup userGroup = repository.save(group.toUserGroup());
         logger.info("Created user group with ID {}", userGroup.getId());
-        return new UserGroupDTO(userGroup);
+        return UserGroupMapper.toReadModel(userGroup);
     }
 
-    public UserGroupDTO updateUserGroupById(UserGroupWriteModel group) throws UserGroupNotFoundException{
+    public UserGroupReadModel updateUserGroupById(UserGroupWriteModel group) throws UserGroupNotFoundException{
         if(repository.findById(group.getId()).isEmpty()){
             throw new UserGroupNotFoundException();
         } else if (repository.existsByName(group.getName())) {
             throw new IllegalArgumentException("User Group with that name already exist.");
         }
         UserGroup toUpdate = repository.save(group.toUserGroup());
-        return new UserGroupDTO(toUpdate);
+        return UserGroupMapper.toReadModel(toUpdate);
     }
 
     public void deleteUserGroup(int id) throws UserGroupNotFoundException, UserNotFoundException {
