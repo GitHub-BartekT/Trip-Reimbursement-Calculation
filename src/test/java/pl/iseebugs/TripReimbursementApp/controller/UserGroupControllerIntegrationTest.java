@@ -12,7 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;

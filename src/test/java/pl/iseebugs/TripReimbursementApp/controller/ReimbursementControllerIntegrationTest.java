@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.ReimbursementRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReimbursementWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.ReimbursementWriteModel;
 
 import java.time.LocalDate;
 

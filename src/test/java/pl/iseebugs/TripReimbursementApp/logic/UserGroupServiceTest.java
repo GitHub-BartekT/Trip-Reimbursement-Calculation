@@ -7,8 +7,8 @@ import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import java.util.List;
 import java.util.Optional;

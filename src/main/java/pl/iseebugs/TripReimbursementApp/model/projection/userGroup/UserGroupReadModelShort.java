@@ -1,4 +1,4 @@
-package pl.iseebugs.TripReimbursementApp.model.projection;
+package pl.iseebugs.TripReimbursementApp.model.projection.userGroup;
 
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 

@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeWriteModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;

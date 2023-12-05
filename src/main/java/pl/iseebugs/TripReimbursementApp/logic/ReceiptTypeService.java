@@ -9,9 +9,9 @@ import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptTypeRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptMapper;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.ReceiptTypeWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeWriteModel;
 
 import java.util.HashSet;
 import java.util.List;

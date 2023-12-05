@@ -1,6 +1,8 @@
-package pl.iseebugs.TripReimbursementApp.model.projection;
+package pl.iseebugs.TripReimbursementApp.model.projection.userGroup;
 
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModelShort;
 
 import java.util.HashSet;
 import java.util.Set;
