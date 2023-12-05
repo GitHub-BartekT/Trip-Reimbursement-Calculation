@@ -7,6 +7,7 @@ import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelFull;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import java.net.URI;
@@ -28,7 +29,7 @@ public class UserGroupController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<UserGroupReadModel> readById(@PathVariable int id) throws UserGroupNotFoundException {
+    ResponseEntity<UserGroupReadModelFull> readById(@PathVariable int id) throws UserGroupNotFoundException {
         return ResponseEntity.ok(service.readById(id));
     }
 
@@ -41,6 +42,16 @@ public class UserGroupController {
     @PutMapping()
     ResponseEntity<UserGroupReadModel> updateUserGroup(@RequestBody @Valid UserGroupWriteModel toUpdate) throws UserGroupNotFoundException {
         UserGroupReadModel updated = service.updateUserGroupById(toUpdate);
+        return ResponseEntity.ok(updated);
+    }
+
+
+    @PutMapping("/{receiptTypes}")
+    ResponseEntity<UserGroupReadModelFull> updateUserGroupWithReceiptTypesIds
+            (@RequestBody @Valid UserGroupWriteModel toWrite,
+             @PathVariable List<Integer> receiptTypes)
+            throws UserGroupNotFoundException {
+        var updated = service.updateUserGroupWithReceiptTypesIds(toWrite, receiptTypes);
         return ResponseEntity.ok(updated);
     }
 

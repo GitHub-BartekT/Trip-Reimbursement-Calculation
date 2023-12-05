@@ -12,4 +12,7 @@ public class UserGroupMapper {
     public static UserGroupReadModelShort toReadModelShort(UserGroup userGroup){
         return new UserGroupReadModelShort(userGroup);
     }
+    public static UserGroupReadModelFull toReadModelFull(UserGroup userGroup){
+        return new UserGroupReadModelFull(userGroup);
+    }
 }

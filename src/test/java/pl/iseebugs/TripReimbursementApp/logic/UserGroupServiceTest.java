@@ -8,6 +8,7 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelFull;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import java.util.List;
@@ -94,7 +95,7 @@ class UserGroupServiceTest {
         var toTest = new UserGroupService(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //when
-        UserGroupReadModel result = toTest.readById(2);
+        UserGroupReadModelFull result = toTest.readById(2);
 
         //then
         assertThat(result.getName()).isEqualTo("barGroup");
