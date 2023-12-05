@@ -9,7 +9,7 @@ public class UserCost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
-    double cost_value;
+    double costValue;
     @ManyToOne
     @JoinColumn(name = "reimbursement_id")
     Reimbursement reimbursement;
@@ -36,8 +36,8 @@ public class UserCost {
         this.name = name;
     }
 
-    public double getCost_value() {
-        return cost_value;
+    public double getCostValue() {
+        return costValue;
     }
 
     public Reimbursement getReimbursement() {
@@ -56,11 +56,11 @@ public class UserCost {
         this.receiptType = receiptType;
     }
 
-    void setCost_value(double maxValue) {
+    void setCostValue(double maxValue) {
         if (maxValue < 0){
-            this.cost_value = 0;
+            this.costValue = 0;
         } else {
-        this.cost_value = maxValue;
+        this.costValue = maxValue;
         }
     }
 }

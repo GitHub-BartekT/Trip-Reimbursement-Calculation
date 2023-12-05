@@ -10,6 +10,8 @@ public interface UserCostRepository {
 
     List<UserCost> findAllByReimbursement_Id(int reimbursements_id);
 
+    List<UserCost> findAllByReceiptType_Id(int receiptTypeId);
+
     boolean existsById(int id);
 
     UserCost save(UserCost entity);
