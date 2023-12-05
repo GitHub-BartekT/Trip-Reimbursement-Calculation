@@ -9,6 +9,7 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
+import pl.iseebugs.TripReimbursementApp.model.projection.UserGroupWriteModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class UserGroupService {
         return toRead;
     }
 
-    public UserGroupDTO createUserGroup(UserGroupDTO group){
+    public UserGroupDTO createUserGroup(UserGroupWriteModel group){
         if(repository.findById(group.getId()).isPresent()){
             throw new IllegalArgumentException("This User Group already exists.");
         } else if (repository.existsByName(group.getName())){
@@ -50,7 +51,7 @@ public class UserGroupService {
         return new UserGroupDTO(userGroup);
     }
 
-    public UserGroupDTO updateUserGroupById(UserGroupDTO group) throws UserGroupNotFoundException{
+    public UserGroupDTO updateUserGroupById(UserGroupWriteModel group) throws UserGroupNotFoundException{
         if(repository.findById(group.getId()).isEmpty()){
             throw new UserGroupNotFoundException();
         } else if (repository.existsByName(group.getName())) {
