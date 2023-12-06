@@ -427,7 +427,7 @@ public class TestHelper {
         result.add(userCost_02);
 
         UserCost userCost_03 = new UserCost();
-        userCost_03.setName("user 2 - hotel");
+        userCost_03.setName("user_2_hotel");
         userCost_03.setCostValue(456);
         userCost_03.setReimbursement(inMemoryReimbursementRepository.findById(8)
                 .orElseThrow(ReimbursementNotFoundException::new));
@@ -435,7 +435,7 @@ public class TestHelper {
         result.add(userCost_03);
 
         UserCost userCost_04 = new UserCost();
-        userCost_04.setName("user 2 - hotel");
+        userCost_04.setName("user_4_hotel");
         userCost_04.setCostValue(10000);
         userCost_04.setReimbursement(inMemoryReimbursementRepository.findById(8)
                 .orElseThrow(ReimbursementNotFoundException::new));

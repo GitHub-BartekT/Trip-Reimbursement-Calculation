@@ -63,14 +63,14 @@ public class UserCostService {
         if (userCostRepository.existsById(toCreate.getId())) {
             throw new IllegalArgumentException("This User Cost already exists.");
         }
-        return UserCostMapper.toReadModel(userCostRepository.save(toEntity(toCreate)));
+    return validation(toCreate);
     }
 
     public UserCostReadModel updateUserCost(UserCostWriteModel toUpdate) throws Exception {
         if (!userCostRepository.existsById(toUpdate.getId())) {
             throw new UserCostNotFoundException();
         }
-        return UserCostMapper.toReadModel(userCostRepository.save(toEntity(toUpdate)));
+        return validation(toUpdate);
     }
 
     public void deleteById(int id) throws ReimbursementNotFoundException, UserCostNotFoundException {
@@ -83,6 +83,25 @@ public class UserCostService {
         } catch (Exception e) {
             logger.error("Error deleting User Cost with ID {}: {}", id, e.getMessage());
         }
+    }
+
+    private UserCostReadModel validation(UserCostWriteModel toCheck) throws ReimbursementNotFoundException, ReceiptTypeNotFoundException {
+        if (reimbursementRepository.existsById(toCheck.getReimbursementId())) {
+            throw new ReimbursementNotFoundException();
+        } else if (receiptTypeRepository.existsById(toCheck.getReceiptTypeId())){
+            throw new ReceiptTypeNotFoundException();
+        }
+        int userGroupFromReimbursement =
+                reimbursementRepository.findById(toCheck.getReimbursementId()).get().getUser().getUserGroup().getId();
+        List<ReceiptType>  receiptTypeList =
+                receiptTypeRepository.findAllByUserGroups_Id(userGroupFromReimbursement);
+
+        for (ReceiptType receiptType : receiptTypeList){
+            if (receiptType.getId() == toCheck.getReceiptTypeId()){
+                return  UserCostMapper.toReadModel(userCostRepository.save(toEntity(toCheck)));
+            }
+        }
+        throw new IllegalArgumentException("Receipt Type mismatch to available Receipt Type for this userGroup.");
     }
 
     private UserCost toEntity(UserCostWriteModel toWrite) throws ReceiptTypeNotFoundException, ReimbursementNotFoundException {
