@@ -86,9 +86,9 @@ public class UserCostService {
     }
 
     private UserCostReadModel validation(UserCostWriteModel toCheck) throws ReimbursementNotFoundException, ReceiptTypeNotFoundException {
-        if (reimbursementRepository.existsById(toCheck.getReimbursementId())) {
+        if (!reimbursementRepository.existsById(toCheck.getReimbursementId())) {
             throw new ReimbursementNotFoundException();
-        } else if (receiptTypeRepository.existsById(toCheck.getReceiptTypeId())){
+        } else if (!receiptTypeRepository.existsById(toCheck.getReceiptTypeId())){
             throw new ReceiptTypeNotFoundException();
         }
         int userGroupFromReimbursement =

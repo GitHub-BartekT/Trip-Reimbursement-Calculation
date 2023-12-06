@@ -6,6 +6,7 @@ import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserCostNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.projection.userCost.UserCostReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userCost.UserCostWriteModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,6 @@ import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
 import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.userCostInitialDataForUserCosts;
 
 class UserCostServiceTest {
-
 
     @Test
     @DisplayName("should returns empty list when no objects")
@@ -153,7 +153,6 @@ class UserCostServiceTest {
         assertThat(result.size()).isEqualTo(2);
     }
 
-
     @Test
     @DisplayName("should throws ReceiptTypeNotFoundException when given id not found")
     void readAllByReceiptType_Id_throwsReceiptTypeNotFoundException() {
@@ -202,39 +201,241 @@ class UserCostServiceTest {
         assertThat(result.size()).isEqualTo(3);
     }
 
-    //TODO:
     @Test
     @DisplayName("should throws IllegalArgumentException when given id found")
     void createUserCost_throwsIllegalArgument() {
+        //given
+        var mockUserCostRepository = mock(InMemoryUserCostRepository.class);
+        var mockReimbursementRepository = mock(InMemoryReimbursementRepository.class);
+        var mockReceiptTypeRepository = mock(InMemoryReceiptTypeRepository.class);
+        when(mockUserCostRepository.existsById(anyInt())).thenReturn(true);
+        //system under test
+        var toTest = new UserCostService(mockUserCostRepository, mockReimbursementRepository, mockReceiptTypeRepository);
+
+        UserCostWriteModel toCreate = new UserCostWriteModel();
+        //when
+        var exception = catchThrowable(() -> toTest.createUserCost(toCreate));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("This User Cost already exists.");
     }
 
-    //TODO:
     @Test
     @DisplayName("should creates User Cost")
-    void createUserCost_createsUserCost() {
+    void createUserCost_createsUserCost() throws Exception {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+        int beforeSize = inMemoryUserCostRepository.count();
+        UserCostWriteModel toCreate = new UserCostWriteModel();
+        toCreate.setName("Created");
+        toCreate.setCostValue(123);
+        toCreate.setReimbursementId(1);
+        toCreate.setReceiptTypeId(3);
+
+        //when
+        UserCostReadModel result = toTest.createUserCost(toCreate);
+        int afterSize = inMemoryUserCostRepository.count();
+
+        //then
+        assertThat(result.getName()).isEqualTo("Created");
+        assertThat(result.getCostValue()).isEqualTo(123);
+        assertThat(result.getReceiptId()).isEqualTo(3);
+        assertThat(result.getReimbursementId()).isEqualTo(1);
+        assertThat(beforeSize + 1).isEqualTo(afterSize);
     }
 
-    //TODO:
     @Test
     @DisplayName("should throws UserCostNotFoundException when given id found")
     void updateUserCost_throwsUserCostNotFoundException() {
+        //given
+        var mockUserCostRepository = mock(InMemoryUserCostRepository.class);
+        var mockReimbursementRepository = mock(InMemoryReimbursementRepository.class);
+        var mockReceiptTypeRepository = mock(InMemoryReceiptTypeRepository.class);
+        when(mockUserCostRepository.existsById(anyInt())).thenReturn(false);
+        //system under test
+        var toTest = new UserCostService(mockUserCostRepository, mockReimbursementRepository, mockReceiptTypeRepository);
+
+        UserCostWriteModel toCreate = new UserCostWriteModel();
+        //when
+        var exception = catchThrowable(() -> toTest.updateUserCost(toCreate));
+
+        //then
+        assertThat(exception).isInstanceOf(UserCostNotFoundException.class);
     }
 
-    //TODO:
     @Test
     @DisplayName("should updates User Cost")
-    void updateUserCost_updatesUserCost() {
+    void updateUserCost_updatesUserCost() throws Exception {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+        int beforeSize = inMemoryUserCostRepository.count();
+        UserCostWriteModel toUpdate = new UserCostWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("Created");
+        toUpdate.setCostValue(123);
+        toUpdate.setReimbursementId(1);
+        toUpdate.setReceiptTypeId(3);
+
+        //when
+        UserCostReadModel result = toTest.updateUserCost(toUpdate);
+        int afterSize = inMemoryUserCostRepository.count();
+
+        //then
+        assertThat(result.getName()).isEqualTo("Created");
+        assertThat(result.getCostValue()).isEqualTo(123);
+        assertThat(result.getReceiptId()).isEqualTo(3);
+        assertThat(result.getReimbursementId()).isEqualTo(1);
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(beforeSize).isEqualTo(afterSize);
     }
 
-    //TODO:
     @Test
     @DisplayName("should throws UserCostNotFoundException when given id found")
     void deleteById_throwsUserCostNotFoundException() {
+        //given
+        var mockUserCostRepository = mock(InMemoryUserCostRepository.class);
+        var mockReimbursementRepository = mock(InMemoryReimbursementRepository.class);
+        var mockReceiptTypeRepository = mock(InMemoryReceiptTypeRepository.class);
+        when(mockUserCostRepository.existsById(anyInt())).thenReturn(false);
+        //system under test
+        var toTest = new UserCostService(mockUserCostRepository, mockReimbursementRepository, mockReceiptTypeRepository);
+
+        UserCostWriteModel toCreate = new UserCostWriteModel();
+        //when
+        var exception = catchThrowable(() -> toTest.deleteById(8));
+
+        //then
+        assertThat(exception).isInstanceOf(UserCostNotFoundException.class);
     }
 
-    //TODO:
     @Test
     @DisplayName("should deletes User Cost")
-    void deleteById_updatesUserCost() {
+    void deleteById_updatesUserCost() throws ReimbursementNotFoundException, UserCostNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+        int beforeSize = inMemoryUserCostRepository.count();
+       int idToDelete = 2;
+
+        //when
+        toTest.deleteById(idToDelete);
+        int afterSize = inMemoryUserCostRepository.count();
+        //then
+        assertThat(beforeSize).isEqualTo(afterSize + 1);
+
+        //and
+        //when
+        var exception = catchThrowable(() -> toTest.readById(idToDelete));
+        //then
+        assertThat(exception).isInstanceOf(UserCostNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should throws ReimbursementNotFoundException when given id found")
+    void validation_throwsReimbursementNotFoundException() throws Exception {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+        int beforeSize = inMemoryUserCostRepository.count();
+        UserCostWriteModel toUpdate = new UserCostWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("Created");
+        toUpdate.setCostValue(123);
+        toUpdate.setReimbursementId(55555);
+        toUpdate.setReceiptTypeId(3);
+
+        //when
+        var exception = catchThrowable(() -> toTest.updateUserCost(toUpdate));
+
+        //then
+        assertThat(exception).isInstanceOf(ReimbursementNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should throws ReceiptTypeNotFoundException when given id found")
+    void validation_throwsReceiptTypeNotFoundException() throws ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+        int beforeSize = inMemoryUserCostRepository.count();
+        UserCostWriteModel toUpdate = new UserCostWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("Created");
+        toUpdate.setCostValue(123);
+        toUpdate.setReimbursementId(1);
+        toUpdate.setReceiptTypeId(5555);
+
+        //when
+        var exception = catchThrowable(() -> toTest.updateUserCost(toUpdate));
+
+        //then
+        assertThat(exception).isInstanceOf(ReceiptTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should throws IllegalArgumentException could not create user cost with given receipt type")
+    void validation_throwsIllegalArgumentException() throws ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+        int beforeSize = inMemoryUserCostRepository.count();
+        UserCostWriteModel toUpdate = new UserCostWriteModel();
+        toUpdate.setId(1);
+        toUpdate.setName("Created");
+        toUpdate.setCostValue(123);
+        toUpdate.setReimbursementId(3);
+        toUpdate.setReceiptTypeId(6);
+
+        //when
+        var exception = catchThrowable(() -> toTest.updateUserCost(toUpdate));
+
+        //then
+        assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Receipt Type mismatch to available Receipt Type for this userGroup.");
     }
 }
