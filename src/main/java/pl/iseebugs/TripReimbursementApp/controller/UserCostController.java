@@ -65,6 +65,11 @@ public class UserCostController {
         return ResponseEntity.noContent().build();
     }
 
+    @ExceptionHandler(ReceiptTypeNotFoundException.class)
+    ResponseEntity<String> handlerReceiptTypeNotFoundException(ReceiptTypeNotFoundException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     @ExceptionHandler(UserCostNotFoundException.class)
     ResponseEntity<String> handlerUserCostNotFound(UserCostNotFoundException e){
         return ResponseEntity.badRequest().body(e.getMessage());
