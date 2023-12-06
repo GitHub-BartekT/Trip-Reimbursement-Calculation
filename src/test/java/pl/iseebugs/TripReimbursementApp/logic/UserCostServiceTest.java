@@ -2,12 +2,14 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.projection.userCost.UserCostReadModel;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.userCostInitialDataForUserCosts;
 
 class UserCostServiceTest {
 
@@ -30,10 +32,31 @@ class UserCostServiceTest {
         assertThat(result).isNotNull();
     }
 
-    //TODO:
     @Test
     @DisplayName("should returns all objects")
-    void readAll_returnsUserCosts() {
+    void readAll_returnsUserCosts() throws ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        //system under test
+        var toTest = new UserCostService(inMemoryUserCostRepository, inMemoryReimbursementRepository, inMemoryReceiptTypeRepository);
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository,
+                inMemoryReimbursementRepository, inMemoryReceiptTypeRepository, inMemoryUserCostRepository);
+
+        //when
+        List<UserCostReadModel> result = toTest.readAll();
+
+        //then
+        assertThat(result.get(0).getName()).isEqualTo("receipt_1_train");
+        assertThat(result.get(0).getCostValue()).isEqualTo(56);
+        assertThat(result.get(1).getName()).isEqualTo("receipt_2_food");
+        assertThat(result.get(1).getReceiptId()).isEqualTo(3);
+        assertThat(result.get(1).getReimbursementId()).isEqualTo(1);
+        assertThat(result.get(4).getName()).isEqualTo("cost");
+        assertThat(result.size()).isEqualTo(5);
     }
 
     //TODO:

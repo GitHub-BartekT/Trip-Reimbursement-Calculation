@@ -6,6 +6,8 @@ public class UserCostReadModel {
     private int id;
     private String name;
     private double costValue;
+    private int reimbursementId;
+    private int receiptId;
 
     public UserCostReadModel() {
     }
@@ -14,6 +16,8 @@ public class UserCostReadModel {
         id = userCost.getId();
         name = userCost.getName();
         costValue = userCost.getCostValue();
+        reimbursementId = userCost.getReimbursement().getId();
+        receiptId = userCost.getReceiptType().getId();
     }
 
     public int getId() {
@@ -24,7 +28,15 @@ public class UserCostReadModel {
         return name;
     }
 
-    public double getMaxValue() {
+    public double getCostValue() {
         return costValue;
+    }
+
+    public int getReimbursementId() {
+        return reimbursementId;
+    }
+
+    public int getReceiptId() {
+        return receiptId;
     }
 }

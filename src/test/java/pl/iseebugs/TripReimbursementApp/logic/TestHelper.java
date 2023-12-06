@@ -94,7 +94,7 @@ public class TestHelper {
             inMemoryUserGroupRepository.save(entity);
         }
     }
-    //TODO: UserCost - userGroup
+
     protected static void userGroupRepositoryInitialDataOnlyNames(InMemoryUserGroupRepository inMemoryUserGroupRepository){
         userGroupRepositoryInitializeData(inMemoryUserGroupRepository, userGroupsDataOnlyWithNamesPreparedData());
     }
@@ -174,7 +174,7 @@ public class TestHelper {
         userGroupRepositoryInitializeData(inMemoryUserGroupRepository, userGroups);
         receiptTypesRepositoryInitializeData(inMemoryReceiptTypeRepository, receiptTypesDataAllParams(inMemoryUserGroupRepository));
     }
-    //TODO: UserCost - receiptType
+
     protected static void receiptTypesRepositoryInitialDataForUserCosts(InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository,InMemoryUserGroupRepository inMemoryUserGroupRepository){
         receiptTypesRepositoryInitializeData(inMemoryReceiptTypeRepository, receiptTypesDataAllParams(inMemoryUserGroupRepository));
     }
@@ -287,7 +287,7 @@ public class TestHelper {
         userGroupRepositoryInitialDataAllParams(inMemoryUserGroupRepository);
         userRepositoryInitializeData(inMemoryUserRepository, userDataAllParams(inMemoryUserGroupRepository));
     }
-    //TODO: UserCost - receiptType
+
     protected static void userRepositoryInitialDataForUserCosts(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository) {
         userGroupRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository);
         userRepositoryInitializeData(inMemoryUserRepository, userDataForUserCosts(inMemoryUserGroupRepository));
@@ -411,7 +411,7 @@ public class TestHelper {
 
 
         UserCost userCost_01 = new UserCost();
-        userCost_01.setName("receipt 1 - train");
+        userCost_01.setName("receipt_1_train");
         userCost_01.setCostValue(56);
         userCost_01.setReimbursement(inMemoryReimbursementRepository.findById(1)
                 .orElseThrow(ReimbursementNotFoundException::new));
@@ -419,7 +419,7 @@ public class TestHelper {
         result.add(userCost_01);
 
         UserCost userCost_02 = new UserCost();
-        userCost_02.setName("receipt 2 - food");
+        userCost_02.setName("receipt_2_food");
         userCost_02.setCostValue(56);
         userCost_02.setReimbursement(inMemoryReimbursementRepository.findById(1)
                 .orElseThrow(ReimbursementNotFoundException::new));
@@ -443,7 +443,7 @@ public class TestHelper {
         result.add(userCost_04);
 
         UserCost userCost_05 = new UserCost();
-        userCost_05.setName("user 4");
+        userCost_05.setName("cost");
         userCost_05.setCostValue(23);
         userCost_05.setReimbursement(inMemoryReimbursementRepository.findById(12)
                 .orElseThrow(ReimbursementNotFoundException::new));
