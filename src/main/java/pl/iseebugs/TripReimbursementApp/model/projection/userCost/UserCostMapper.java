@@ -9,7 +9,7 @@ public class UserCostMapper {
     public static UserCostReadModel toReadModel(UserCost userCost){
         return new UserCostReadModel(userCost);
     }
-    public static UserCostReadModelToReimbursement toReadModeltoReimburcement(UserCost userCost){
+    public static UserCostReadModelToReimbursement toReadModelToReimbursement(UserCost userCost){
         return new UserCostReadModelToReimbursement(userCost);
     }
 

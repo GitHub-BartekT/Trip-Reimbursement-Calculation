@@ -5,8 +5,9 @@ import pl.iseebugs.TripReimbursementApp.model.projection.userCost.UserCostMapper
 import pl.iseebugs.TripReimbursementApp.model.projection.userCost.UserCostReadModelToReimbursement;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ReimbursementReadModel {
     private int id;
@@ -17,7 +18,7 @@ public class ReimbursementReadModel {
     private boolean pushedToAccept;
     private int userId;
     private double returnValue;
-    private List<UserCostReadModelToReimbursement> userCosts = new ArrayList<>();
+    private Set<UserCostReadModelToReimbursement> userCosts = new HashSet<>();
 
     public ReimbursementReadModel(Reimbursement reimbursement) {
         id = reimbursement.getId();
@@ -30,8 +31,8 @@ public class ReimbursementReadModel {
         returnValue = returnValue(reimbursement);
         if (reimbursement.getUserCosts() != null) {
             userCosts = reimbursement.getUserCosts().stream()
-                    .map(UserCostMapper::toReadModeltoReimburcement)
-                    .toList();
+                    .map(UserCostMapper::toReadModelToReimbursement)
+                    .collect(Collectors.toSet());
         }
     }
 
@@ -71,7 +72,7 @@ public class ReimbursementReadModel {
         return ReimbursementHelper.returnValue(reimbursement);
     }
 
-    public List<UserCostReadModelToReimbursement> getUserCosts() {
+    public Set<UserCostReadModelToReimbursement> getUserCosts() {
         return userCosts;
     }
 }

@@ -4,6 +4,7 @@ package pl.iseebugs.TripReimbursementApp.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -33,6 +34,17 @@ public class Reimbursement {
         this.distance = distance;
         this.pushedToAccept = pushedToAccept;
         this.user = user;
+        this.userCosts  = new HashSet<>();
+    }
+
+    public Reimbursement(String name, LocalDate startDate, LocalDate endDate, int distance, boolean pushedToAccept, User user, Set<UserCost> userCosts) {
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.distance = distance;
+        this.pushedToAccept = pushedToAccept;
+        this.user = user;
+        this.userCosts = (userCosts != null) ? userCosts : new HashSet<>();
     }
 
     public int getId() {

@@ -18,11 +18,10 @@ public class ReimbursementHelper {
         double dailyAllowance = userGroup.getDailyAllowance();
         double maxRefund = userGroup.getMaxRefund();
         long duration;
-        Set<UserCost> userCosts = new HashSet<>();
         double allCostsSum = 0;
 
         if (reimbursement.getUserCosts() != null) {
-            userCosts.addAll(reimbursement.getUserCosts());
+            Set<UserCost> userCosts = new HashSet<>(reimbursement.getUserCosts());
             for (UserCost userCost : userCosts) {
                 allCostsSum += Math.min(userCost.getCostValue(), userCost.getReceiptType().getMaxValue());
             }
