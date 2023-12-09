@@ -1,0 +1,89 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1f8dd6;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+    font-size: 50px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logger-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-menu {
+    padding: 1em;
+    text-align: left;
+    background: #2d3e50;
+}
+
+.home-menu .pure-menu-heading {
+    color: white;
+    font-weight: 400;
+    font-size: 120%;
+}
+
+.home-menu .pure-menu-list .pure-menu-selected a {
+    color: white;
+}
+
+.home-menu ul {
+    float: right;
+}
+
+.home-menu a {
+    color: #1f8dd6;
+}
+
+.pure-menu-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.pure-menu-item {
+    margin: 0 15px;
+}
+
+.home-menu li a:hover,
+.home-menu li a:focus {
+    background: none;
+    border: none;
+    color: #AECFE5;
+}
+.big-text {
+    margin-top: 7.5em;
+    margin-bottom: 2.5em;
+}
+
+.pure-menu-logger-item a{
+    align-items: center;
+    margin: 15px 15px;
+}
+
+.pure-button {
+    background-color: #1f8dd6;
+    color: white;
+    padding: 0.5em 2em;
+    border-radius: 5px;
+    width: 200px;
+    font-size: 100%;
+}
+
+a.pure-button-primary {
+    background: white;
+    color: #1f8dd6;
+    border-radius: 5px;
+    font-size: 120%;
+}
