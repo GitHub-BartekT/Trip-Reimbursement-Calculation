@@ -44,8 +44,8 @@ Comprehensive testing using JUnit, AssertJ, Mockito, and Postman for integration
 4. Documentation ❌
    - installation and setup guide
    - usage instructions for users and administrators
-5. Improvments and Corrections:
-   - funcionalities as required based on user feedback or additional requirements
+5. Improvements and Corrections:
+   - functionalities as required based on user feedback or additional requirements
 
 
 https://www.linkedin.com/in/bartlomiejtucholski/
