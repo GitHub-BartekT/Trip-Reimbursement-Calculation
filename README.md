@@ -39,7 +39,7 @@ Comprehensive testing using JUnit, AssertJ, Mockito, and Postman for integration
    - allow administrators to manage reimbursement settings and create reports
 2. Security Implementation ❌
    - security to protect user data and sensitive information
-3. Program Profiles ❌
+3. Program Profiles ✅
    - configure different profiles for development, testing and production environments.
 4. Documentation ❌
    - installation and setup guide
