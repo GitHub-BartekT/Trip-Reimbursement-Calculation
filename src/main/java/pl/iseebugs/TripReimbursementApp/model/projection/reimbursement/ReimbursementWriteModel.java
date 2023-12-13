@@ -1,10 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.model.projection.reimbursement;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
 
@@ -23,7 +20,7 @@ public class ReimbursementWriteModel {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull (message = "No end date.")
     private LocalDate endDate;
-    @Positive(message = "Distance should be positive.")
+    @PositiveOrZero(message = "Distance should be positive.")
     private int distance;
     private boolean pushedToAccept;
     @NotNull
