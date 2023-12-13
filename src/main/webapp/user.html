@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Trip Reimbursement</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheet_administrator.css">
+    <link rel="stylesheet" href="common/stylesheet.css">
+    <link rel="stylesheet" href="user/stylesheet_user.css">
 </head>
 <body style="background: #ffdf73">
 <div class="header">
@@ -17,8 +18,19 @@
         </ul>
     </div>
 </div>
-<div class="big-text"><h2>Status:</h2></div>
-<div class="status-container"></div>
-<script src="user.js"> </script>
+<div class="status">
+    <div class="big-text"><h2>Last 10 reimbursements:</h2></div>
+    <div class="status-container">
+        <table id="reimbursement_table" class="pure-table pure-table-bordered pure-table-striped center-table">
+            <tr>
+                <td>no.</td>
+                <td>name</td>
+                <td>value</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script src="common/common.js"> </script>
+<script src="user/user.js"> </script>
 </body>
 </html>

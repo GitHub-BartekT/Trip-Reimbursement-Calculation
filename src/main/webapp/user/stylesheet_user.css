@@ -1,0 +1,25 @@
+.background {
+    margin: 0;
+    padding: 0;
+    background-color: #ffdf73;
+}
+.big-text {
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
+    text-align: center;
+}
+
+.table {
+    text-align: center;
+}
+
+.status-container {
+    display: flex;
+    justify-content: center;
+}
+
+.status-container table {
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
