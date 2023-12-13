@@ -23,3 +23,26 @@
     margin: 0 auto;
     text-align: center;
 }
+
+.create-container table{
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.decisions {
+    margin: 2.5em auto;
+    width: 50%;
+    text-align: center;
+
+}
+
+.pure-button {
+    background-color: #1f8dd6;
+    color: white;
+    padding: 0.5em 2em;
+    border-radius: 5px;
+    width: auto;
+    font-size: 100%;
+    margin: 0 10px;
+}
