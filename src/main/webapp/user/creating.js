@@ -38,6 +38,20 @@ function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_d
                 topTextContainer.innerHTML = `<h2>Your reimbursement id:${newObjectId}</h2>`;
             }
             document.getElementById('information').innerHTML = `<h2>You added a new reimbursements!</h2>`;
+            document.getElementById("accept_btn").innerText = "Save changes";
+            changeBtnToPrimary("add_cost_btn");
+            changeBtnToDelete("delete_btn");
+
         })
         .catch(console.warn);
+}
+
+function changeBtnToDelete(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("button-error", "pure-button");
+}
+
+function changeBtnToPrimary(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("pure-button", "pure-button-primary");
 }
