@@ -39,7 +39,7 @@
                 </td>
             </tr>
             <tr>
-                <tdMake>End day:</tdMake >
+                <td>End day:</td >
                 <td colspan="2">
                     <label for="reimbursement_end_day"></label><input id="reimbursement_end_day" type="date">
                 </td>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="addReimbursement()">Add Reimbursement</button>
+                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeReimbursement()">Add Reimbursement</button>
                 </td>
             </tr>
             <tr>
@@ -73,13 +73,12 @@
     </div>
 </div>
 <div class="decisions">
-    <button id="delete_btn" class="button-error pure-button pure-button-disabled">Delete Reimbursement</button>
+    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteReimbursement()">Delete Reimbursement</button>
 </div>
 <div class="footer">
     <div id="information" class="big-text"><h2></h2></div>
 </div>
 <script src="../common/common.js"> </script>
-<script src="../user/user.js"> </script>
 <script src="../user/creating.js"> </script>
 
 </body>
