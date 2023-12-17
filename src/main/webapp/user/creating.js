@@ -9,8 +9,8 @@ function makeReimbursement(){
 
     if (isCreatingMode()) {
         doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance);
-    } else{
-
+    } else {
+        doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance);
     }
 }
 
@@ -41,9 +41,37 @@ function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_d
             if (locationHeader) {
                 const urlParts = locationHeader.split('/');
                 REIMBURSEMENT_ID = urlParts[urlParts.length - 1];
-                pageChangingMode()
+                pageChangingMode();
             }
             document.getElementById('information').innerHTML = `<h2>You added a new reimbursements!</h2>`;
+        })
+        .catch(console.warn);
+}
+
+
+function doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance){
+    let bodyAddReimbursement = {
+        id: REIMBURSEMENT_ID,
+        name: reimb_name,
+        startDate:  reimb_startDate,
+        endDate: reimb_endDate,
+        distance: reimb_distance,
+        userId: USER_ID
+    };
+
+    fetch(`${REIMBURSEMENTS_API_URL}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bodyAddReimbursement)
+    })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('information').innerHTML = `<h2>You changed the reimbursement!</h2>`;
+            }
+                document.getElementById('information').innerHTML = `<h2>Changing was failed!</h2>`;
         })
         .catch(console.warn);
 }
