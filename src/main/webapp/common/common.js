@@ -1,4 +1,5 @@
 const USER_GROUPS_API_URL = 'http://localhost:8080/groups';
+const RECEIPT_TYPE_API_URL ='http://localhost:8080/receipts';
 const USER_API_URL = 'http://localhost:8080/users';
 const REIMBURSEMENTS_API_URL = 'http://localhost:8080/reimbursements';
 let USER_ID;
@@ -6,6 +7,7 @@ let USER_NAME;
 let USER_GROUP_ID;
 let USER_GROUP_NAME;
 let REIMBURSEMENT_ID;
+let RECEIPT_TYPE_ID;
 let CREATE_MODE = Boolean(true);
 
 //read data from url

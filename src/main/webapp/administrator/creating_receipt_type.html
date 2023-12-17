@@ -28,7 +28,7 @@
 <div class="creating">
     <div  class="big-text">
         <div id="top-text-container">
-            <h2></h2>
+            <h2>Your new Receipt Type:</h2>
         </div>
     </div>
     <div class="create-container">
@@ -36,36 +36,18 @@
             <tr>
                 <td>Name:</td>
                 <td colspan="2">
-                    <label for="user_group_name"></label><input id="user_group_name" placeholder="User Group Name">
+                    <label for="receipt_type_name"></label><input id="receipt_type_name" placeholder="Receipt Type Name">
                 </td>
             </tr>
             <tr>
-                <td>Daily allowance:</td>
+                <td>Max value:</td>
                 <td colspan="2">
-                    <label for="user_group_daily_allowance"></label><input id="user_group_daily_allowance" value="0">
-                </td>
-            </tr>
-            <tr>
-                <td>Cost per km:</td >
-                <td colspan="2">
-                    <label for="user_group_cost_per_km"></label><input id="user_group_cost_per_km" value="0">
-                </td>
-            </tr>
-            <tr>
-                <td>Max mileage:</td>
-                <td colspan="2">
-                    <label for="user_group_max_mileage"></label><input id="user_group_max_mileage" value="0">
-                </td>
-            </tr>
-            <tr>
-                <td>Max refund:</td>
-                <td colspan="2">
-                    <label for="user_group_max_refund"></label><input id="user_group_max_refund" value="0">
+                    <label for="receipt_type_max_value"></label><input id="receipt_type_max_value" value="0">
                 </td>
             </tr>
             <tr>
                 <td colspan="3">
-                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeUserGroup()"></button>
+                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeReceiptType()">Add Receipt Type</button>
                 </td>
             </tr>
             <tr>
@@ -86,13 +68,13 @@
     </div>
 </div>
 <div class="decisions">
-    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteUserGroup()">Delete User Group</button>
+    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteReceiptType()">Delete Receipt Type</button>
 </div>
 <div class="footer">
     <div id="information" class="big-text"><h2></h2></div>
 </div>
 <script src="../common/common.js"> </script>
-<script src="creating_user_groups.js"> </script>
+<script src="creating_receipt_type.js"> </script>
 
 </body>
 </html>

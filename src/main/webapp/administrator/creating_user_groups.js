@@ -1,5 +1,6 @@
 readDataFromUrl();
 readUserById();
+setMode();
 
 function makeUserGroup(){
     let user_group_name = document.getElementById(`user_group_name`).value;
@@ -94,6 +95,14 @@ function doDeleteUserGroup() {
             }
         })
         .catch(console.warn);
+}
+
+function setMode(){
+    if (CREATE_MODE){
+        pageCreatingModeUserGroup();
+    } else {
+        pageChangingModeUserGroup();
+    }
 }
 
 function pageCreatingModeUserGroup(){
