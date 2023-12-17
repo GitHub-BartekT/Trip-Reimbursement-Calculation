@@ -4,7 +4,6 @@ body {
     background-color: #1f8dd6;
 }
 
-
 h1 {
     color: white;
     text-align: center;
@@ -21,6 +20,10 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.pure-menu-logger-item{
+    text-align: center;
 }
 
 .home-menu {
@@ -50,7 +53,6 @@ h1 {
 
 .pure-menu-list {
     list-style: none;
-    padding-left: 0;
     margin-bottom: 0;
 }
 
@@ -79,7 +81,7 @@ h1 {
     color: white;
     padding: 0.5em 2em;
     border-radius: 5px;
-    width: 200px;
+    width: auto;
     font-size: 100%;
 }
 

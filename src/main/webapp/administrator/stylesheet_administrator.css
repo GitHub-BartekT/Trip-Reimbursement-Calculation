@@ -1,0 +1,52 @@
+.background {
+    margin: 0;
+    padding: 0;
+    background-color: #ff8c24;
+}
+.big-text {
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
+    text-align: center;
+}
+
+.table {
+    text-align: center;
+}
+
+.status-container {
+    display: flex;
+    justify-content: center;
+}
+
+.status-container table {
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.create-container table{
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.decisions {
+    margin: 2.5em auto;
+    width: 50%;
+    text-align: center;
+
+}
+
+.pure-button {
+    background-color: #1f8dd6;
+    color: white;
+    padding: 0.5em 2em;
+    border-radius: 5px;
+    width: auto;
+    font-size: 100%;
+    margin: 0 10px;
+}
+
+.button-error {
+    background: rgb(202, 60, 60);
+}
