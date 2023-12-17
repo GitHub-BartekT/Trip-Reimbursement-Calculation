@@ -35,35 +35,7 @@ function readAllUserGroups() {
         });
 }
 
-function readAllUserGroupsWithDetails() {
-    fetch(`${USER_GROUPS_API_URL}`)
-        .then((response) => response.json())
-        .then((modulesPropArr) => {
-            modulesPropArr.map(s => {
-                let table = document.getElementById('groups_table');
-                let row = table.insertRow(-1);
-                newCellInRow(row, 0, s.id);
-                newCellInRow(row, 1, s.name);
-                newCellInRow(row, 2, s.dailyAllowance);
-                newCellInRow(row, 3, s.costPerKm);
-                newCellInRow(row, 4, s.maxMileage);
-                newCellInRow(row, 5, s.maxRefund);
-                newCellInRow(row, 6, s.numberOfUsers);
 
-                let newCell = row.insertCell(7);
-                const newButton = document.createElement("div");
-                let textChangeBtn = `changeBtn${s.id}`;
-                newButton.innerHTML = ` <button id="${textChangeBtn}" class="pure-button pure-button-primary" >Change</button>`;
-                newCell.appendChild(newButton);
-
-                let newChangeCell = row.insertCell(8);
-                const newChangeButton = document.createElement("div");
-                let textAcceptChangeBtn = `acceptChangesBtn${s.id}`;
-                newChangeButton.innerHTML = `<button id="${textAcceptChangeBtn}" class="button-error pure-button" >Delete</button>`;
-                newChangeCell.appendChild(newChangeButton);
-            });
-        });
-}
 
 //readUserById
 function readUserById() {

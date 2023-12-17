@@ -82,7 +82,8 @@ function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_
         .catch(console.warn);
 }
 
-function doDeleteUserGroup() {
+//deleteUserGroup
+function doDeleteUserGroupInCreatingMode() {
     fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`, {
         method: 'DELETE'
     })
