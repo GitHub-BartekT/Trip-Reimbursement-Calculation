@@ -9,6 +9,24 @@
     text-align: center;
 }
 
+.pure-menu-children {
+    list-style-type: none;
+    display: none;
+    position: absolute;
+    background-color: #ff8c24;
+    border: 1px solid #ffdf73;
+    padding: 5px;
+}
+
+.pure-menu-item:hover > .pure-menu-children {
+    display: block;
+}
+
+.pure-menu-item.pure-menu-has-children:hover > .pure-menu-children,
+.pure-menu-item.pure-menu-has-children:focus-within > .pure-menu-children {
+    display: block;
+}
+
 .table {
     text-align: center;
 }

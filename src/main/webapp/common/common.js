@@ -1,3 +1,4 @@
+const USER_GROUPS_API_URL = 'http://localhost:8080/groups';
 const USER_API_URL = 'http://localhost:8080/users';
 const REIMBURSEMENTS_API_URL = 'http://localhost:8080/reimbursements';
 let USER_ID;
@@ -5,6 +6,7 @@ let USER_NAME;
 let USER_GROUP_ID;
 let USER_GROUP_NAME;
 let REIMBURSEMENT_ID;
+let CREATE_MODE = Boolean(true);
 
 //read data from url
 function readDataFromUrl() {
@@ -13,6 +15,22 @@ function readDataFromUrl() {
     const urlParams = new URLSearchParams(queryString);
     USER_ID = urlParams.get('user');
     REIMBURSEMENT_ID = urlParams.get('reimbursement');
+    CREATE_MODE = urlParams.get('createMode');
+}
+
+//readUserGroups
+function readAllUserGroups() {
+    fetch(`${USER_GROUPS_API_URL}`)
+        .then((response) => response.json())
+        .then((modulesPropArr) => {
+            modulesPropArr.map(s => {
+                let table = document.getElementById('groups_table');
+                let row = table.insertRow(-1);
+                newCellInRow(row, 0, s.id);
+                newCellInRow(row, 1, s.name);
+                let cells = row.cells;
+            });
+        });
 }
 
 //readUserById
@@ -56,4 +74,24 @@ function processOkResponse(response = {}) {
         return response.json();
     }
     throw new Error(`Status not 200 (${response.status})`);
+}
+
+function changeBtnToPrimary(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("pure-button", "pure-button-primary");
+}
+
+function changeBtnToDisable(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("pure-button", "pure-button-disabled");
+}
+
+function changeBtnToDelete(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("button-error", "pure-button");
+}
+
+function changeBtnToDisableDelete(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("button-error", "pure-button", "pure-button-disabled");
 }

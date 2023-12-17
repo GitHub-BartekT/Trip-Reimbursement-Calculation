@@ -7,7 +7,7 @@ function makeReimbursement(){
     let reimb_endDate= document.getElementById(`reimbursement_end_day`).value;
     let reimb_distance= document.getElementById(`reimbursement_distance`).value;
 
-    if (isCreatingMode()) {
+    if (isCreatingModeReimbursement()) {
         doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance);
     } else {
         doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance);
@@ -48,7 +48,6 @@ function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_d
         .catch(console.warn);
 }
 
-
 function doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance){
     let bodyAddReimbursement = {
         id: REIMBURSEMENT_ID,
@@ -70,8 +69,9 @@ function doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_di
         .then(response => {
             if (response.ok) {
                 document.getElementById('information').innerHTML = `<h2>You changed the reimbursement!</h2>`;
-            }
+            } else {
                 document.getElementById('information').innerHTML = `<h2>Changing was failed!</h2>`;
+            }
         })
         .catch(console.warn);
 }
@@ -93,6 +93,7 @@ function doDeleteReimbursement() {
 }
 
 function pageCreatingMode(){
+    CREATE_MODE = true;
     const topTextContainer = document.getElementById('top-text-container');
     topTextContainer.innerHTML = `<h2>Your new reimbursement:</h2>`;
     document.getElementById("accept_btn").innerText = "Add Reimbursement";
@@ -101,6 +102,7 @@ function pageCreatingMode(){
 }
 
 function pageChangingMode(){
+    CREATE_MODE = false;
     const topTextContainer = document.getElementById('top-text-container');
     topTextContainer.innerHTML = `<h2>Your reimbursement id:${REIMBURSEMENT_ID}</h2>`;
     document.getElementById("accept_btn").innerText = "Save changes";
@@ -108,26 +110,6 @@ function pageChangingMode(){
     changeBtnToDelete("delete_btn");
 }
 
-function isCreatingMode() {
+function isCreatingModeReimbursement() {
     return REIMBURSEMENT_ID <= 0;
-}
-
-function changeBtnToPrimary(btnId){
-    document.getElementById(btnId).className = "";
-    document.getElementById(btnId).classList.add("pure-button", "pure-button-primary");
-}
-
-function changeBtnToDisable(btnId){
-    document.getElementById(btnId).className = "";
-    document.getElementById(btnId).classList.add("pure-button", "pure-button-disabled");
-}
-
-function changeBtnToDelete(btnId){
-    document.getElementById(btnId).className = "";
-    document.getElementById(btnId).classList.add("button-error", "pure-button");
-}
-
-function changeBtnToDisableDelete(btnId){
-    document.getElementById(btnId).className = "";
-    document.getElementById(btnId).classList.add("button-error", "pure-button", "pure-button-disabled");
 }
