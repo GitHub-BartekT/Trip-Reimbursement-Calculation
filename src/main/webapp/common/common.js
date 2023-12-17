@@ -35,6 +35,25 @@ function readAllUserGroups() {
         });
 }
 
+function readAllUserGroupsWithDetails() {
+    fetch(`${USER_GROUPS_API_URL}`)
+        .then((response) => response.json())
+        .then((modulesPropArr) => {
+            modulesPropArr.map(s => {
+                let table = document.getElementById('groups_table');
+                let row = table.insertRow(-1);
+                newCellInRow(row, 0, s.id);
+                newCellInRow(row, 1, s.name);
+                newCellInRow(row, 2, s.dailyAllowance);
+                newCellInRow(row, 3, s.costPerKm);
+                newCellInRow(row, 4, s.maxMileage);
+                newCellInRow(row, 5, s.maxRefund);
+                newCellInRow(row, 6, s.numberOfUsers);
+                let cells = row.cells;
+            });
+        });
+}
+
 //readUserById
 function readUserById() {
     fetch(`${USER_API_URL}/${USER_ID}`)
