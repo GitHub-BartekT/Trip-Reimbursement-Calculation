@@ -47,7 +47,8 @@ function doPostReceiptType(receipt_type_name, receipt_type_max_value){
 function doPutReceiptType(receipt_type_name, receipt_type_max_value){
     let bodyAddReceiptType = {
         name: receipt_type_name,
-        maxValue:  receipt_type_max_value
+        maxValue:  receipt_type_max_value,
+        id: RECEIPT_TYPE_ID
     };
 
     fetch(`${RECEIPT_TYPE_API_URL}`, {

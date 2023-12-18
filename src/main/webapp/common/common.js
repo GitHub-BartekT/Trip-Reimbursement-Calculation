@@ -20,6 +20,7 @@ function readDataFromUrl() {
     REIMBURSEMENT_ID = urlParams.get('reimbursement');
     CREATE_MODE = urlParams.get('createMode');
     USER_GROUP_ID = urlParams.get('group');
+    RECEIPT_TYPE_ID = urlParams.get('receipt');
 }
 
 //readUserGroups

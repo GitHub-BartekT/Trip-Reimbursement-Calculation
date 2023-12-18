@@ -1,6 +1,7 @@
 readDataFromUrl();
 readUserById();
 setMode();
+getReceipts();
 
 function makeUserGroup(){
     let user_group_name = document.getElementById(`user_group_name`).value;
@@ -45,7 +46,7 @@ function doPostUserGroup(user_group_name, user_group_daily_allowance, user_group
             const locationHeader = response.headers.get('Location');
             if (locationHeader) {
                 const urlParts = locationHeader.split('/');
-                LOGGED_USER_GROUP_ID = urlParts[urlParts.length - 1];
+                USER_GROUP_ID = urlParts[urlParts.length - 1];
                 pageChangingModeUserGroup();
             }
             document.getElementById('information').innerHTML = `<h2>You added a new User Group!</h2>`;
@@ -56,7 +57,7 @@ function doPostUserGroup(user_group_name, user_group_daily_allowance, user_group
 function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_cost_per_km,
                         user_group_max_mileage, user_group_max_refund){
     let bodyAddUserGroup = {
-        id: LOGGED_USER_GROUP_ID,
+        id: USER_GROUP_ID,
         name: user_group_name,
         dailyAllowance:  user_group_daily_allowance,
         costPerKm: user_group_cost_per_km,
@@ -84,7 +85,7 @@ function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_
 
 //deleteUserGroup
 function doDeleteUserGroupInCreatingMode() {
-    fetch(`${USER_GROUPS_API_URL}/${LOGGED_USER_GROUP_ID}`, {
+    fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`, {
         method: 'DELETE'
     })
         .then(response => {
@@ -93,6 +94,46 @@ function doDeleteUserGroupInCreatingMode() {
                 document.getElementById('information').innerHTML = `<h2>You deleted the User Group!</h2>`;
             } else {
                 document.getElementById('information').innerHTML = `<h2>Deleting was failed!</h2>`;
+            }
+        })
+        .catch(console.warn);
+}
+
+function getReceipts() {
+    fetch(`${RECEIPT_TYPE_API_URL}`)
+        .then((response) => response.json())
+        .then((receiptArr) => {
+            const list = receiptArr.map(s =>
+                `<option value="${s.id}">${s.name}, max Value = ${s.maxValue}</option>`)
+                .join('\n');
+            document.getElementById('receipt_list').innerHTML = list;
+        });
+}
+
+function getReceipt(){
+    let text;
+    return text = document.getElementById('receipt_list').value;
+}
+
+function doAssignReceiptTypeToUserGroup(){
+    let bodyUserGroup = {
+        id: USER_GROUP_ID,
+        name: document.getElementById(`user_group_name`).value
+    };
+
+    fetch(`${USER_GROUPS_API_URL}/${getReceipt()}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bodyUserGroup)
+    })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('information').innerHTML = `<h2>You assign Receipt Type the User Group!</h2>`;
+            } else {
+                document.getElementById('information').innerHTML = `<h2>Assign was failed!</h2>`;
             }
         })
         .catch(console.warn);
@@ -118,7 +159,7 @@ function pageCreatingModeUserGroup(){
 function pageChangingModeUserGroup(){
     CREATE_MODE = false;
     const topTextContainer = document.getElementById('top-text-container');
-    topTextContainer.innerHTML = `<h2>Modified user group id:${LOGGED_USER_GROUP_ID}</h2>`;
+    topTextContainer.innerHTML = `<h2>Modified user group id:${USER_GROUP_ID}</h2>`;
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_cost_btn");
     changeBtnToDelete("delete_btn");
