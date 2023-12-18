@@ -20,7 +20,7 @@ function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_d
         startDate:  reimb_startDate,
         endDate: reimb_endDate,
         distance: reimb_distance,
-        userId: USER_ID
+        userId: LOGGED_USER_ID
     };
 
     fetch(`${REIMBURSEMENTS_API_URL}`, {
@@ -55,7 +55,7 @@ function doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_di
         startDate:  reimb_startDate,
         endDate: reimb_endDate,
         distance: reimb_distance,
-        userId: USER_ID
+        userId: LOGGED_USER_ID
     };
 
     fetch(`${REIMBURSEMENTS_API_URL}`, {

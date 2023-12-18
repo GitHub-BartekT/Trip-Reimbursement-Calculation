@@ -45,7 +45,7 @@ function doPostUserGroup(user_group_name, user_group_daily_allowance, user_group
             const locationHeader = response.headers.get('Location');
             if (locationHeader) {
                 const urlParts = locationHeader.split('/');
-                USER_GROUP_ID = urlParts[urlParts.length - 1];
+                LOGGED_USER_GROUP_ID = urlParts[urlParts.length - 1];
                 pageChangingModeUserGroup();
             }
             document.getElementById('information').innerHTML = `<h2>You added a new User Group!</h2>`;
@@ -56,7 +56,7 @@ function doPostUserGroup(user_group_name, user_group_daily_allowance, user_group
 function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_cost_per_km,
                         user_group_max_mileage, user_group_max_refund){
     let bodyAddUserGroup = {
-        id: USER_GROUP_ID,
+        id: LOGGED_USER_GROUP_ID,
         name: user_group_name,
         dailyAllowance:  user_group_daily_allowance,
         costPerKm: user_group_cost_per_km,
@@ -84,7 +84,7 @@ function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_
 
 //deleteUserGroup
 function doDeleteUserGroupInCreatingMode() {
-    fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`, {
+    fetch(`${USER_GROUPS_API_URL}/${LOGGED_USER_GROUP_ID}`, {
         method: 'DELETE'
     })
         .then(response => {
@@ -118,7 +118,7 @@ function pageCreatingModeUserGroup(){
 function pageChangingModeUserGroup(){
     CREATE_MODE = false;
     const topTextContainer = document.getElementById('top-text-container');
-    topTextContainer.innerHTML = `<h2>Modified user group id:${USER_GROUP_ID}</h2>`;
+    topTextContainer.innerHTML = `<h2>Modified user group id:${LOGGED_USER_GROUP_ID}</h2>`;
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_cost_btn");
     changeBtnToDelete("delete_btn");

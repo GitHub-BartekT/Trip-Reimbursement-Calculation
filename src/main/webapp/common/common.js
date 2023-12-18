@@ -2,10 +2,11 @@ const USER_GROUPS_API_URL = 'http://localhost:8080/groups';
 const RECEIPT_TYPE_API_URL ='http://localhost:8080/receipts';
 const USER_API_URL = 'http://localhost:8080/users';
 const REIMBURSEMENTS_API_URL = 'http://localhost:8080/reimbursements';
-let USER_ID;
-let USER_NAME;
+let LOGGED_USER_ID;
+let LOGGED_USER_NAME;
+let LOGGED_USER_GROUP_ID;
+let LOGGED_USER_GROUP_NAME;
 let USER_GROUP_ID;
-let USER_GROUP_NAME;
 let REIMBURSEMENT_ID;
 let RECEIPT_TYPE_ID;
 let CREATE_MODE = Boolean(true);
@@ -15,9 +16,10 @@ function readDataFromUrl() {
     const queryString = window.location.search;
     console.log(queryString);
     const urlParams = new URLSearchParams(queryString);
-    USER_ID = urlParams.get('user');
+    LOGGED_USER_ID = urlParams.get('user');
     REIMBURSEMENT_ID = urlParams.get('reimbursement');
     CREATE_MODE = urlParams.get('createMode');
+    USER_GROUP_ID = urlParams.get('group');
 }
 
 //readUserGroups
@@ -39,13 +41,13 @@ function readAllUserGroups() {
 
 //readUserById
 function readUserById() {
-    fetch(`${USER_API_URL}/${USER_ID}`)
+    fetch(`${USER_API_URL}/${LOGGED_USER_ID}`)
         .then(response => response.json())
         .then((s) => {
-            USER_NAME = s.name;
-            USER_GROUP_ID = s.userGroup.id;
-            USER_GROUP_NAME = s.userGroup.name;
-            let text = `User ID: ${USER_NAME}, User Group: ${USER_GROUP_NAME}`;
+            LOGGED_USER_NAME = s.name;
+            LOGGED_USER_GROUP_ID = s.userGroup.id;
+            LOGGED_USER_GROUP_NAME = s.userGroup.name;
+            let text = `User ID: ${LOGGED_USER_NAME}, User Group: ${LOGGED_USER_GROUP_NAME}`;
             document.getElementById("user_info").innerHTML = `<a>${text}</a>`;
         });
 }
