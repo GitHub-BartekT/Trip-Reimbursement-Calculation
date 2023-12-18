@@ -1,17 +1,20 @@
 package pl.iseebugs.TripReimbursementApp.logic;
 
-import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
-import pl.iseebugs.TripReimbursementApp.model.Reimbursement;
-import pl.iseebugs.TripReimbursementApp.model.User;
-import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import org.slf4j.LoggerFactory;
+import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException;
+import pl.iseebugs.TripReimbursementApp.model.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.time.LocalDate.of;
 import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
 
 public class TestHelper {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(TestHelper.class);
 
     protected static String createLongString(int length){
         if (length <=0 ){
@@ -19,7 +22,7 @@ public class TestHelper {
         }
         return String.valueOf('A').repeat(length);
     }
-
+  //TODO: UserGroups
     private static List<String> userGroupsDataNames(){
     return List.of("fooGroup","barGroup", "foobarGroup");
     }
@@ -91,7 +94,26 @@ public class TestHelper {
         return result;
     }
 
-    protected static void userGroupRepositoryInitializeData(InMemoryUserGroupRepository inMemoryUserGroupRepository, List<UserGroup> entities){
+    private static List<UserGroup> userGroupsDataForUserCosts() {
+        List<UserGroup> result = new ArrayList<>();
+        UserGroup userGroup_01 = new UserGroup();
+        userGroup_01.setName("fooGroup");
+        userGroup_01.setMaxRefund(450);
+        result.add(userGroup_01);
+
+        UserGroup userGroup_02 = new UserGroup();
+        userGroup_02.setName("barGroup");
+        userGroup_02.setMaxRefund(450);
+        result.add(userGroup_02);
+
+        UserGroup userGroup_03 = new UserGroup();
+        userGroup_03.setName("foobarGroup");
+        userGroup_03.setMaxRefund(450);
+        result.add(userGroup_03);
+        return result;
+    }
+
+        protected static void userGroupRepositoryInitializeData(InMemoryUserGroupRepository inMemoryUserGroupRepository, List<UserGroup> entities){
         for (UserGroup entity : entities) {
             inMemoryUserGroupRepository.save(entity);
         }
@@ -99,6 +121,10 @@ public class TestHelper {
 
     protected static void userGroupRepositoryInitialDataOnlyNames(InMemoryUserGroupRepository inMemoryUserGroupRepository){
         userGroupRepositoryInitializeData(inMemoryUserGroupRepository, userGroupsDataOnlyWithNamesPreparedData());
+    }
+
+    protected static void userGroupRepositoryInitialDataForUserCosts(InMemoryUserGroupRepository inMemoryUserGroupRepository){
+        userGroupRepositoryInitializeData(inMemoryUserGroupRepository, userGroupsDataForUserCosts());
     }
 
     protected static void userGroupRepositoryInitialDataAllParams(InMemoryUserGroupRepository inMemoryUserGroupRepository){
@@ -119,12 +145,8 @@ public class TestHelper {
         }
         return result;
     }
-
+   //TODO: ReceiptTypes
     private static List<ReceiptType> receiptTypesDataAllParams(InMemoryUserGroupRepository inMemoryUserGroupRepository){
-        List<String> userGroupsNames = List.of("CEO", "Sellers", "Regular employee", "Office employee");
-        List<UserGroup> userGroups = userGroupsDataOnlyWithNames(userGroupsNames);
-        userGroupRepositoryInitializeData(inMemoryUserGroupRepository, userGroups);
-
         List<ReceiptType> result = new ArrayList<>();
         ReceiptType receiptType_01 = new ReceiptType();
         receiptType_01.setName("Train_AllUsers");
@@ -175,6 +197,13 @@ public class TestHelper {
     }
 
     protected static void receiptTypesRepositoryInitialDataAllParams(InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository,InMemoryUserGroupRepository inMemoryUserGroupRepository){
+        List<String> userGroupsNames = List.of("CEO", "Sellers", "Regular employee", "Office employee");
+        List<UserGroup> userGroups = userGroupsDataOnlyWithNames(userGroupsNames);
+        userGroupRepositoryInitializeData(inMemoryUserGroupRepository, userGroups);
+        receiptTypesRepositoryInitializeData(inMemoryReceiptTypeRepository, receiptTypesDataAllParams(inMemoryUserGroupRepository));
+    }
+
+    protected static void receiptTypesRepositoryInitialDataForUserCosts(InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository,InMemoryUserGroupRepository inMemoryUserGroupRepository){
         receiptTypesRepositoryInitializeData(inMemoryReceiptTypeRepository, receiptTypesDataAllParams(inMemoryUserGroupRepository));
     }
 
@@ -236,6 +265,40 @@ public class TestHelper {
 
         return result;
     }
+  //TODO:  users
+    private static List<User> userDataForUserCosts(InMemoryUserGroupRepository inMemoryUserGroupRepository){
+        List<User> result = new ArrayList<>();
+        User user_01 = new User();
+        user_01.setName("user_01");
+        user_01.setUserGroup(inMemoryUserGroupRepository.findById(1).orElse(null));
+        result.add(user_01);
+
+        User user_02 = new User();
+        user_02.setName("user_02");
+        user_02.setUserGroup(inMemoryUserGroupRepository.findById(2).orElse(null));
+        result.add(user_02);
+
+        User user_03 = new User();
+        user_03.setName("user_03");
+        user_03.setUserGroup(inMemoryUserGroupRepository.findById(3).orElse(null));
+        result.add(user_03);
+
+        User user_04 = new User();
+        user_04.setName("user_04");
+        user_04.setUserGroup(inMemoryUserGroupRepository.findById(1).orElse(null));
+        result.add(user_04);
+
+        User user_05 = new User();
+        user_05.setName("user_05");
+        user_05.setUserGroup(inMemoryUserGroupRepository.findById(2).orElse(null));
+        result.add(user_05);
+
+        User user_06 = new User();
+        user_06.setName("user_06");
+        user_06.setUserGroup(inMemoryUserGroupRepository.findById(3).orElse(null));
+        result.add(user_06);
+        return result;
+    }
 
     protected static void userRepositoryInitializeData(InMemoryUserRepository inMemoryUserRepository, List<User> entities){
         for (User entity : entities) {
@@ -253,6 +316,11 @@ public class TestHelper {
         userRepositoryInitializeData(inMemoryUserRepository, userDataAllParams(inMemoryUserGroupRepository));
     }
 
+    protected static void userRepositoryInitialDataForUserCosts(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository) {
+        userGroupRepositoryInitialDataForUserCosts(inMemoryUserGroupRepository);
+        userRepositoryInitializeData(inMemoryUserRepository, userDataForUserCosts(inMemoryUserGroupRepository));
+    }
+//TODO reimursement
     private static List<Reimbursement> reimbursementsDataAllParams(InMemoryUserRepository inMemoryUserRepository){
         List<Reimbursement> result = new ArrayList<>();
         Reimbursement reimbursement_01 = new Reimbursement(
@@ -345,5 +413,126 @@ public class TestHelper {
         userGroupRepositoryInitialDataAllParams(inMemoryUserGroupRepository);
         userRepositoryInitialDataAllParams(inMemoryUserGroupRepository, inMemoryUserRepository);
         reimbursementRepositoryInitializeData(inMemoryReimbursementRepository, reimbursementsDataAllParams(inMemoryUserRepository));
+    }
+
+    protected static void reimbursementRepositoryInitialDataForUserCosts(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository, InMemoryReimbursementRepository inMemoryReimbursementRepository) {
+        userRepositoryInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository);
+        reimbursementRepositoryInitializeData(inMemoryReimbursementRepository, reimbursementsDataAllParams(inMemoryUserRepository));
+    }
+//TODO: USER COST
+    protected static List<UserCost> userCostDataAllParams
+    (InMemoryReimbursementRepository inMemoryReimbursementRepository,
+     InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository) throws ReimbursementNotFoundException {
+        List<UserCost> result = new ArrayList<>();
+        //UserGroups:       Users:  Reimbursements:
+        //  1 -   "fooGroup",   1 - "user_01",  1, 2,3,
+        //                          "user_04"   12
+        //  2 -   "barGroup",   2 - "user_02",  8
+        //                          "user_05"   4, 5, 6, 7, 10, 11
+        //  3 -   "foobarGroup" 3 - "user_03",  9
+        //                          "user_06"   13
+        //ReceiptTypes:
+        //  1 - "Train_AllUsers"    - All groups
+        //  2 - "Aeroplane_CEO"     - 1
+        //  3 - "Food_AllUsers"     - All groups
+        //  4 - "Food_CEO"          - 1
+        //  5 - "Hotels_Sellers"    - 2
+        //  6 - "Other_Directors"   - --
+
+        //    1, 1, 8,  8, 12
+        UserCost userCost_01 = new UserCost();
+        userCost_01.setName("receipt_1_train");
+        userCost_01.setCostValue(56);
+        userCost_01.setReimbursement(inMemoryReimbursementRepository.findById(1)
+                .orElseThrow(ReimbursementNotFoundException::new));
+        userCost_01.setReceiptType(inMemoryReceiptTypeRepository.findById(1).orElseThrow());
+        result.add(userCost_01);
+        addUserCostToReimbursement(inMemoryReimbursementRepository, 1, userCost_01);
+        addUserCostToReceiptType(inMemoryReceiptTypeRepository, 1, userCost_01);
+
+        UserCost userCost_02 = new UserCost();
+        userCost_02.setName("receipt_2_food");
+        userCost_02.setCostValue(56);
+        userCost_02.setReimbursement(inMemoryReimbursementRepository.findById(1)
+                .orElseThrow(ReimbursementNotFoundException::new));
+        userCost_02.setReceiptType(inMemoryReceiptTypeRepository.findById(3).orElseThrow());
+        result.add(userCost_02);
+        addUserCostToReimbursement(inMemoryReimbursementRepository, 1, userCost_02);
+        addUserCostToReceiptType(inMemoryReceiptTypeRepository, 3, userCost_02);
+
+        UserCost userCost_03 = new UserCost();
+        userCost_03.setName("user_2_hotel");
+        userCost_03.setCostValue(456);
+        userCost_03.setReimbursement(inMemoryReimbursementRepository.findById(8)
+                .orElseThrow(ReimbursementNotFoundException::new));
+        userCost_03.setReceiptType(inMemoryReceiptTypeRepository.findById(5).orElseThrow());
+        result.add(userCost_03);
+        addUserCostToReimbursement(inMemoryReimbursementRepository, 8, userCost_03);
+        addUserCostToReceiptType(inMemoryReceiptTypeRepository, 5, userCost_03);
+
+        UserCost userCost_04 = new UserCost();
+        userCost_04.setName("user_4_hotel");
+        userCost_04.setCostValue(10000);
+        userCost_04.setReimbursement(inMemoryReimbursementRepository.findById(8)
+                .orElseThrow(ReimbursementNotFoundException::new));
+        userCost_04.setReceiptType(inMemoryReceiptTypeRepository.findById(1).orElseThrow());
+        result.add(userCost_04);
+        addUserCostToReimbursement(inMemoryReimbursementRepository, 8, userCost_04);
+        addUserCostToReceiptType(inMemoryReceiptTypeRepository, 1, userCost_04);
+
+        UserCost userCost_05 = new UserCost();
+        userCost_05.setName("cost");
+        userCost_05.setCostValue(23);
+        userCost_05.setReimbursement(inMemoryReimbursementRepository.findById(12)
+                .orElseThrow(ReimbursementNotFoundException::new));
+        userCost_05.setReceiptType(inMemoryReceiptTypeRepository.findById(1).orElseThrow());
+        result.add(userCost_05);
+        addUserCostToReimbursement(inMemoryReimbursementRepository, 12, userCost_05);
+        addUserCostToReceiptType(inMemoryReceiptTypeRepository, 1, userCost_05);
+
+        return result;
+    }
+
+    private static void addUserCostToReceiptType(InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository,
+                                                 int receiptTypeId, UserCost userCost) {
+        ReceiptType receiptType = inMemoryReceiptTypeRepository.findById(receiptTypeId).orElseThrow();
+
+        Set<UserCost> receiptTypeSet;
+        if (receiptType.getUserCosts() != null){
+            receiptTypeSet = receiptType.getUserCosts();
+        } else {
+            receiptTypeSet = new HashSet<>();
+        }
+        receiptTypeSet.add(userCost);
+        inMemoryReceiptTypeRepository.save(receiptType);
+    }
+
+    private static void addUserCostToReimbursement(InMemoryReimbursementRepository inMemoryReimbursementRepository,
+                                                   int reimbursementId, UserCost userCost) {
+        Reimbursement reimbursement = inMemoryReimbursementRepository.findById(reimbursementId).orElseThrow();
+
+        Set<UserCost> reimbursementSet = reimbursement.getUserCosts();
+        if (reimbursement.getUserCosts() != null ){
+            reimbursementSet = reimbursement.getUserCosts();
+        } else if (reimbursement.getUserCosts() == null){
+            reimbursementSet = new HashSet<>();
+        }
+        reimbursementSet.add(userCost);
+
+        inMemoryReimbursementRepository.save(reimbursement);
+    }
+
+    protected static void userCostsInitializeData(InMemoryUserCostRepository inMemoryUserCostRepository, List<UserCost> entities){
+        for (UserCost entity : entities) {
+            inMemoryUserCostRepository.save(entity);
+        }
+    }
+
+    protected static void userCostInitialDataForUserCosts(InMemoryUserGroupRepository inMemoryUserGroupRepository, InMemoryUserRepository inMemoryUserRepository,
+                                                          InMemoryReimbursementRepository inMemoryReimbursementRepository, InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository,
+                                                          InMemoryUserCostRepository inMemoryUserCostRepository) throws ReimbursementNotFoundException {
+        reimbursementRepositoryInitialDataForUserCosts(inMemoryUserGroupRepository, inMemoryUserRepository, inMemoryReimbursementRepository);
+        receiptTypesRepositoryInitialDataForUserCosts(inMemoryReceiptTypeRepository, inMemoryUserGroupRepository);
+        userCostsInitializeData(inMemoryUserCostRepository,userCostDataAllParams(inMemoryReimbursementRepository, inMemoryReceiptTypeRepository));
     }
 }

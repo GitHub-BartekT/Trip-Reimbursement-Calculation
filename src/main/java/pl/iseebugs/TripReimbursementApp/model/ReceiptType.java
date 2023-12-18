@@ -17,7 +17,7 @@ public class ReceiptType {
     @ManyToMany(mappedBy = "receiptTypes")
     private Set<UserGroup> userGroups = new HashSet<>();
     @OneToMany(mappedBy = "receiptType")
-    private Set<UserCost> userCosts;
+    private Set<UserCost> userCosts = new HashSet<>();
 
     public ReceiptType() {
     }

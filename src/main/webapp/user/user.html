@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Reimbursement</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+    <link rel="stylesheet" href="../common/stylesheet.css">
+    <link rel="stylesheet" href="stylesheet_user.css">
+</head>
+<body style="background: #ffdf73">
+<div class="header">
+    <div class="home-menu pure-menu pure-menu-horizontal">
+        <a class="pure-menu-heading" id="user_info" href="">User: user_name, User Group: user_group</a>
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item pure-menu-selected"><a href="creating.html?user=2" class="pure-menu-link">New Reimbursement</a></li>
+            <li class="pure-menu-item"><a href="" class="pure-menu-link">History</a></li>
+            <li class="pure-menu-item"><a href="../index.html" class="pure-menu-link">Logout</a></li>
+        </ul>
+    </div>
+</div>
+<div class="status">
+    <div class="big-text"><h2>Last 10 reimbursements:</h2></div>
+    <div class="status-container">
+        <table id="reimbursement_table" class="pure-table pure-table-bordered pure-table-striped center-table">
+            <tr>
+                <td>id</td>
+                <td>name</td>
+                <td>value</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script src="../common/common.js"> </script>
+<script src="user.js"> </script>
+</body>
+</html>

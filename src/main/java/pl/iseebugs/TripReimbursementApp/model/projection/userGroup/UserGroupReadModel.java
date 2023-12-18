@@ -9,6 +9,7 @@ public class UserGroupReadModel {
     private double costPerKm;
     private double maxMileage;
     private double maxRefund;
+    private int numberOfUsers;
 
         public UserGroupReadModel(){
         }
@@ -20,6 +21,11 @@ public class UserGroupReadModel {
         this.costPerKm = userGroup.getCostPerKm();
         this.maxMileage = userGroup.getMaxMileage();
         this.maxRefund = userGroup.getMaxRefund();
+        if (userGroup.getUsers() != null) {
+            this.numberOfUsers = userGroup.getUsers().size();
+        } else {
+            this.numberOfUsers = 0;
+        }
         }
 
     public int getId() {
@@ -44,5 +50,9 @@ public class UserGroupReadModel {
 
     public double getMaxRefund() {
         return maxRefund;
+    }
+
+    public int getNumberOfUsers() {
+        return numberOfUsers;
     }
 }

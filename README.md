@@ -3,79 +3,52 @@ Program to managing and controlling reimbursement in organization.
 
 ## How it looks like
 ### Brief
-The application is intended for organizations that want to divide reimbursements
-depending on the role of employees. An office worker will have different needs(train, parking) 
-than a salesperson (car trips, fuel) and management staff(hotels, business meetings).
-The application gives the opportunity to summarize the current reimbursement situation. 
+The application is designed for organizations that want to divide reimbursements
+based on employees' roles. An office worker might require different needs, such as parking fees, compared to a salesman who might claim expenses for car trips and fuel. Similarly, management staff might seek reimbursements for hotel stays and business-related meetings.
+The application provides an overview of the current reimbursement situation. 
 ### Purpose and scope of the project
-The application has two view. One for Admin and the other for User. 
+The application has two main view: One for Administrator and another for the User. 
 The administrator can:
- - creates user groups like example CEO, regular worker, office worker, seller.
- - set limits for individual user groups
+ - create user groups, such as CEO, regular worker, office worker
+ - set limits for particular user groups
  - manage receipt types assigned to specific user groups
- - read the total monthly reimbursement value
-User can:
- - create new reimbursement
- - browsing history of reimbursement
-### What is to do✅
-1. Backend
-   - Rest, CRUD application✅
-   - Databases - OneToMany, ManyToMany, ManyToOne✅
-   - Controllers, Services, Repositories, DTO, ReadModels, Mappers✅
-   - Tests
-     - JUnit - ✅
-     - AssertJ - ✅
-     - unit tests - InMemoryRepositories ✅
-     - integration tests - SQL scripts ✅
-     - Postman - E2E tests ✅
-   - Security ❌
-   - Program profiles ❌
-2. Frontend
-   - Frontend❌
-     - Main page❌
-     - User view❌
-       - Creating new reimbursement depending on:❌
-         - duration ❌
-         - distance traveled by car ❌
-         - user receipts ❌
-       - Browsing history of reimbursements❌
-     - Administrator❌
-       - Managing reimbursements settings depending on:❌
-         - duration ❌
-         - distance traveled by car ❌
-         - receipt types ❌
-         - user groups ❌
-       - creating a simple report ❌
-   - Connections
-     - HTTP - methods DO, POST, GET, DELETE✅❌ 
-## Technologies
-1.  Backend
-    - Environment - Intellij IDEA
-        - Java 17
-        - Maven
-        - Spring Boot
-    - Databases
-        - HSQLDB
-        - Hibernate
-        - FlyWay
-    - Testing
-        - JUnit
-        - AssertJ
-        - Postman
-2.  Communication
-  - HTTP
-3. Frontend
-   - HTML
-   - CSS
-   - JavaScript
-4.  Version Control
-    - Git / GitHub
-### What hasn't been done💡
-1. Frontend
-### Installation and setup
-### Usage
-### What I will correct or upgrade
+ - review the total monthly reimbursement value
+Users can:
+ - create new reimbursements
+ - review history of their reimbursement
+## What Has Been Accomplished💡
+Backend development using Java with Spring Boot.
+### Architecture ✅
+CRUD functionalities with Controllers, Services, Repositories, DTOs, ReadModels, and Mappers. RESTful API endpoints created and tested. Architecture and validation implemented for request handling.
+### Database✅
+Database setup using HSQLDB with migrations managed by Flyway, supporting ManyToOne, OneToMany, and ManyToMany relationships. Entity Relationship Diagram (ERD) designed and available for reference.
+#### Entity Relationship Diagram
+![ERD](https://github.com/GitHub-BartekT/Trip-Reimbursement-Calculation/assets/119587290/7d93431f-b973-464b-8cc4-88265b5fb824)
+### Tests ✅
+Comprehensive testing using JUnit, AssertJ, Mockito, and Postman for integration tests, covering services and controllers with independent, fully-encapsulated tests.✅
+### Other technologies
+- Hibernate✅
+- Logger - slf4j ✅
+- Git / GitHub✅
+- Logger - slf4j ✅
+### Pending Tasks:  
+1. Frontend ❌
+   - create the main page✅
+   - implement user and administrator views with functionalities
+   - implement the browsing history of reimbursements for users
+   - allow administrators to manage reimbursement settings and create reports
+2. Security Implementation ❌
+   - security to protect user data and sensitive information
+3. Program Profiles ✅
+   - configure different profiles for development, testing and production environments.
+4. Documentation ❌
+   - installation and setup guide
+   - usage instructions for users and administrators
+5. Improvements and Corrections:
+   - functionalities as required based on user feedback or additional requirements
 
+
+https://www.linkedin.com/in/bartlomiejtucholski/
 
 
  

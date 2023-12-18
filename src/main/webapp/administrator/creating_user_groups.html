@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Reimbursement</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+    <link rel="stylesheet" href="../common/stylesheet.css">
+    <link rel="stylesheet" href="stylesheet_administrator.css">
+</head>
+<body style="background: #ff8c24">
+<div class="header">
+    <div class="home-menu pure-menu pure-menu-horizontal">
+        <a class="pure-menu-heading" id="user_info" href="">User: user_name, User Group: user_group</a>
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item pure-menu-selected"><a href="administrator.html?user=1" class="pure-menu-link">Home</a></li>
+            <li class="pure-menu-item pure-menu-selected pure-menu-has-children"><a href="#" class="pure-menu-link">Status</a>
+                <ul class="pure-menu-children">
+                    <li><a href="#" class="pure-menu-link">Users</a></li>
+                    <li><a href="status_user_groups.html?user=1" class="pure-menu-link">User Groups</a></li>
+                    <li><a href="status_receipt_types.html?user=1" class="pure-menu-link">Receipt Types</a></li>
+                </ul>
+            </li>
+            <li class="pure-menu-item"><a href="" class="pure-menu-link">History</a></li>
+            <li class="pure-menu-item"><a href="../index.html" class="pure-menu-link">Logout</a></li>
+        </ul>
+    </div>
+</div>
+<div class="creating">
+    <div  class="big-text">
+        <div id="top-text-container">
+            <h2></h2>
+        </div>
+    </div>
+    <div class="create-container">
+        <table id="reimbursement_table-create" class="pure-table pure-table-bordered pure-table-striped center-table">
+            <tr>
+                <td>Name:</td>
+                <td colspan="2">
+                    <label for="user_group_name"></label><input id="user_group_name" placeholder="User Group Name">
+                </td>
+            </tr>
+            <tr>
+                <td>Daily allowance:</td>
+                <td colspan="2">
+                    <label for="user_group_daily_allowance"></label><input id="user_group_daily_allowance" value="0">
+                </td>
+            </tr>
+            <tr>
+                <td>Cost per km:</td >
+                <td colspan="2">
+                    <label for="user_group_cost_per_km"></label><input id="user_group_cost_per_km" value="0">
+                </td>
+            </tr>
+            <tr>
+                <td>Max mileage:</td>
+                <td colspan="2">
+                    <label for="user_group_max_mileage"></label><input id="user_group_max_mileage" value="0">
+                </td>
+            </tr>
+            <tr>
+                <td>Max refund:</td>
+                <td colspan="2">
+                    <label for="user_group_max_refund"></label><input id="user_group_max_refund" value="0">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeUserGroup()"></button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">Assign receipt type to User Group:</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label for="receipt_list"></label><select id="receipt_list" onchange="getReceipt()" ></select>
+                </td>
+                <td>
+                    <button id="add_cost_btn" class="pure-button pure-button-disabled" onclick="doAssignReceiptTypeToUserGroup()">Assign</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="decisions">
+    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteUserGroupInCreatingMode()">Delete User Group</button>
+</div>
+<div class="footer">
+    <div id="information" class="big-text"><h2></h2></div>
+</div>
+<script src="../common/common.js"> </script>
+<script src="creating_user_groups.js"> </script>
+
+</body>
+</html>

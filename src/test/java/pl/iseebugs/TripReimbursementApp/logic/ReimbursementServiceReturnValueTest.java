@@ -6,10 +6,13 @@ import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.User;
+import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.ReimbursementReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userCost.UserCostReadModelToReimbursement;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static pl.iseebugs.TripReimbursementApp.logic.InMemoryRepositories.*;
 import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.reimbursementRepositoryInitialDataAllParams;
+import static pl.iseebugs.TripReimbursementApp.logic.TestHelper.userCostInitialDataForUserCosts;
 
 class ReimbursementServiceReturnValueTest {
 
@@ -337,4 +340,68 @@ class ReimbursementServiceReturnValueTest {
         assertThat(result.getReturnValue()).isEqualTo(125);
     }
 
+    //TODO:
+    @Test
+    @DisplayName("should return (450) when costs value is higher than max value")
+    void returnValue_returnsReturnValue_450() throws ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository,inMemoryUserRepository,
+                inMemoryReimbursementRepository,inMemoryReceiptTypeRepository,inMemoryUserCostRepository);
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+        //when
+        ReimbursementReadModel result = toTest.readById(8);
+
+        //then
+
+        boolean found = false;
+        for (UserCostReadModelToReimbursement userCost : result.getUserCosts()) {
+            if (userCost.getCostValue() == 456 && userCost.getMaxValue() == 450) {
+                found = true;
+                break;
+            }
+        }
+
+        assertThat(result.getName()).isEqualTo("reimbursement_008_noCostPerKm");
+        assertThat(result.getUserCosts().size()).isEqualTo(2);
+        assertThat(found).isTrue();
+        assertThat(result.getReturnValue()).isEqualTo(450);
+    }
+
+    @Test
+    @DisplayName("should return (23) when value is lower than max refund")
+    void returnValue_returnsReturnValue_23() throws ReimbursementNotFoundException {
+        //given
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
+        InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryReimbursementRepository inMemoryReimbursementRepository = inMemoryReimbursementRepository();
+        InMemoryReceiptTypeRepository inMemoryReceiptTypeRepository = inMemoryReceiptTypeRepository();
+        InMemoryUserCostRepository inMemoryUserCostRepository = inMemoryUserCostRepository();
+        userCostInitialDataForUserCosts(inMemoryUserGroupRepository,inMemoryUserRepository,
+                inMemoryReimbursementRepository,inMemoryReceiptTypeRepository,inMemoryUserCostRepository);
+        //system under test
+        var toTest = new ReimbursementService(inMemoryReimbursementRepository, inMemoryUserRepository);
+        //when
+        ReimbursementReadModel result = toTest.readById(12);
+
+        //then
+
+        boolean found = false;
+        for (UserCostReadModelToReimbursement userCost : result.getUserCosts()) {
+            if (userCost.getCostValue() == 23 && userCost.getMaxValue() == 100) {
+                found = true;
+                break;
+            }
+        }
+
+        assertThat(result.getName()).isEqualTo("reimbursement_012_noMaxRefund");
+        assertThat(result.getUserCosts().size()).isEqualTo(1);
+        assertThat(found).isTrue();
+        assertThat(result.getReturnValue()).isEqualTo(23);
+    }
 }

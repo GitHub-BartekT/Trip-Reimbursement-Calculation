@@ -1,7 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.model.projection.receiptType;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import pl.iseebugs.TripReimbursementApp.model.ReceiptType;
 
@@ -10,7 +10,7 @@ public class ReceiptTypeWriteModel {
     @NotNull(message = "Receipt Type name couldn't be empty.")
     @Size(max = 100, message = "Receipt Type name is too long.")
     String name;
-    @Positive(message = "Max value should be positive.")
+    @PositiveOrZero(message = "Max value should be positive.")
     double maxValue;
 
     public ReceiptTypeWriteModel() {

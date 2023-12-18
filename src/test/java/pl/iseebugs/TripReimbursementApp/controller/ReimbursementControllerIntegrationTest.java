@@ -17,6 +17,7 @@ import pl.iseebugs.TripReimbursementApp.model.projection.reimbursement.Reimburse
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,6 +66,22 @@ class ReimbursementControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].userId").value(1))
                 .andExpect(jsonPath("$[0].returnValue").value(0))
                 .andExpect(jsonPath("$[12].returnValue").value(125));
+    }
+
+    @Test
+    @Sql({"/sql/001-test-schema.sql", "/sql/006-test-data-user-costs.sql"})
+    void testReadAllReimbursements_returnsAllReimbursementsWithUserCosts() throws Exception {
+        //when
+        mockMvc.perform(get("/reimbursements"))
+                //then
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("reimbursement_01_S1"))
+                .andExpect(jsonPath("$[0].userCosts[*].id", containsInAnyOrder(1, 2, 3)))
+                .andExpect(jsonPath("$[1].userCosts[*].id", containsInAnyOrder(4,5)))
+                .andExpect(jsonPath("$[2].userCosts[*].id", containsInAnyOrder(6)))
+                .andExpect(jsonPath("$[4].userCosts[*].id", containsInAnyOrder(7,8,9)))
+                .andExpect(jsonPath("$[0].returnValue").value(205));
     }
 
     @Test
