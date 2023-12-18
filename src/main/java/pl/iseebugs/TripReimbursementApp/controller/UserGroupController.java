@@ -55,6 +55,24 @@ public class UserGroupController {
         return ResponseEntity.ok(updated);
     }
 
+    @PutMapping("add/{receiptTypes}")
+    ResponseEntity<UserGroupReadModelFull> updateUserGroupAddReceiptTypesIds
+            (@RequestBody @Valid int userGroupId,
+             @PathVariable List<Integer> receiptTypes)
+            throws UserGroupNotFoundException {
+        var updated = service.updateUserGroupAddReceiptTypesIds(userGroupId, receiptTypes);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PutMapping("remove/{receiptTypes}")
+    ResponseEntity<UserGroupReadModelFull> updateUserGroupRemoveReceiptTypesIds
+            (@RequestBody @Valid int userGroupId,
+             @PathVariable List<Integer> receiptTypes)
+            throws UserGroupNotFoundException {
+        var updated = service.updateUserGroupRemoveReceiptTypesIds(userGroupId, receiptTypes);
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteUserGroup(@PathVariable int id) throws UserGroupNotFoundException, UserNotFoundException {
         service.deleteUserGroup(id);

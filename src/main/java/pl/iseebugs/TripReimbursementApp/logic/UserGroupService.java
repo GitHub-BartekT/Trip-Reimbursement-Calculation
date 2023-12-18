@@ -102,6 +102,54 @@ public class UserGroupService {
         return UserGroupMapper.toReadModelFull(result);
    }
 
+   //TODO: add receipt Types, only Id
+    public UserGroupReadModelFull updateUserGroupAddReceiptTypesIds
+            (int userGroupId, List<Integer> receiptTypesIds) throws UserGroupNotFoundException {
+        UserGroup toUpdate = repository.findById(userGroupId)
+                .orElseThrow(UserGroupNotFoundException::new);
+
+        Set<ReceiptType> currentReceiptTypes = toUpdate.getReceiptTypes();
+        Set<ReceiptType> newReceiptTypes =
+                new HashSet<>(receiptTypeRepository.findAllById(receiptTypesIds));
+
+        for (ReceiptType receiptType : currentReceiptTypes){
+            if (!newReceiptTypes.contains(receiptType)){
+                receiptType.getUserGroups().add(toUpdate);
+                receiptTypeRepository.save(receiptType);
+            }
+        }
+
+        toUpdate.setReceiptTypes(newReceiptTypes);
+
+        UserGroup result = repository.save(toUpdate);
+        logger.info("Updated UserGroup with ID: {}", result.getId());
+        return UserGroupMapper.toReadModelFull(result);
+    }
+
+    //TODO:remove receipt Types, only Id
+    public UserGroupReadModelFull updateUserGroupRemoveReceiptTypesIds
+            (int userGroupId, List<Integer> receiptTypesIds) throws UserGroupNotFoundException {
+        UserGroup toUpdate = repository.findById(userGroupId)
+                .orElseThrow(UserGroupNotFoundException::new);
+
+        Set<ReceiptType> currentReceiptTypes = toUpdate.getReceiptTypes();
+        Set<ReceiptType> newReceiptTypes =
+                new HashSet<>(receiptTypeRepository.findAllById(receiptTypesIds));
+
+        for (ReceiptType receiptType : newReceiptTypes){
+            if (!currentReceiptTypes.contains(receiptType)){
+                receiptType.getUserGroups().remove(toUpdate);
+                receiptTypeRepository.save(receiptType);
+            }
+        }
+
+        toUpdate.setReceiptTypes(newReceiptTypes);
+
+        UserGroup result = repository.save(toUpdate);
+        logger.info("Updated UserGroup with ID: {}", result.getId());
+        return UserGroupMapper.toReadModelFull(result);
+    }
+
     public void deleteUserGroup(int id) throws UserGroupNotFoundException {
         UserGroup toDelete = repository.findById(id).orElseThrow(UserGroupNotFoundException::new);
 
