@@ -3,6 +3,25 @@ readUserById();
 setMode();
 getReceipts();
 getUserGroupReceipts();
+readUserGroupById();
+
+//readUserGroupById
+function readUserGroupById() {
+    fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`)
+        .then(response => response.json())
+        .then((s) => {
+            changePlaceholderAndValue("user_group_name", `${s.name}`);
+            changePlaceholderAndValue("user_group_daily_allowance", `${s.dailyAllowance}`);
+            changePlaceholderAndValue("user_group_cost_per_km", `${s.costPerKm}`);
+            changePlaceholderAndValue("user_group_max_mileage", `${s.maxMileage}`);
+            changePlaceholderAndValue("user_group_max_refund", `${s.maxRefund}`);
+        });
+}
+
+function changePlaceholderAndValue(id, text){
+    document.getElementById(id).setAttribute("placeholder", text);
+    document.getElementById(id).setAttribute("value", text);
+    }
 
 function makeUserGroup(){
     let user_group_name = document.getElementById(`user_group_name`).value;
@@ -121,19 +140,23 @@ function getUserGroupReceipts(){
         .then((response) => response.json())
         .then((receiptArr) => {
             receiptArr.map(s => {
-                let table = document.getElementById('user_group_table_create');
-                let row = table.insertRow(-1);
-                newCellInRow(row, 0, s.id);
-                let text = `${s.name}, max Value = ${s.maxValue}`;
-                newCellInRow(row, 1, text);
-
-                let newChangeCell = row.insertCell(2);
-                const newDeleteButton = document.createElement("div");
-                let textDeleteBtn = `deleteBtn${s.id}`;
-                newDeleteButton.innerHTML = `<button id="${textDeleteBtn}" class="button-error pure-button">Delete</button>`;
-                newChangeCell.appendChild(newDeleteButton);
+                makeReceiptRow(s.id, s.name, s.maxValue);
             });
         });
+}
+
+function makeReceiptRow(id, name, maxValue){
+    let table = document.getElementById('user_group_table_create');
+    let row = table.insertRow(-1);
+    newCellInRow(row, 0, id);
+    let text = `${name}, max Value = ${maxValue}`;
+    newCellInRow(row, 1, text);
+
+    let newChangeCell = row.insertCell(2);
+    const newDeleteButton = document.createElement("div");
+    let textDeleteBtn = `deleteBtn${id}`;
+    newDeleteButton.innerHTML = `<button id="${textDeleteBtn}" class="button-error pure-button">Delete</button>`;
+    newChangeCell.appendChild(newDeleteButton);
 }
 
 function doAssignReceiptTypeToUserGroup(){

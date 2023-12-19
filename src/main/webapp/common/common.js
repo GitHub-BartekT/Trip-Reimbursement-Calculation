@@ -38,8 +38,6 @@ function readAllUserGroups() {
         });
 }
 
-
-
 //readUserById
 function readUserById() {
     fetch(`${USER_API_URL}/${LOGGED_USER_ID}`)
