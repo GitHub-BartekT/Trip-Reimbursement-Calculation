@@ -60,7 +60,7 @@ function doPostUserGroup(user_group_name, user_group_daily_allowance, user_group
         .then(response => {
             if (!response.ok) {
                 return response.json().then(error => {
-                    document.getElementById('information').innerHTML = `<h2>Adding a new User Group failed!</h2>`;
+                    document.getElementById('information').innerText = `Adding a new User Group failed!`;
                 });
             }
             const locationHeader = response.headers.get('Location');
@@ -69,7 +69,7 @@ function doPostUserGroup(user_group_name, user_group_daily_allowance, user_group
                 USER_GROUP_ID = urlParts[urlParts.length - 1];
                 pageChangingModeUserGroup();
             }
-            document.getElementById('information').innerHTML = `<h2>You added a new User Group!</h2>`;
+            document.getElementById('information').innerText = `You added a new User Group!`;
         })
         .catch(console.warn);
 }
@@ -95,9 +95,9 @@ function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_
     })
         .then(response => {
             if (response.ok) {
-                document.getElementById('information').innerHTML = `<h2>You changed the User Group!</h2>`;
+                document.getElementById('information').innerText = `You changed the User Group!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Changing was failed!</h2>`;
+                document.getElementById('information').innerText = `Changing was failed!`;
             }
         })
         .catch(console.warn);
@@ -111,9 +111,9 @@ function doDeleteUserGroupInCreatingMode() {
         .then(response => {
             if (response.ok) {
                 pageCreatingModeUserGroup();
-                document.getElementById('information').innerHTML = `<h2>You deleted the User Group!</h2>`;
+                document.getElementById('information').innerText = `You deleted the User Group!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Deleting was failed!</h2>`;
+                document.getElementById('information').innerText = `Deleting was failed!`;
             }
         })
         .catch(console.warn);
@@ -145,6 +145,17 @@ function getUserGroupReceipts(){
         });
 }
 
+function deleteReceiptRows() {
+    const table = document.getElementById('user_group_table_create');
+    const rowIndex = 9;
+    console.info(table.rows.length);
+    if ((rowIndex >= 0) && (rowIndex < table.rows.length)) {
+        for (let i = table.rows.length - 1; i >= rowIndex; i--) {
+            table.deleteRow(i);
+        }
+    }
+}
+
 function makeReceiptRow(id, name, maxValue){
     let table = document.getElementById('user_group_table_create');
     let row = table.insertRow(-1);
@@ -160,8 +171,6 @@ function makeReceiptRow(id, name, maxValue){
 }
 
 function doAssignReceiptTypeToUserGroup(){
-
-    console.info(getReceipt());
     fetch(`${USER_GROUPS_API_URL}/add/${getReceipt()}`, {
         method: 'PUT',
         headers: {
@@ -172,10 +181,16 @@ function doAssignReceiptTypeToUserGroup(){
     })
         .then(response => {
             if (response.ok) {
-                document.getElementById('information').innerHTML = `<h2>You assign Receipt Type the User Group!</h2>`;
+                document.getElementById('information').innerText = `You assign Receipt Type the User Group!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Assign was failed!</h2>`;
+                document.getElementById('information').innerText = `Assign was failed!`;
             }
+        })
+        .then(() => {
+            deleteReceiptRows();
+        })
+        .then(() => {
+            return getUserGroupReceipts();
         })
         .catch(console.warn);
 }
@@ -210,9 +225,9 @@ const deleteReceiptTypeButtonsPressed = e => {
             .then(response => {
                 if (response.ok) {
                     changeBtnToDisableDelete(deleteButton);
-                    document.getElementById('information').innerHTML = `<h2>You deleted Receipt Type from User Group!</h2>`;
+                    document.getElementById('information').innerText = `You deleted Receipt Type from User Group!`;
                 } else {
-                    document.getElementById('information').innerHTML = `<h2>Deleting was failed!</h2>`;
+                    document.getElementById('information').innerText = `Deleting was failed!`;
                 }
             })
             .catch(console.warn);
