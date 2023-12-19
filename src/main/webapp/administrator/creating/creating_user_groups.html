@@ -11,9 +11,7 @@
 <div id="header"></div>
 <div class="creating">
     <div  class="big-text">
-        <div id="top-text-container">
-            <h2></h2>
-        </div>
+        <div id="top-text-container"></div>
     </div>
     <div class="create-container">
         <table id="user_group_table_create" class="pure-table pure-table-bordered pure-table-striped center-table">
@@ -36,19 +34,25 @@
             <tr>
                 <td>Cost per km:</td >
                 <td colspan="2">
-                    <label for="user_group_cost_per_km"></label><input id="user_group_cost_per_km" value="0">
+                    <label>
+                        <input id="user_group_cost_per_km" value="0">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td>Max mileage:</td>
                 <td colspan="2">
-                    <label for="user_group_max_mileage"></label><input id="user_group_max_mileage" value="0">
+                    <label>
+                        <input id="user_group_max_mileage" value="0">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td>Max refund:</td>
                 <td colspan="2">
-                    <label for="user_group_max_refund"></label><input id="user_group_max_refund" value="0">
+                    <label>
+                        <input id="user_group_max_refund" value="0">
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -64,7 +68,9 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <label for="receipt_list"></label><select id="receipt_list" onchange="getReceipt()" ></select>
+                    <label>
+                        <select id="receipt_list" onchange="getReceipt()" ></select>
+                    </label>
                 </td>
                 <td>
                     <button id="add_cost_btn" class="pure-button pure-button-disabled" onclick="doAssignReceiptTypeToUserGroup()">Assign</button>
@@ -79,7 +85,7 @@
     </div>
 </div>
 <div class="decisions">
-    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteUserGroupInCreatingMode()">Delete User Group</button>
+    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteUserGroup()">Delete User Group</button>
 </div>
 <div class="footer">
 </div>

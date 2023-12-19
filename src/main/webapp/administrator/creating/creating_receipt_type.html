@@ -11,42 +11,54 @@
 <div id="header"></div>
 <div class="creating">
     <div  class="big-text">
-        <div id="top-text-container">
-            <h2>Your new Receipt Type:</h2>
-        </div>
+        <div id="top-text-container"></div>
     </div>
     <div class="create-container">
         <table id="reimbursement_table-create" class="pure-table pure-table-bordered pure-table-striped center-table">
             <tr>
                 <td>Name:</td>
                 <td colspan="2">
-                    <label for="receipt_type_name"></label><input id="receipt_type_name" placeholder="Receipt Type Name">
+                    <label>
+                        <input id="receipt_type_name" placeholder="Receipt Type Name">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td>Max value:</td>
                 <td colspan="2">
-                    <label for="receipt_type_max_value"></label><input id="receipt_type_max_value" value="0">
+                    <label>
+                        <input id="receipt_type_max_value" value="0">
+                    </label>
                 </td>
             </tr>
             <tr>
-                <td colspan="3">
-                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeReceiptType()">Add Receipt Type</button>
+                <td>
+                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeReceiptType()"></button>
+                </td>
+                <td colspan="2">
+                    <div id="information"></div>
                 </td>
             </tr>
             <tr>
-                <td colspan="3">Assign receipt type to User Group:</td>
+                <td colspan="3">Assign User Group type to Receipt Type:</td>
             </tr>
             <tr>
                 <td>
-                    <label for="receipt_list"></label><select id="receipt_list" onchange="" ></select>
+                    <label>
+                        <select id="user_groups_list" onchange="getUserGroup()"></select>
+                    </label>
                 </td>
                 <td>
-                    <label for="additional_cost"></label><input id="additional_cost" value="0">
+                    <button id="add_user_group_btn" class="pure-button pure-button-disabled">Assign</button>
                 </td>
                 <td>
-                    <button id="add_cost_btn" class="pure-button pure-button-disabled">Assign</button>
+                    <button id="add_all_user_groups" class="pure-button pure-button-disabled">Assign to all Groups</button>
                 </td>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>name</td>
+                <td>remove</td>
             </tr>
         </table>
     </div>
@@ -55,7 +67,6 @@
     <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteReceiptType()">Delete Receipt Type</button>
 </div>
 <div class="footer">
-    <div id="information" class="big-text"><h2></h2></div>
 </div>
 <script src="../../common/common.js"> </script>
 <script src="../common/administrator_common.js"> </script>

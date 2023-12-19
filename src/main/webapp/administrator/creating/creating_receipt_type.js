@@ -1,6 +1,17 @@
 readDataFromUrl();
 readUserById();
 setMode();
+getUserGroups();
+readReceiptTypeById();
+
+function readReceiptTypeById() {
+    fetch(`${RECEIPT_TYPE_API_URL}/${RECEIPT_TYPE_ID}`)
+        .then(response => response.json())
+        .then((s) => {
+            changePlaceholderAndValue("receipt_type_name", `${s.name}`);
+            changePlaceholderAndValue("receipt_type_max_value", `${s.maxValue}`);
+        });
+}
 
 function makeReceiptType(){
     let receipt_type_name = document.getElementById(`receipt_type_name`).value;
@@ -30,7 +41,7 @@ function doPostReceiptType(receipt_type_name, receipt_type_max_value){
         .then(response => {
             if (!response.ok) {
                 return response.json().then(error => {
-                    document.getElementById('information').innerHTML = `<h2>Adding a new Receipt Type failed!</h2>`;
+                    document.getElementById('information').innerText = `Adding a new Receipt Type failed!`;
                 });
             }
             const locationHeader = response.headers.get('Location');
@@ -39,7 +50,7 @@ function doPostReceiptType(receipt_type_name, receipt_type_max_value){
                 RECEIPT_TYPE_ID = urlParts[urlParts.length - 1];
                 pageChangingModeReceiptType();
             }
-            document.getElementById('information').innerHTML = `<h2>You added a new Receipt Type!</h2>`;
+            document.getElementById('information').innerText = `You added a new Receipt Type!`;
         })
         .catch(console.warn);
 }
@@ -61,9 +72,9 @@ function doPutReceiptType(receipt_type_name, receipt_type_max_value){
     })
         .then(response => {
             if (response.ok) {
-                document.getElementById('information').innerHTML = `<h2>You changed the Receipt Type!</h2>`;
+                document.getElementById('information').innerText = `You changed the Receipt Type!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Changing was failed!</h2>`;
+                document.getElementById('information').innerText = `Changing was failed!`;
             }
         })
         .catch(console.warn);
@@ -76,12 +87,37 @@ function doDeleteReceiptType() {
         .then(response => {
             if (response.ok) {
                 pageCreatingModeReceiptType();
-                document.getElementById('information').innerHTML = `<h2>You deleted the Receipt Type!</h2>`;
+                document.getElementById('information').innerText = `You deleted the Receipt Type!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Deleting was failed!</h2>`;
+                document.getElementById('information').innerHTML = `Deleting was failed!`;
             }
         })
         .catch(console.warn);
+}
+
+function getUserGroups() {
+    fetch(`${USER_GROUPS_API_URL}`)
+        .then((response) => response.json())
+        .then((userGroupArr) => {
+            const list = userGroupArr.map(s =>
+                `<option value="${s.id}">User Group: ${s.name}</option>`)
+                .join('\n');
+            document.getElementById('user_groups_list').innerHTML = list;
+        });
+}
+
+function getUserGroup() {
+    return document.getElementById('user_groups_list').value;
+}
+
+function getReceiptUserGroups(){
+    fetch(`${USER_GROUPS_API_URL}/userGroup/${USER_GROUP_ID}`)
+        .then((response) => response.json())
+        .then((receiptArr) => {
+            receiptArr.map(s => {
+                makeReceiptRow(s.id, s.name, s.maxValue);
+            });
+        });
 }
 
 function setMode(){
@@ -106,6 +142,6 @@ function pageChangingModeReceiptType(){
     const topTextContainer = document.getElementById('top-text-container');
     topTextContainer.innerHTML = `<h2>Modified receipt type id:${RECEIPT_TYPE_ID}</h2>`;
     document.getElementById("accept_btn").innerText = "Save changes";
-    changeBtnToPrimary("add_cost_btn");
+    changeBtnToPrimary("add_user_group_btn");
     changeBtnToDelete("delete_btn");
 }

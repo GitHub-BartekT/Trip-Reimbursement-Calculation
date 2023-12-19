@@ -5,7 +5,6 @@ getReceipts();
 getUserGroupReceipts();
 readUserGroupById();
 
-//readUserGroupById
 function readUserGroupById() {
     fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`)
         .then(response => response.json())
@@ -17,11 +16,6 @@ function readUserGroupById() {
             changePlaceholderAndValue("user_group_max_refund", `${s.maxRefund}`);
         });
 }
-
-function changePlaceholderAndValue(id, text){
-    document.getElementById(id).setAttribute("placeholder", text);
-    document.getElementById(id).setAttribute("value", text);
-    }
 
 function makeUserGroup(){
     let user_group_name = document.getElementById(`user_group_name`).value;
@@ -103,22 +97,6 @@ function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_
         .catch(console.warn);
 }
 
-//deleteUserGroup
-function doDeleteUserGroupInCreatingMode() {
-    fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`, {
-        method: 'DELETE'
-    })
-        .then(response => {
-            if (response.ok) {
-                pageCreatingModeUserGroup();
-                document.getElementById('information').innerText = `You deleted the User Group!`;
-            } else {
-                document.getElementById('information').innerText = `Deleting was failed!`;
-            }
-        })
-        .catch(console.warn);
-}
-
 function getReceipts() {
     fetch(`${RECEIPT_TYPE_API_URL}`)
         .then((response) => response.json())
@@ -131,8 +109,7 @@ function getReceipts() {
 }
 
 function getReceipt(){
-    let text;
-    return text = document.getElementById('receipt_list').value;
+    return document.getElementById('receipt_list').value;
 }
 
 function getUserGroupReceipts(){
@@ -143,17 +120,6 @@ function getUserGroupReceipts(){
                 makeReceiptRow(s.id, s.name, s.maxValue);
             });
         });
-}
-
-function deleteReceiptRows() {
-    const table = document.getElementById('user_group_table_create');
-    const rowIndex = 9;
-    console.info(table.rows.length);
-    if ((rowIndex >= 0) && (rowIndex < table.rows.length)) {
-        for (let i = table.rows.length - 1; i >= rowIndex; i--) {
-            table.deleteRow(i);
-        }
-    }
 }
 
 function makeReceiptRow(id, name, maxValue){
@@ -187,7 +153,7 @@ function doAssignReceiptTypeToUserGroup(){
             }
         })
         .then(() => {
-            deleteReceiptRows();
+            deleteReceiptRows(9, 'user_group_table_create');
         })
         .then(() => {
             return getUserGroupReceipts();
@@ -235,6 +201,21 @@ const deleteReceiptTypeButtonsPressed = e => {
 }
 
 deleteReceiptButtons.addEventListener("click",deleteReceiptTypeButtonsPressed);
+
+function doDeleteUserGroup() {
+    fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (response.ok) {
+                pageCreatingModeUserGroup();
+                document.getElementById('information').innerText = `You deleted the User Group!`;
+            } else {
+                document.getElementById('information').innerText = `Deleting was failed!`;
+            }
+        })
+        .catch(console.warn);
+}
 
 function setMode(){
     if (CREATE_MODE){
