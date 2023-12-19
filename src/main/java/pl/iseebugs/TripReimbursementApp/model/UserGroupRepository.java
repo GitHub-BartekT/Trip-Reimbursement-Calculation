@@ -11,6 +11,8 @@ public interface UserGroupRepository {
 
     List<UserGroup> findAllById(Iterable<Integer> idList);
 
+    UserGroup findByName(String name);
+
     List<UserGroup> findAllByReceiptTypes_Id(int id);
 
     boolean existsByName(String name);

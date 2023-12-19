@@ -57,9 +57,13 @@ public class UserGroupService {
     public UserGroupReadModel updateUserGroupById(UserGroupWriteModel toWrite) throws UserGroupNotFoundException{
         if(repository.findById(toWrite.getId()).isEmpty()){
             throw new UserGroupNotFoundException();
-        } else if (repository.existsByName(toWrite.getName())) {
+        }
+
+        UserGroup groupWithSameName = repository.findByName(toWrite.getName());
+        if (groupWithSameName != null && (groupWithSameName.getId() != toWrite.getId())) {
             throw new IllegalArgumentException("User Group with that name already exist.");
         }
+
         UserGroup toUpdate = repository.save(toWrite.toUserGroup());
         return UserGroupMapper.toReadModel(toUpdate);
     }

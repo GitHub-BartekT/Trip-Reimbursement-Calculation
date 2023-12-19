@@ -364,19 +364,18 @@ class UserGroupServiceTest {
         var mockReceiptTypeRepository =mock(ReceiptTypeRepository.class);
         UserGroupWriteModel dataUserGroup = new UserGroupWriteModel();
         dataUserGroup.setId(1);
-        dataUserGroup.setName("foo");
+        dataUserGroup.setName("bar");
         UserGroup entity = dataUserGroup.toUserGroup();
         when(mockRepository.findById(anyInt())).thenReturn(Optional.of(entity));
-
         //and
-        when(mockRepository.existsByName(anyString())).thenReturn(true);
+        when(mockRepository.findByName(anyString())).thenReturn(entity);
 
         //system under test
         var toTest = new UserGroupService(mockRepository, mockUserRepository, mockReceiptTypeRepository);
 
         //when
         UserGroupWriteModel toUpdate = new UserGroupWriteModel();
-        toUpdate.setId(1);
+        toUpdate.setId(2);
         toUpdate.setName("bar");
 
         var exception = catchThrowable(() -> toTest.updateUserGroupById(toUpdate));

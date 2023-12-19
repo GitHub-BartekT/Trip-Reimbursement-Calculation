@@ -44,6 +44,16 @@ public class InMemoryRepositories {
         }
 
         @Override
+        public UserGroup findByName(String name) {
+            UserGroup result;
+            result = map.values().stream()
+                    .filter(userGroup -> userGroup.getName().equals(name))
+                    .findFirst()
+                    .orElse(null);
+            return result;
+        }
+
+        @Override
         public List<UserGroup> findAllByReceiptTypes_Id(int id) {
             List<UserGroup> result = new ArrayList<>();
             result = map.values().stream()
