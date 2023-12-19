@@ -57,7 +57,7 @@ public class UserGroupController {
 
     @PutMapping("add/{receiptTypes}")
     ResponseEntity<UserGroupReadModelFull> updateUserGroupAddReceiptTypesIds
-            (@RequestBody @Valid int userGroupId,
+            (@RequestBody int userGroupId,
              @PathVariable List<Integer> receiptTypes)
             throws UserGroupNotFoundException {
         var updated = service.updateUserGroupAddReceiptTypesIds(userGroupId, receiptTypes);

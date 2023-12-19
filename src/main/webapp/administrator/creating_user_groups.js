@@ -2,6 +2,7 @@ readDataFromUrl();
 readUserById();
 setMode();
 getReceipts();
+getUserGroupReceipts();
 
 function makeUserGroup(){
     let user_group_name = document.getElementById(`user_group_name`).value;
@@ -115,19 +116,36 @@ function getReceipt(){
     return text = document.getElementById('receipt_list').value;
 }
 
-function doAssignReceiptTypeToUserGroup(){
-    let bodyUserGroup = {
-        id: USER_GROUP_ID,
-        name: document.getElementById(`user_group_name`).value
-    };
+function getUserGroupReceipts(){
+    fetch(`${RECEIPT_TYPE_API_URL}/userGroup/${USER_GROUP_ID}`)
+        .then((response) => response.json())
+        .then((receiptArr) => {
+            receiptArr.map(s => {
+                let table = document.getElementById('user_group_table_create');
+                let row = table.insertRow(-1);
+                newCellInRow(row, 0, s.id);
+                let text = `${s.name}, max Value = ${s.maxValue}`;
+                newCellInRow(row, 1, text);
 
-    fetch(`${USER_GROUPS_API_URL}/${getReceipt()}`, {
+                let newChangeCell = row.insertCell(2);
+                const newDeleteButton = document.createElement("div");
+                let textDeleteBtn = `deleteBtn${s.id}`;
+                newDeleteButton.innerHTML = `<button id="${textDeleteBtn}" class="button-error pure-button">Delete</button>`;
+                newChangeCell.appendChild(newDeleteButton);
+            });
+        });
+}
+
+function doAssignReceiptTypeToUserGroup(){
+
+    console.info(getReceipt());
+    fetch(`${USER_GROUPS_API_URL}/add/${getReceipt()}`, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(bodyUserGroup)
+        body: JSON.stringify(USER_GROUP_ID)
     })
         .then(response => {
             if (response.ok) {
@@ -138,6 +156,47 @@ function doAssignReceiptTypeToUserGroup(){
         })
         .catch(console.warn);
 }
+
+const deleteReceiptButtons = document.getElementById('user_group_table_create');
+
+const deleteReceiptTypeButtonsPressed = e => {
+    const isButton = e.target.nodeName === 'BUTTON';
+    if(!isButton){
+        console.log("Not a button");
+        return;}
+
+    console.info(e);
+    let clickBtnID = `${e.target.id}`;
+    console.info(clickBtnID);
+    let receiptTypeId = clickBtnID.substring(9);
+    RECEIPT_TYPE_ID = receiptTypeId;
+    let checkButton = clickBtnID.substring(0,6);
+    let deleteButton = `deleteBtn${receiptTypeId}`;
+
+    // Click "Delete" button
+    if (checkButton === 'delete') {
+        console.info(getReceipt());
+        fetch(`${USER_GROUPS_API_URL}/remove/${RECEIPT_TYPE_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(USER_GROUP_ID)
+        })
+            .then(response => {
+                if (response.ok) {
+                    changeBtnToDisableDelete(deleteButton);
+                    document.getElementById('information').innerHTML = `<h2>You deleted Receipt Type from User Group!</h2>`;
+                } else {
+                    document.getElementById('information').innerHTML = `<h2>Deleting was failed!</h2>`;
+                }
+            })
+            .catch(console.warn);
+    }
+}
+
+deleteReceiptButtons.addEventListener("click",deleteReceiptTypeButtonsPressed);
 
 function setMode(){
     if (CREATE_MODE){

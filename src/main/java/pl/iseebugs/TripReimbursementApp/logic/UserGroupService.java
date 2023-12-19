@@ -102,7 +102,6 @@ public class UserGroupService {
         return UserGroupMapper.toReadModelFull(result);
    }
 
-   //TODO: add receipt Types, only Id
     public UserGroupReadModelFull updateUserGroupAddReceiptTypesIds
             (int userGroupId, List<Integer> receiptTypesIds) throws UserGroupNotFoundException {
         UserGroup toUpdate = repository.findById(userGroupId)
@@ -114,6 +113,7 @@ public class UserGroupService {
 
         for (ReceiptType receiptType : currentReceiptTypes){
             if (!newReceiptTypes.contains(receiptType)){
+                newReceiptTypes.add(receiptType);
                 receiptType.getUserGroups().add(toUpdate);
                 receiptTypeRepository.save(receiptType);
             }
@@ -122,11 +122,11 @@ public class UserGroupService {
         toUpdate.setReceiptTypes(newReceiptTypes);
 
         UserGroup result = repository.save(toUpdate);
-        logger.info("Updated UserGroup with ID: {}", result.getId());
+        logger.info("Updated UserGroup with ID: {}, receipt size: {}",
+                result.getId(), toUpdate.getReceiptTypes().size());
         return UserGroupMapper.toReadModelFull(result);
     }
 
-    //TODO:remove receipt Types, only Id
     public UserGroupReadModelFull updateUserGroupRemoveReceiptTypesIds
             (int userGroupId, List<Integer> receiptTypesIds) throws UserGroupNotFoundException {
         UserGroup toUpdate = repository.findById(userGroupId)
@@ -137,13 +137,12 @@ public class UserGroupService {
                 new HashSet<>(receiptTypeRepository.findAllById(receiptTypesIds));
 
         for (ReceiptType receiptType : newReceiptTypes){
-            if (!currentReceiptTypes.contains(receiptType)){
+            if (currentReceiptTypes.contains(receiptType)){
+                currentReceiptTypes.remove(receiptType);
                 receiptType.getUserGroups().remove(toUpdate);
                 receiptTypeRepository.save(receiptType);
             }
         }
-
-        toUpdate.setReceiptTypes(newReceiptTypes);
 
         UserGroup result = repository.save(toUpdate);
         logger.info("Updated UserGroup with ID: {}", result.getId());
