@@ -62,7 +62,7 @@ const changeUserGroupButtonsPressed = e => {
             })
             .catch(console.warn);
     } else if (checkButton === 'change'  && clickBtnID.startsWith('changeBtn')){
-        window.location.href = `creating_user_groups.html?user=${LOGGED_USER_ID}&group=${USER_GROUP_ID}&createMode=`;
+        window.location.href = `../creating/creating_user_groups.html?user=${LOGGED_USER_ID}&group=${USER_GROUP_ID}&createMode=`;
     }
 }
 

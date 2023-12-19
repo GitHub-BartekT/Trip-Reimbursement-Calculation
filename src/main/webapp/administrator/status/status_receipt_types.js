@@ -58,7 +58,7 @@ const changeReceiptTypeButtonsPressed = e => {
             })
             .catch(console.warn);
     } else if (checkButton === 'change'  && clickBtnID.startsWith('changeBtn')){
-        window.location.href = `creating_receipt_type.html?user=${LOGGED_USER_ID}&receipt=${RECEIPT_TYPE_ID}&createMode=`;
+        window.location.href = `../creating/creating_receipt_type.html?user=${LOGGED_USER_ID}&receipt=${RECEIPT_TYPE_ID}&createMode=`;
     }
 }
 
