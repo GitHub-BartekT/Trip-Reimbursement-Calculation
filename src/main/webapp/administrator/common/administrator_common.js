@@ -1,5 +1,7 @@
+loadHeader();
+
 function loadHeader() {
-    fetch('common/administrator_header.html')
+    fetch('../common/administrator_header.html')
         .then(response => response.text())
         .then(data => {
             document.getElementById('header').innerHTML = data;

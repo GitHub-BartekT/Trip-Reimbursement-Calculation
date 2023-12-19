@@ -1,7 +1,6 @@
 readDataFromUrl();
 readUserById();
 readAllUserGroupsWithDetails();
-loadHeader();
 
 function readAllUserGroupsWithDetails() {
     fetch(`${USER_GROUPS_API_URL}`)
