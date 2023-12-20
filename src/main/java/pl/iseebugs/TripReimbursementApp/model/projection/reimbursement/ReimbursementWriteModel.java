@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public class ReimbursementWriteModel {
     private int id;
-    @NotNull(message = "Reimbursement name couldn't be empty.")
+    @NotBlank(message = "Reimbursement name couldn't be empty.")
     @Size(max = 100, message = "Reimbursement name is too long.")
     private String name;
     @PastOrPresent(message = "Start date should be in the past or present.")
