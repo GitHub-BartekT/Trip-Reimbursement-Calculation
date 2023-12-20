@@ -183,6 +183,27 @@ public class ReceiptTypeService {
         return ReceiptMapper.toReadModelShort(updatedReceiptType);
     }
 
+    public ReceiptTypeReadModelShort updateReceiptTypeRemoveUserGroupsIds(int receiptTypeId, List<Integer> userGroupsIds) throws ReceiptTypeNotFoundException {
+        ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeId)
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        Set<UserGroup> userGroupsToRemove =
+                new HashSet<>(userGroupRepository.findAllById(userGroupsIds));
+
+        for (UserGroup userGroup : userGroupsToRemove){
+            if(toUpdate.getUserGroups().contains(userGroup)){
+                toUpdate.getUserGroups().remove(userGroup);
+                userGroup.getReceiptTypes().remove(toUpdate);
+                userGroupRepository.save(userGroup);
+            }
+        }
+
+        ReceiptType updatedReceiptType = receiptTypeRepository.save(toUpdate);
+        logger.info("Updated Receipt Type with ID: {}, user groups size: {}",
+                updatedReceiptType.getId(), updatedReceiptType.getUserGroups().size());
+        return ReceiptMapper.toReadModelShort(updatedReceiptType);
+    }
+
     public void deleteById (int id) throws ReceiptTypeNotFoundException {
         ReceiptType toDelete = receiptTypeRepository.findById(id)
                 .orElseThrow(ReceiptTypeNotFoundException::new);

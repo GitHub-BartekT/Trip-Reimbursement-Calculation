@@ -78,6 +78,15 @@ public class ReceiptTypeController {
         return ResponseEntity.ok(updated);
     }
 
+    @PutMapping("remove/{userGroups}")
+    ResponseEntity<ReceiptTypeReadModelShort> updateUserGroupRemoveReceiptTypesIds
+            (@RequestBody int receiptTypeId,
+             @PathVariable List<Integer> userGroups)
+            throws ReceiptTypeNotFoundException {
+        var updated = service.updateReceiptTypeRemoveUserGroupsIds(receiptTypeId, userGroups);
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteReceiptType(@PathVariable int id) throws ReceiptTypeNotFoundException {
         service.deleteById(id);
