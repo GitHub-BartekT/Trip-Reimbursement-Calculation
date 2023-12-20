@@ -130,7 +130,7 @@ public class ReceiptTypeService {
 
     public ReceiptTypeReadModel updateReceiptTypeWithUserGroupIds
             (ReceiptTypeWriteModel receiptTypeWriteModel, List<Integer> userGroupIds)
-            throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
+            throws ReceiptTypeNotFoundException{
         ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeWriteModel.getId())
                 .orElseThrow(ReceiptTypeNotFoundException::new);
 
@@ -160,6 +160,27 @@ public class ReceiptTypeService {
         ReceiptType result = receiptTypeRepository.save(toUpdate);
         logger.info("Updated Receipt Type with ID: {}", result.getId());
         return ReceiptMapper.toReadModel(result);
+    }
+
+    public ReceiptTypeReadModelShort updateReceiptTypeAddToAllUserGroups (int receiptTypeId) throws ReceiptTypeNotFoundException {
+        ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeId)
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        Set<UserGroup> userGroupsToAdd =
+                new HashSet<>(userGroupRepository.findAll());
+
+        for (UserGroup userGroup : userGroupsToAdd){
+            if(!toUpdate.getUserGroups().contains(userGroup)){
+                toUpdate.getUserGroups().add(userGroup);
+                userGroup.getReceiptTypes().add(toUpdate);
+                userGroupRepository.save(userGroup);
+            }
+        }
+
+        ReceiptType updatedReceiptType = receiptTypeRepository.save(toUpdate);
+        logger.info("Updated Receipt Type with ID: {}, user groups size: {}",
+                updatedReceiptType.getId(), updatedReceiptType.getUserGroups().size());
+        return ReceiptMapper.toReadModelShort(updatedReceiptType);
     }
 
     public ReceiptTypeReadModelShort updateReceiptTypeAddUserGroupsIds(int receiptTypeId, List<Integer> userGroupsIds) throws ReceiptTypeNotFoundException {

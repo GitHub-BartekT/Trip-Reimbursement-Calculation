@@ -60,6 +60,14 @@ public class ReceiptTypeController {
         return ResponseEntity.ok(updated);
     }
 
+    @PutMapping("all/{id}")
+    ResponseEntity<ReceiptTypeReadModelShort> updateReceiptTypeAddToAllUserGroups
+            (@PathVariable int id)
+            throws ReceiptTypeNotFoundException {
+        var updated = service.updateReceiptTypeAddToAllUserGroups(id);
+        return ResponseEntity.ok(updated);
+    }
+
     @PutMapping("/{userGroups}")
     ResponseEntity<ReceiptTypeReadModel> updateReceiptTypeWithUserGroupIds
             (@RequestBody @Valid ReceiptTypeWriteModel toWrite,

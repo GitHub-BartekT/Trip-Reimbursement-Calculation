@@ -149,6 +149,30 @@ function doAssignUserGroupToReceiptType(){
         .catch(console.warn);
 }
 
+
+function doAssignReceiptTypeToAllUserGroups(){
+    fetch(`${RECEIPT_TYPE_API_URL}/all/${RECEIPT_TYPE_ID}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }})
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('information').innerText = `You assign User Group to the Receipt Type!`;
+            } else {
+                document.getElementById('information').innerText = `Assign was failed!`;
+            }
+        })
+        .then(() => {
+            deleteRows(6, 'receipt_type_table_create');
+        })
+        .then(() => {
+            getReceiptUserGroups();
+        })
+        .catch(console.warn);
+}
+
 const deleteUserGroupButtons = document.getElementById('receipt_type_table_create');
 
 const deleteUserGroupButtonsPressed = e => {
