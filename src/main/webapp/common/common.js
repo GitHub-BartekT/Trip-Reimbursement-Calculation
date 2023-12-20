@@ -6,6 +6,7 @@ let LOGGED_USER_ID;
 let LOGGED_USER_NAME;
 let LOGGED_USER_GROUP_ID;
 let LOGGED_USER_GROUP_NAME;
+let USER_ID;
 let USER_GROUP_ID;
 let REIMBURSEMENT_ID;
 let RECEIPT_TYPE_ID;
@@ -21,6 +22,7 @@ function readDataFromUrl() {
     CREATE_MODE = urlParams.get('createMode');
     USER_GROUP_ID = urlParams.get('group');
     RECEIPT_TYPE_ID = urlParams.get('receipt');
+    USER_ID = urlParams.get('userId');
 }
 
 //readUserGroups
