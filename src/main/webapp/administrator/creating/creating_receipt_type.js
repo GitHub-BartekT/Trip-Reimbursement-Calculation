@@ -218,6 +218,7 @@ function pageCreatingModeReceiptType(){
     topTextContainer.innerHTML = `<h2>Your new Receipt Type:</h2>`;
     document.getElementById("accept_btn").innerText = "Add Receipt Type";
     changeBtnToDisable("add_user_group_btn");
+    changeBtnToDisable("add_all_user_groups_btn");
     changeBtnToDisableDelete("delete_btn");
     setReceiptTypePlaceholders("Receipt Type Name", 0);
     deleteRows(6,'receipt_type_table_create');
@@ -230,6 +231,7 @@ function pageChangingModeReceiptType(){
     topTextContainer.innerHTML = `<h2>Modified receipt type id:${RECEIPT_TYPE_ID}</h2>`;
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_user_group_btn");
+    changeBtnToPrimary("add_all_user_groups_btn");
     changeBtnToDelete("delete_btn");
 }
 
