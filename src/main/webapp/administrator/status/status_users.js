@@ -39,11 +39,11 @@ const changeUserGroupButtonsPressed = e => {
     console.info(e);
     let clickBtnID = `${e.target.id}`;
     console.info(clickBtnID);
-    let userGroupId = clickBtnID.substring(9);
-    USER_GROUP_ID = userGroupId;
+    let userId = clickBtnID.substring(9);
+    USER_ID = userId;
     let checkButton = clickBtnID.substring(0,6);
-    let changeButton = `changeBtn${userGroupId}`;
-    let deleteButton = `deleteBtn${userGroupId}`;
+    let changeButton = `changeBtn${userId}`;
+    let deleteButton = `deleteBtn${userId}`;
 
     // Click "Delete" button
     if (checkButton === 'delete'){
@@ -58,7 +58,7 @@ const changeUserGroupButtonsPressed = e => {
             })
             .catch(console.warn);
     } else if (checkButton === 'change'  && clickBtnID.startsWith('changeBtn')){
-        window.location.href = `../creating/creating_user.html?user=${LOGGED_USER_ID}&group=${USER_GROUP_ID}&createMode=`;
+        window.location.href = `../creating/creating_user.html?user=${LOGGED_USER_ID}&userId=${USER_ID}&createMode=`;
     }
 }
 

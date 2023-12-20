@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Reimbursement</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../common/stylesheet.css">
+    <link rel="stylesheet" href="../stylesheet_administrator.css">
+</head>
+<body style="background: #ff8c24">
+<div id="header"></div>
+<div class="creating">
+    <div  class="big-text">
+        <div id="top-text-container"></div>
+    </div>
+    <div class="create-container">
+        <table id="user_table_create" class="pure-table pure-table-bordered pure-table-striped center-table">
+            <tr>
+                <td>Name:</td>
+                <td colspan="2">
+                    <label>
+                        <input id="user_name" placeholder="Name">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td >User group:</td>
+                <td rowspan="2">
+                    <div id="user_group"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <select id="user_groups_list" onchange="getUserGroup()" ></select>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeUser()"></button>
+                </td>
+                <td  colspan="2">
+                    <div id="information"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="decisions">
+    <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteUserGroup()">Delete User Group</button>
+</div>
+<div class="footer">
+</div>
+<script src="../../common/common.js"> </script>
+<script src="../common/administrator_common.js"> </script>
+<script src="creating_user.js"> </script>
+</body>
+</html>
