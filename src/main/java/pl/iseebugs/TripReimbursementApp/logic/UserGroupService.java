@@ -3,12 +3,10 @@ package pl.iseebugs.TripReimbursementApp.logic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.*;
-import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupMapper;
-import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
-import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelFull;
-import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +32,17 @@ public class UserGroupService {
         return repository.findAll().stream()
                 .map(UserGroupMapper::toReadModel)
                 .collect(Collectors.toList());
+    }
+
+    public List<UserGroupReadModelShort> readAllByReceiptType_Id(int id) throws UserGroupNotFoundException, ReceiptTypeNotFoundException {
+        if (!receiptTypeRepository.existsById(id)){
+            logger.info("No found Receipt Type with id {}: ", id);
+            throw new ReceiptTypeNotFoundException();
+        }
+        List<UserGroupReadModelShort> result = repository.findAllByReceiptTypes_Id(id)
+                .stream().map(UserGroupMapper::toReadModelShort).toList();
+        logger.info("Read All User Group with Receipt Id: {}. List size: {}",id,result.size());
+        return result;
     }
 
     public UserGroupReadModelFull readById(int id) throws UserGroupNotFoundException {

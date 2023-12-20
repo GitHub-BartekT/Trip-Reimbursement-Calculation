@@ -3,11 +3,13 @@ package pl.iseebugs.TripReimbursementApp.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserGroupService;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelFull;
+import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupReadModelShort;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupWriteModel;
 
 import java.net.URI;
@@ -26,6 +28,11 @@ public class UserGroupController {
     @GetMapping
     ResponseEntity<List<UserGroupReadModel>> readAllUserGroups(){
         return ResponseEntity.ok(service.readAll());
+    }
+
+    @GetMapping("/receiptType/{id}")
+    ResponseEntity<List<UserGroupReadModelShort>> readAllByReceiptType_Id(@PathVariable int id) throws UserGroupNotFoundException, ReceiptTypeNotFoundException {
+        return ResponseEntity.ok(service.readAllByReceiptType_Id(id));
     }
 
     @GetMapping("/{id}")
