@@ -2,18 +2,20 @@ readDataFromUrl();
 readUserById();
 setMode();
 getReceipts();
-getUserGroupReceipts();
-readUserGroupById();
+readUserGroupData();
+
+function readUserGroupData(){
+    if (!CREATE_MODE) {
+        readUserGroupById();
+        getUserGroupReceipts();
+    }
+}
 
 function readUserGroupById() {
     fetch(`${USER_GROUPS_API_URL}/${USER_GROUP_ID}`)
         .then(response => response.json())
         .then((s) => {
-            changePlaceholderAndValue("user_group_name", `${s.name}`);
-            changePlaceholderAndValue("user_group_daily_allowance", `${s.dailyAllowance}`);
-            changePlaceholderAndValue("user_group_cost_per_km", `${s.costPerKm}`);
-            changePlaceholderAndValue("user_group_max_mileage", `${s.maxMileage}`);
-            changePlaceholderAndValue("user_group_max_refund", `${s.maxRefund}`);
+            setUserGroupPlaceholders(s.name, s.dailyAllowance, s.costPerKm, s.maxMileage, s.maxRefund);
         });
 }
 
@@ -153,10 +155,10 @@ function doAssignReceiptTypeToUserGroup(){
             }
         })
         .then(() => {
-            deleteReceiptRows(9, 'user_group_table_create');
+            deleteRows(9, 'user_group_table_create');
         })
         .then(() => {
-            return getUserGroupReceipts();
+            getUserGroupReceipts();
         })
         .catch(console.warn);
 }
@@ -232,6 +234,8 @@ function pageCreatingModeUserGroup(){
     document.getElementById("accept_btn").innerText = "Add User Group";
     changeBtnToDisable("add_cost_btn");
     changeBtnToDisableDelete("delete_btn");
+    setUserGroupPlaceholders("User Group Name", 0,0,0,0);
+    deleteRows(9, 'user_group_table_create');
 }
 
 function pageChangingModeUserGroup(){
@@ -241,4 +245,17 @@ function pageChangingModeUserGroup(){
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_cost_btn");
     changeBtnToDelete("delete_btn");
+}
+
+function setUserGroupPlaceholders(name,dailyAllowance, costPerKm, maxMileage, maxRefund) {
+    if (CREATE_MODE){
+        document.getElementById("user_group_name").setAttribute("placeholder", name);
+        document.getElementById("user_group_name").value = "";
+    } else {
+        changePlaceholderAndValue("user_group_name", name);
+    }
+    changePlaceholderAndValue("user_group_daily_allowance", dailyAllowance);
+    changePlaceholderAndValue("user_group_cost_per_km", costPerKm);
+    changePlaceholderAndValue("user_group_max_mileage", maxMileage);
+    changePlaceholderAndValue("user_group_max_refund", maxRefund);
 }

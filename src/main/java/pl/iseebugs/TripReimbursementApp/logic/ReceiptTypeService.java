@@ -11,6 +11,7 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptMapper;
 import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModelShort;
 import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeWriteModel;
 
 import java.util.HashSet;
@@ -159,6 +160,27 @@ public class ReceiptTypeService {
         ReceiptType result = receiptTypeRepository.save(toUpdate);
         logger.info("Updated Receipt Type with ID: {}", result.getId());
         return ReceiptMapper.toReadModel(result);
+    }
+
+    public ReceiptTypeReadModelShort updateReceiptTypeAddUserGroupsIds(int receiptTypeId, List<Integer> userGroupsIds) throws ReceiptTypeNotFoundException {
+        ReceiptType toUpdate = receiptTypeRepository.findById(receiptTypeId)
+                .orElseThrow(ReceiptTypeNotFoundException::new);
+
+        Set<UserGroup> userGroupsToAdd =
+                new HashSet<>(userGroupRepository.findAllById(userGroupsIds));
+
+        for (UserGroup userGroup : userGroupsToAdd){
+            if(!toUpdate.getUserGroups().contains(userGroup)){
+                toUpdate.getUserGroups().add(userGroup);
+                userGroup.getReceiptTypes().add(toUpdate);
+                userGroupRepository.save(userGroup);
+            }
+        }
+
+        ReceiptType updatedReceiptType = receiptTypeRepository.save(toUpdate);
+        logger.info("Updated Receipt Type with ID: {}, user groups size: {}",
+                updatedReceiptType.getId(), updatedReceiptType.getUserGroups().size());
+        return ReceiptMapper.toReadModelShort(updatedReceiptType);
     }
 
     public void deleteById (int id) throws ReceiptTypeNotFoundException {

@@ -9,7 +9,7 @@ function loadHeader() {
         .catch(error => console.error('Error:', error));
 }
 
-function deleteReceiptRows(rowIndex, elementId) {
+function deleteRows(rowIndex, elementId) {
     const table = document.getElementById(elementId);
     console.info(table.rows.length);
     if ((rowIndex >= 0) && (rowIndex < table.rows.length)) {

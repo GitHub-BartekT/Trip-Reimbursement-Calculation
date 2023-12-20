@@ -2,14 +2,20 @@ readDataFromUrl();
 readUserById();
 setMode();
 getUserGroups();
-readReceiptTypeById();
+readReceiptTypeData();
+
+function readReceiptTypeData(){
+    if (!CREATE_MODE) {
+        readReceiptTypeById();
+        getReceiptUserGroups();
+    }
+}
 
 function readReceiptTypeById() {
     fetch(`${RECEIPT_TYPE_API_URL}/${RECEIPT_TYPE_ID}`)
         .then(response => response.json())
         .then((s) => {
-            changePlaceholderAndValue("receipt_type_name", `${s.name}`);
-            changePlaceholderAndValue("receipt_type_max_value", `${s.maxValue}`);
+            setReceiptTypePlaceholders(s.name, s.maxValue);
         });
 }
 
@@ -80,21 +86,6 @@ function doPutReceiptType(receipt_type_name, receipt_type_max_value){
         .catch(console.warn);
 }
 
-function doDeleteReceiptType() {
-    fetch(`${RECEIPT_TYPE_API_URL}/${RECEIPT_TYPE_ID}`, {
-        method: 'DELETE'
-    })
-        .then(response => {
-            if (response.ok) {
-                pageCreatingModeReceiptType();
-                document.getElementById('information').innerText = `You deleted the Receipt Type!`;
-            } else {
-                document.getElementById('information').innerHTML = `Deleting was failed!`;
-            }
-        })
-        .catch(console.warn);
-}
-
 function getUserGroups() {
     fetch(`${USER_GROUPS_API_URL}`)
         .then((response) => response.json())
@@ -111,13 +102,66 @@ function getUserGroup() {
 }
 
 function getReceiptUserGroups(){
-    fetch(`${USER_GROUPS_API_URL}/userGroup/${USER_GROUP_ID}`)
+    fetch(`${USER_GROUPS_API_URL}/receiptType/${RECEIPT_TYPE_ID}`)
         .then((response) => response.json())
         .then((receiptArr) => {
             receiptArr.map(s => {
-                makeReceiptRow(s.id, s.name, s.maxValue);
+                makeUserGroupRow(s.id, s.name);
             });
         });
+}
+
+function makeUserGroupRow(id, name){
+    let table = document.getElementById('receipt_type_table_create');
+    let row = table.insertRow(-1);
+    newCellInRow(row, 0, id);
+    newCellInRow(row, 1, name);
+
+    let newChangeCell = row.insertCell(2);
+    const newDeleteButton = document.createElement("div");
+    let textDeleteBtn = `deleteBtn${id}`;
+    newDeleteButton.innerHTML = `<button id="${textDeleteBtn}" class="button-error pure-button">Delete</button>`;
+    newChangeCell.appendChild(newDeleteButton);
+}
+
+function doAssignUserGroupToReceiptType(){
+    fetch(`${RECEIPT_TYPE_API_URL}/add/${getUserGroup()}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(RECEIPT_TYPE_ID)
+    })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('information').innerText = `You assign User Group to the Receipt Type!`;
+            } else {
+                document.getElementById('information').innerText = `Assign was failed!`;
+            }
+        })
+        .then(() => {
+            deleteRows(6, 'receipt_type_table_create');
+        })
+        .then(() => {
+            getReceiptUserGroups();
+        })
+        .catch(console.warn);
+}
+
+function doDeleteReceiptType() {
+    fetch(`${RECEIPT_TYPE_API_URL}/${RECEIPT_TYPE_ID}`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (response.ok) {
+                pageCreatingModeReceiptType();
+                document.getElementById('information').innerText = `You deleted the Receipt Type!`;
+            } else {
+                document.getElementById('information').innerHTML = `Deleting was failed!`;
+            }
+        })
+        .catch(console.warn);
 }
 
 function setMode(){
@@ -133,8 +177,11 @@ function pageCreatingModeReceiptType(){
     const topTextContainer = document.getElementById('top-text-container');
     topTextContainer.innerHTML = `<h2>Your new Receipt Type:</h2>`;
     document.getElementById("accept_btn").innerText = "Add Receipt Type";
-    changeBtnToDisable("add_cost_btn");
+    changeBtnToDisable("add_user_group_btn");
     changeBtnToDisableDelete("delete_btn");
+    setReceiptTypePlaceholders("Receipt Type Name", 0);
+    deleteRows(6,'receipt_type_table_create');
+
 }
 
 function pageChangingModeReceiptType(){
@@ -144,4 +191,15 @@ function pageChangingModeReceiptType(){
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_user_group_btn");
     changeBtnToDelete("delete_btn");
+}
+
+function setReceiptTypePlaceholders(name, maxValue){
+    if (CREATE_MODE){
+        document.getElementById("receipt_type_name").setAttribute("placeholder", name);
+        document.getElementById("receipt_type_name").value = "";
+    } else {
+        changePlaceholderAndValue("receipt_type_name", name);
+    }
+    changePlaceholderAndValue("receipt_type_max_value", maxValue);
+
 }

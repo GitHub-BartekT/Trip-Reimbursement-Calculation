@@ -34,7 +34,7 @@ public class UserGroupService {
                 .collect(Collectors.toList());
     }
 
-    public List<UserGroupReadModelShort> readAllByReceiptType_Id(int id) throws UserGroupNotFoundException, ReceiptTypeNotFoundException {
+    public List<UserGroupReadModelShort> readAllByReceiptType_Id(int id) throws ReceiptTypeNotFoundException {
         if (!receiptTypeRepository.existsById(id)){
             logger.info("No found Receipt Type with id {}: ", id);
             throw new ReceiptTypeNotFoundException();

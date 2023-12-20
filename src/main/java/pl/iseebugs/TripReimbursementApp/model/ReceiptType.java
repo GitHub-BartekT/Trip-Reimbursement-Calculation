@@ -26,7 +26,7 @@ public class ReceiptType {
         setId(receiptType.getId());
         setName(receiptType.getName());
         setMaxValue(receiptType.getMaxValue());
-        getUserGroups().addAll(receiptType.getUserGroups());
+        setUserGroups(receiptType.getUserGroups());
         setUserCosts(receiptType.getUserCosts());
     }
 

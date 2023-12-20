@@ -7,6 +7,7 @@ import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.ReceiptTypeService;
 import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModel;
+import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeReadModelShort;
 import pl.iseebugs.TripReimbursementApp.model.projection.receiptType.ReceiptTypeWriteModel;
 
 import java.net.URI;
@@ -65,6 +66,15 @@ public class ReceiptTypeController {
              @PathVariable List<Integer> userGroups)
             throws ReceiptTypeNotFoundException, UserGroupNotFoundException {
         var updated = service.updateReceiptTypeWithUserGroupIds(toWrite, userGroups);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PutMapping("add/{userGroups}")
+    ResponseEntity<ReceiptTypeReadModelShort> updateUserGroupAddReceiptTypesIds
+            (@RequestBody int receiptTypeId,
+             @PathVariable List<Integer> userGroups)
+            throws ReceiptTypeNotFoundException {
+        var updated = service.updateReceiptTypeAddUserGroupsIds(receiptTypeId, userGroups);
         return ResponseEntity.ok(updated);
     }
 
