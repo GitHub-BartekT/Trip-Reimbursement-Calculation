@@ -61,6 +61,15 @@ public class UserService {
         return new UserDTO(user);
     }
 
+    public UserReadModel updateUserByIdWithGroupId(UserWriteModel userWriteModel) throws UserNotFoundException, UserGroupNotFoundException {
+        if(!repository.existsById(userWriteModel.getId())){
+            throw new UserNotFoundException();
+        }
+        UserReadModel updated = UserMapper.roReadModel(repository.save(toEntity(userWriteModel)));
+        logger.info("Updated user with ID {}, User group ID {}", updated.getId(), updated.getUserGroupId());
+        return updated;
+    }
+
     public UserDTO updateUserById(UserDTO userDTO) throws UserNotFoundException, UserGroupNotFoundException {
         if(!repository.existsById(userDTO.getId())){
             throw new UserNotFoundException();

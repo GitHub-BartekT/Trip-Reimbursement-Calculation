@@ -7,6 +7,7 @@ import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.logic.UserService;
 import pl.iseebugs.TripReimbursementApp.model.projection.user.UserDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.user.UserReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.user.UserWriteModel;
 
 import java.net.URI;
@@ -28,24 +29,33 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<UserDTO> readById(@PathVariable int id) throws UserNotFoundException, UserGroupNotFoundException {
+    ResponseEntity<UserDTO> readById(@PathVariable int id) throws UserNotFoundException {
         return ResponseEntity.ok(service.readById(id));
     }
 
     @PostMapping
-    ResponseEntity<Void> createUser(@RequestBody @Valid UserDTO userDTO) throws UserGroupNotFoundException, UserNotFoundException {
+    ResponseEntity<Void> createUser(@RequestBody @Valid UserDTO userDTO) throws UserGroupNotFoundException {
         var result = service.createUser(userDTO);
         return ResponseEntity.created(URI.create("http://localhost:8080/users/" + result.getId())).build();
     }
 
     @PostMapping("/create")
-    ResponseEntity<Void> createUserWithUserGroupId(@RequestBody @Valid UserWriteModel toWrite) throws UserGroupNotFoundException, UserNotFoundException {
+    ResponseEntity<Void> createUserWithUserGroupId(@RequestBody @Valid UserWriteModel toWrite)
+            throws UserGroupNotFoundException{
         var result = service.createUserWithGroupId(toWrite);
         return ResponseEntity.created(URI.create("http://localhost:8080/users/" + result.getId())).build();
     }
 
+    @PostMapping("/update")
+    ResponseEntity<UserReadModel> updateUserWithUserGroupId(@RequestBody @Valid UserWriteModel toWrite)
+            throws UserGroupNotFoundException, UserNotFoundException {
+        var updated = service.updateUserByIdWithGroupId(toWrite);
+        return ResponseEntity.ok(updated);
+    }
+
     @PutMapping()
-    ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) throws UserGroupNotFoundException, UserNotFoundException {
+    ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO)
+            throws UserGroupNotFoundException, UserNotFoundException {
         UserDTO updated = service.updateUserById(userDTO);
         return ResponseEntity.ok(updated);
     }
