@@ -7,12 +7,14 @@ import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupDTO;
 public class UserDTO {
     private int id;
     private String name;
+    private boolean isAdmin;
     private UserGroupDTO userGroupDTO;
 
     public UserDTO() {
     }
 
     public UserDTO(User user){
+        this.isAdmin = user.isAdmin();
         this.id = user.getId();
         this.name = user.getName();
         userGroupDTO = new UserGroupDTO(user.getUserGroup());
@@ -40,6 +42,14 @@ public class UserDTO {
 
     public void setUserGroup(UserGroupDTO userGroupDTO) {
         this.userGroupDTO = userGroupDTO;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public User toUser() throws UserGroupNotFoundException {

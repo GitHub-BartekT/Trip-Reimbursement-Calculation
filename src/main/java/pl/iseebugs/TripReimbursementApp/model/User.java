@@ -13,6 +13,7 @@ public class User {
     int id;
     @NotBlank(message = "User name must not be empty")
     String name;
+    boolean isAdmin;
     @ManyToOne
     @JoinColumn(name = "user_group_id")
     UserGroup userGroup;
@@ -36,6 +37,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public UserGroup getUserGroup() {

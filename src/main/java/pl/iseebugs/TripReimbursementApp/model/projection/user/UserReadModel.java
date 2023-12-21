@@ -5,6 +5,7 @@ import pl.iseebugs.TripReimbursementApp.model.User;
 public class UserReadModel {
     private int id;
     private String name;
+    private boolean isAdmin;
     private int userGroupId;
 
     public UserReadModel() {
@@ -13,6 +14,7 @@ public class UserReadModel {
     public UserReadModel(User user){
         this.id = user.getId();
         this.name = user.getName();
+        this.isAdmin = user.isAdmin();
         this.userGroupId = user.getUserGroup().getId();
     }
 
@@ -26,5 +28,9 @@ public class UserReadModel {
 
     public int getUserGroupId() {
         return userGroupId;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 }

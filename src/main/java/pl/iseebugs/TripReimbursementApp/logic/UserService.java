@@ -94,6 +94,7 @@ public class UserService {
         var result = new User();
         result.setId(userWriteModel.getId());
         result.setName(userWriteModel.getName());
+        result.setAdmin(userWriteModel.isAdmin());
         UserGroup userGroup = userGroupRepository
                 .findById(userWriteModel.getUserGroupId())
                 .orElseThrow(UserGroupNotFoundException::new);

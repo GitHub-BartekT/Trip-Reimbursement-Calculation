@@ -1,0 +1,1 @@
+alter table USERS add column is_admin BIT default (0);

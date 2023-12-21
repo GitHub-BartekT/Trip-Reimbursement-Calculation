@@ -11,6 +11,7 @@ public class UserWriteModel {
     @NotBlank(message = "User name couldn't be empty.")
     @Size(max = 100, message = "User name is too long.")
     private String name;
+    private boolean isAdmin;
     @NotNull
     private int userGroupId;
 
@@ -20,6 +21,7 @@ public class UserWriteModel {
     public UserWriteModel(User user){
         setId(user.getId());
         setName(user.getName());
+        setAdmin(user.isAdmin());
         setUserGroupId(user.getUserGroup().getId());
     }
 
@@ -37,6 +39,14 @@ public class UserWriteModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public int getUserGroupId() {
