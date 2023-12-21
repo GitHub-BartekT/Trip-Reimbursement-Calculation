@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.user.UserDTO;
 import pl.iseebugs.TripReimbursementApp.model.projection.userGroup.UserGroupDTO;
@@ -28,9 +29,10 @@ class UserServiceTest {
     void readAll_returnsEmptyList() throws UserGroupNotFoundException {
         //given
         InMemoryUserRepository inMemoryUserRepository = inMemoryUserRepository();
+        InMemoryUserGroupRepository inMemoryUserGroupRepository = inMemoryUserGroupRepository();
 
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         List<UserDTO> result = toTest.readAll();
@@ -50,7 +52,7 @@ class UserServiceTest {
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         List<UserDTO> result = toTest.readAll();
@@ -71,9 +73,11 @@ class UserServiceTest {
     void readById_givenIdNotFound_throwsUserNotFoundException() {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
+
         when(mockRepository.findById(any())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
         //when
         var exception = catchThrowable(() -> toTest.readById(7));
         //then
@@ -89,7 +93,7 @@ class UserServiceTest {
         userRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository, inMemoryUserRepository);
 
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         UserDTO result = toTest.readById(5);
@@ -105,10 +109,12 @@ class UserServiceTest {
     void createUser_givenUserIdExists_throwsIllegalArgumentException() throws UserGroupNotFoundException {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
+
         //and
         when(mockRepository.existsById(anyInt())).thenReturn(true);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -124,11 +130,12 @@ class UserServiceTest {
     void createUser_emptyUserNameParam_throwsIllegalArgumentException() throws UserGroupNotFoundException {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
 
         //and
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -146,11 +153,12 @@ class UserServiceTest {
     void createUser_givenUserNameHasMoreThen_100_Characters_throwsIllegalArgumentException() throws UserGroupNotFoundException {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
 
         //and
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -169,10 +177,12 @@ class UserServiceTest {
     void createUser_emptyUserGroupParam_throwsUserGroupNotFoundException() throws UserGroupNotFoundException {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
+
         //and
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -188,11 +198,12 @@ class UserServiceTest {
     void createUser_noUserGroupId_throwsUserGroupNotFoundException() throws UserGroupNotFoundException {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
 
         //and
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
@@ -217,7 +228,7 @@ class UserServiceTest {
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         UserGroup userGroup = inMemoryUserGroupRepository.findById(1).orElse(null);
@@ -243,10 +254,12 @@ class UserServiceTest {
     void updateUserById_noUserId_throwsUserNotFoundException() {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
+
         //and
         when(mockRepository.existsById(anyInt())).thenReturn(false);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -260,11 +273,12 @@ class UserServiceTest {
     void updateUserById_emptyUserNameParam_throwsIllegalArgumentException() {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
 
         //and
         when(mockRepository.existsById(anyInt())).thenReturn(true);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -282,11 +296,12 @@ class UserServiceTest {
     void updateUserById_givenUserNameHasMoreThen_100_Characters_throwsIllegalArgumentException() {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
 
         //and
         when(mockRepository.existsById(anyInt())).thenReturn(true);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -305,11 +320,12 @@ class UserServiceTest {
     void updateUserById_noUserGroupParam_throwsUserGroupNotFoundException() {
         //given
         var mockRepository = mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
 
         //and
         when(mockRepository.existsById(anyInt())).thenReturn(true);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserDTO userToCheck = new UserDTO();
@@ -325,11 +341,11 @@ class UserServiceTest {
     void updateUserById_noUserGroupId_throwsUserGroupNotFoundException() {
         //given
         var mockRepository = mock(UserRepository.class);
-
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
         //and
         when(mockRepository.existsById(anyInt())).thenReturn(true);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         UserGroupDTO userGroupDTO = new UserGroupDTO();
@@ -353,7 +369,7 @@ class UserServiceTest {
         int beforeSize = inMemoryUserRepository.count();
 
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         UserGroup userGroup = inMemoryUserGroupRepository.findById(3).orElse(null);
@@ -379,9 +395,10 @@ class UserServiceTest {
     void deleteUser_noUser_throwsUserNotFoundException() {
         //given
         var mockRepository =mock(UserRepository.class);
+        var mockUserGroupRepository =mock(UserGroupRepository.class);
         when(mockRepository.existsById(anyInt())).thenReturn(false);
         //system under test
-        var toTest = new UserService(mockRepository);
+        var toTest = new UserService(mockRepository, mockUserGroupRepository);
 
         //when
         var exception = catchThrowable(() -> toTest.deleteUser(5));
@@ -398,7 +415,7 @@ class UserServiceTest {
         userRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         int userToDelete = 5;
@@ -418,7 +435,7 @@ class UserServiceTest {
         userRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         int userToDelete = 1;
@@ -438,7 +455,7 @@ class UserServiceTest {
         userRepositoryInitialDataOnlyNames(inMemoryUserGroupRepository, inMemoryUserRepository);
         int beforeSize = inMemoryUserRepository.count();
         //system under test
-        var toTest = new UserService(inMemoryUserRepository);
+        var toTest = new UserService(inMemoryUserRepository, inMemoryUserGroupRepository);
 
         //when
         int userToDelete = 9;

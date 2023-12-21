@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.User;
+import pl.iseebugs.TripReimbursementApp.model.UserGroup;
+import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.user.UserDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.user.UserWriteModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,9 +20,12 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     public final UserRepository repository;
+    public final UserGroupRepository userGroupRepository;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, UserGroupRepository userGroupRepository)
+    {
         this.repository = repository;
+        this.userGroupRepository = userGroupRepository;
     }
 
     public List<UserDTO> readAll(){
@@ -62,5 +68,16 @@ public class UserService {
         } catch (Exception e){
             logger.error("Error deleting user with ID {}: {}", id, e.getMessage());
         }
+    }
+
+    public User toEntity(UserWriteModel userWriteModel) throws UserGroupNotFoundException {
+        var result = new User();
+        result.setId(userWriteModel.getId());
+        result.setName(userWriteModel.getName());
+        UserGroup userGroup = userGroupRepository
+                .findById(userWriteModel.getUserGroupId())
+                .orElseThrow(UserGroupNotFoundException::new);
+        result.setUserGroup(userGroup);
+        return result;
     }
 }
