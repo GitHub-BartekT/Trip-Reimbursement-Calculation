@@ -1,5 +1,5 @@
 readDataFromUrl();
-readUserById();
+readLoggedUserById();
 getUserGroups();
 setMode();
 readUserDataById();
@@ -8,19 +8,19 @@ function readUserDataById() {
     fetch(`${USER_API_URL}/${USER_ID}`)
         .then(response => response.json())
         .then((s) => {
-            setUserPlaceholders(s.name, s.userGroup.name);
+            setUserPlaceholders(s.name, `User Group: ${s.userGroup.name}`);
         });
 }
 
 function makeUser(){
     let user_name = document.getElementById(`user_name`).value;
-    let user_group = document.getElementById(`user_group`).value;
     if (CREATE_MODE) {
-        doPostUserGroup(user_name, user_group);
+        doPostUserGroup(user_name);
     } else {
-        doPutUserGroup(user_name, user_group);
+        doPutUserGroup(user_name);
     }
 }
+
 function doPostUserGroup(user_name){
     let bodyAddUserGroup = {
         name: user_name,
@@ -52,13 +52,14 @@ function doPostUserGroup(user_name){
         .catch(console.warn);
 }
 
-function doPutUserGroup(user_group_name){
+function doPutUserGroup(user_name){
     let bodyAddUserGroup = {
-        id: USER_GROUP_ID,
-        name: user_group_name,
+        id: USER_ID,
+        name: user_name,
+        userGroupId: USER_GROUP_ID
     };
 
-    fetch(`${USER_API_URL}`, {
+    fetch(`${USER_API_URL}/update`, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -68,7 +69,7 @@ function doPutUserGroup(user_group_name){
     })
         .then(response => {
             if (response.ok) {
-                document.getElementById('information').innerText = `You changed the User Group!`;
+                document.getElementById('information').innerText = `You changed the User!`;
             } else {
                 document.getElementById('information').innerText = `Changing was failed!`;
             }
@@ -91,8 +92,17 @@ function getUserGroup() {
     var select = document.getElementById('user_groups_list');
     var selectedOption = select.options[select.selectedIndex];
 
-    document.getElementById('user_group').innerText = selectedOption.innerText;
-    USER_GROUP_ID = selectedOption.value;
+    if (selectedOption) {
+        document.getElementById('user_group').innerText = selectedOption.innerText;
+        USER_GROUP_ID = selectedOption.value;
+        return selectedOption.innerText;
+    } else {
+        select.selectedIndex = 0;
+        var firstOption = select.options[0];
+        document.getElementById('user_group').innerText = firstOption.innerText;
+        USER_GROUP_ID = firstOption.value;
+        return firstOption.value;
+    }
 }
 
 function doDeleteUserGroup() {

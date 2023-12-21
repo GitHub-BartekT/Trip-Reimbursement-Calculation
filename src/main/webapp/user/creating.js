@@ -1,5 +1,5 @@
 readDataFromUrl();
-readUserById();
+readLoggedUserById();
 
 function makeReimbursement(){
     let reimb_name = document.getElementById(`reimbursement_name`).value;

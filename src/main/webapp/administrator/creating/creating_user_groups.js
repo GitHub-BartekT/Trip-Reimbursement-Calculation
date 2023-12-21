@@ -1,5 +1,5 @@
 readDataFromUrl();
-readUserById();
+readLoggedUserById();
 setMode();
 getReceipts();
 readUserGroupData();

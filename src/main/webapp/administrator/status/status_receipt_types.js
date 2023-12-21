@@ -1,5 +1,5 @@
 readDataFromUrl();
-readUserById();
+readLoggedUserById();
 readAllReceiptTypesWithDetails();
 
 function readAllReceiptTypesWithDetails() {

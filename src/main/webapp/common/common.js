@@ -41,7 +41,7 @@ function readAllUserGroups() {
 }
 
 //readUserById
-function readUserById() {
+function readLoggedUserById() {
     fetch(`${USER_API_URL}/${LOGGED_USER_ID}`)
         .then(response => response.json())
         .then((s) => {

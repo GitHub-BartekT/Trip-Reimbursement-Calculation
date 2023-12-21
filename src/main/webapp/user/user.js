@@ -1,3 +1,3 @@
 readDataFromUrl();
-readUserById();
+readLoggedUserById();
 readAllReimbursement();

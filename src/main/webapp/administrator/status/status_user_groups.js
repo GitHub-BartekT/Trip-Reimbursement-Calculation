@@ -1,5 +1,5 @@
 readDataFromUrl();
-readUserById();
+readLoggedUserById();
 readAllUserGroupsWithDetails();
 
 function readAllUserGroupsWithDetails() {
