@@ -76,13 +76,6 @@ function newCellInRow(row, int, text){
     newCell.appendChild(newText);
 }
 
-function processOkResponse(response = {}) {
-    if (response.ok) {
-        return response.json();
-    }
-    throw new Error(`Status not 200 (${response.status})`);
-}
-
 function changeBtnToPrimary(btnId){
     document.getElementById(btnId).className = "";
     document.getElementById(btnId).classList.add("pure-button", "pure-button-primary");
@@ -101,4 +94,8 @@ function changeBtnToDelete(btnId){
 function changeBtnToDisableDelete(btnId){
     document.getElementById(btnId).className = "";
     document.getElementById(btnId).classList.add("button-error", "pure-button", "pure-button-disabled");
+}
+
+function reload(){
+    location.reload();
 }

@@ -64,3 +64,6 @@ const changeReceiptTypeButtonsPressed = e => {
 
 changeModuleButtons.addEventListener("click",changeReceiptTypeButtonsPressed);
 
+function createNewReceiptTypeLink(){
+    window.location.href = `../creating/creating_receipt_type.html?user=${LOGGED_USER_ID}&createMode=Yes`;
+}

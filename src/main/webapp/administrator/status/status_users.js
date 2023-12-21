@@ -64,3 +64,6 @@ const changeUserGroupButtonsPressed = e => {
 
 changeModuleButtons.addEventListener("click",changeUserGroupButtonsPressed);
 
+function createNewUserLink(){
+    window.location.href = `../creating/creating_user.html?user=${LOGGED_USER_ID}&createMode=Yes`;
+}
