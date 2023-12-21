@@ -9,7 +9,6 @@ public class UserDTO {
     private String name;
     private UserGroupDTO userGroupDTO;
 
-
     public UserDTO() {
     }
 

@@ -41,6 +41,8 @@ public class UserService {
         return toRead;
     }
 
+
+
     public UserDTO createUser(UserDTO userDTO) throws UserGroupNotFoundException {
         if(repository.existsById(userDTO.getId())){
             throw new IllegalArgumentException("This User already exists.");
