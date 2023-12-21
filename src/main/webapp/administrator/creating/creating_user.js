@@ -12,7 +12,7 @@ function readUserDataById() {
         });
 }
 
-function makeUserGroup(){
+function makeUser(){
     let user_name = document.getElementById(`user_name`).value;
     let user_group = document.getElementById(`user_group`).value;
     if (CREATE_MODE) {
@@ -21,12 +21,13 @@ function makeUserGroup(){
         doPutUserGroup(user_name, user_group);
     }
 }
-function doPostUserGroup(user_name, user_group){
+function doPostUserGroup(user_name){
     let bodyAddUserGroup = {
-        name: user_group_name
+        name: user_name,
+        userGroupId: USER_GROUP_ID
     };
 
-    fetch(`${USER_GROUPS_API_URL}`, {
+    fetch(`${USER_API_URL}/create`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -37,32 +38,27 @@ function doPostUserGroup(user_name, user_group){
         .then(response => {
             if (!response.ok) {
                 return response.json().then(error => {
-                    document.getElementById('information').innerText = `Adding a new User Group failed!`;
+                    document.getElementById('information').innerText = `Adding a new User failed!`;
                 });
             }
             const locationHeader = response.headers.get('Location');
             if (locationHeader) {
                 const urlParts = locationHeader.split('/');
-                USER_GROUP_ID = urlParts[urlParts.length - 1];
+                USER_ID = urlParts[urlParts.length - 1];
                 pageChangingModeUserGroup();
             }
-            document.getElementById('information').innerText = `You added a new User Group!`;
+            document.getElementById('information').innerText = `You added a new User!`;
         })
         .catch(console.warn);
 }
 
-function doPutUserGroup(user_group_name, user_group_daily_allowance, user_group_cost_per_km,
-                        user_group_max_mileage, user_group_max_refund){
+function doPutUserGroup(user_group_name){
     let bodyAddUserGroup = {
         id: USER_GROUP_ID,
         name: user_group_name,
-        dailyAllowance:  user_group_daily_allowance,
-        costPerKm: user_group_cost_per_km,
-        maxMileage: user_group_max_mileage,
-        maxRefund: user_group_max_refund
     };
 
-    fetch(`${USER_GROUPS_API_URL}`, {
+    fetch(`${USER_API_URL}`, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -92,7 +88,11 @@ function getUserGroups() {
 }
 
 function getUserGroup() {
-    return document.getElementById('user_groups_list').value;
+    var select = document.getElementById('user_groups_list');
+    var selectedOption = select.options[select.selectedIndex];
+
+    document.getElementById('user_group').innerText = selectedOption.innerText;
+    USER_GROUP_ID = selectedOption.value;
 }
 
 function doDeleteUserGroup() {

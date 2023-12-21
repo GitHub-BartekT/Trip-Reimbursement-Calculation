@@ -10,6 +10,8 @@ import pl.iseebugs.TripReimbursementApp.model.UserGroup;
 import pl.iseebugs.TripReimbursementApp.model.UserGroupRepository;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
 import pl.iseebugs.TripReimbursementApp.model.projection.user.UserDTO;
+import pl.iseebugs.TripReimbursementApp.model.projection.user.UserMapper;
+import pl.iseebugs.TripReimbursementApp.model.projection.user.UserReadModel;
 import pl.iseebugs.TripReimbursementApp.model.projection.user.UserWriteModel;
 
 import java.util.List;
@@ -41,7 +43,14 @@ public class UserService {
         return toRead;
     }
 
-
+    public UserReadModel createUserWithGroupId(UserWriteModel userWriteModel) throws UserGroupNotFoundException {
+        if(repository.existsById(userWriteModel.getId())){
+            throw new IllegalArgumentException("This User already exists.");
+        }
+        UserReadModel created = UserMapper.roReadModel(repository.save(toEntity(userWriteModel)));
+        logger.info("Created user with ID {}, User group ID {}", created.getId(), created.getUserGroupId());
+        return created;
+    }
 
     public UserDTO createUser(UserDTO userDTO) throws UserGroupNotFoundException {
         if(repository.existsById(userDTO.getId())){
