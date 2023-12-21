@@ -30,11 +30,11 @@ Comprehensive testing using JUnit, AssertJ, Mockito, and Postman for integration
 - Hibernate✅
 - Logger - slf4j ✅
 - Git / GitHub✅
-- Logger - slf4j ✅
 ### Pending Tasks:  
 1. Frontend ❌
    - create the main page✅
-   - implement user and administrator views with functionalities
+   - implement user view with functionalities
+   - implement administrator view with functionalities✅
    - implement the browsing history of reimbursements for users
    - allow administrators to manage reimbursement settings and create reports
 2. Security Implementation ❌
