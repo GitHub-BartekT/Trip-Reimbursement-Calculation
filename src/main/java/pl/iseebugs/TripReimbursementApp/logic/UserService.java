@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserNotFoundException;
 import pl.iseebugs.TripReimbursementApp.model.User;
-import pl.iseebugs.TripReimbursementApp.model.projection.UserDTO;
 import pl.iseebugs.TripReimbursementApp.model.UserRepository;
+import pl.iseebugs.TripReimbursementApp.model.projection.user.UserDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
