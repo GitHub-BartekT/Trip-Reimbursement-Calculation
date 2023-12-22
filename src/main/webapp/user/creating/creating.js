@@ -1,14 +1,10 @@
 start();
 setMode();
 
-/*getUserCosts();
-readDataFromUrl();
-readLoggedUserById();*/
-
 function start(){
     readDataFromUrl()
         .then(loggedUserId => {
-            return readLoggedUserById(loggedUserId);
+            return readLoggedUserByIdReturnUserGroupId(loggedUserId);
         })
         .then(userGroupId => {
             return getUserCosts(userGroupId);

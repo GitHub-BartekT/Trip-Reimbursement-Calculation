@@ -30,7 +30,7 @@ function readDataFromUrl() {
 }
 
 //readUserById
-function readLoggedUserById(loggedUserId) {
+function readLoggedUserByIdReturnUserGroupId(loggedUserId) {
     return new Promise((resolve, reject) => {
     fetch(`${USER_API_URL}/${loggedUserId}`)
         .then(response => response.json())
@@ -40,26 +40,28 @@ function readLoggedUserById(loggedUserId) {
             LOGGED_USER_GROUP_NAME = s.userGroup.name;
             let text = `User ID: ${LOGGED_USER_NAME}, User Group: ${LOGGED_USER_GROUP_NAME}`;
             document.getElementById("user_info").innerHTML = `<a>${text}</a>`;
-            resolve (LOGGED_USER_GROUP_ID);
+            resolve ();
         });
     });
 }
 
 //readReimbursements
-function readAllReimbursement() {
-    fetch(`${REIMBURSEMENTS_API_URL}`)
-        .then((response) => response.json())
-        .then((modulesPropArr) => {
-            modulesPropArr.map(s => {
-                let table = document.getElementById('reimbursement_table');
-                let row = table.insertRow(-1);
+function readAllReimbursement(loggedUserId) {
+    return new Promise((resolve, reject) => {
+        fetch(`${REIMBURSEMENTS_API_URL}/user/${loggedUserId}`)
+            .then((response) => response.json())
+            .then((modulesPropArr) => {
+                modulesPropArr.map(s => {
+                    let table = document.getElementById('reimbursement_table');
+                    let row = table.insertRow(-1);
 
-                newCellInRow(row, 0, s.id);
-                newCellInRow(row, 1, s.name);
-                newCellInRow(row, 2, s.returnValue);
-                let cells = row.cells;
+                    newCellInRow(row, 0, s.id);
+                    newCellInRow(row, 1, s.name);
+                    newCellInRow(row, 2, s.returnValue);
+                });
+                resolve ();
             });
-        });
+    });
 }
 
 function newCellInRow(row, int, text){

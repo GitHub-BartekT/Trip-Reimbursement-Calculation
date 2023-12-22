@@ -1,3 +1,3 @@
 readDataFromUrl();
-readLoggedUserById();
+readLoggedUserByIdReturnUserGroupId();
 readAllUserGroups();
