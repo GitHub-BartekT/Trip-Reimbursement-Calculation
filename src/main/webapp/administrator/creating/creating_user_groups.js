@@ -1,13 +1,23 @@
-startAdministrator();
-setMode();
+startCreatingUserGroups()
 getReceipts();
-readUserGroupData();
 
-function readUserGroupData(){
-    if (!CREATE_MODE) {
-        readUserGroupById();
-        getUserGroupReceipts();
-    }
+function startCreatingUserGroups(){
+    loadHeader().then(r => {
+        return readDataFromUrl();
+    })
+        .then(loggedUserId => {
+            if (CREATE_MODE){
+                pageCreatingModeUserGroup();
+            } else {
+                pageChangingModeUserGroup();
+                readUserGroupById();
+                getUserGroupReceipts();
+            }
+            return readLoggedUserById(loggedUserId);
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 function readUserGroupById() {

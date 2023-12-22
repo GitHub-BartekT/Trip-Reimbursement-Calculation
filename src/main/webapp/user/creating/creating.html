@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="create-container">
-        <table id="reimbursement_table-create" class="pure-table pure-table-bordered pure-table-striped center-table">
+        <table id="reimbursement_table_create" class="pure-table pure-table-bordered pure-table-striped center-table">
             <tr>
                 <td>Name:</td>
                 <td colspan="2">
@@ -53,17 +53,41 @@
                 <td colspan="3">Additional costs:</td>
             </tr>
             <tr>
-                <td>
+                <td>Choice receipt type</td>
+                <td colspan="2">
                     <label>
                         <select id="receipt_list" onchange="" ></select>
                     </label>
                 </td>
-                <td>
-                    <label for="additional_cost"></label><input id="additional_cost" value="0">
+            </tr>
+            <tr>
+                <td>Cost Name</td>
+                <td colspan="2">
+                    <label>
+                        <input id="additional_cost_name" value="Cost name">
+                    </label>
                 </td>
-                <td>
-                    <button id="add_cost_btn" class="pure-button pure-button-disabled">Add cost</button>
+            </tr>
+            <tr>
+                <td>Cost value</td>
+                <td colspan="2">
+                    <label>
+                        <input id="additional_cost" value="0">
+                    </label>
                 </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="add_cost_btn" class="pure-button pure-button-disabled" onclick="doAssignUserCost()">Add cost</button>
+                </td>
+                <td  colspan="2">
+                    <div id="user_cost_information"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>name, value</td>
+                <td>remove</td>
             </tr>
         </table>
     </div>

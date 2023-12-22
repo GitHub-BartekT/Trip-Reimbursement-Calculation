@@ -1,8 +1,6 @@
 start();
 setMode();
 
-startUser();
-
 function start(){
     loadUserHeader().then(() => {
             return readDataFromUrl();
@@ -11,7 +9,7 @@ function start(){
             return readLoggedUserById(loggedUserId);
         })
         .then(userGroupId => {
-            return getUserCosts(userGroupId);
+            return getReceiptTypesCosts(userGroupId);
         })
         .catch(error => {
             console.error(error);
@@ -93,7 +91,7 @@ function doPutReimbursement(reimbursement_name, reimbursement_startDate, reimbur
         .catch(console.warn);
 }
 
-function getUserCosts(userGroupId) {
+function getReceiptTypesCosts(userGroupId) {
     return new Promise((resolve, reject) => {
         fetch(`${RECEIPT_TYPE_API_URL}/userGroup/${userGroupId}`)
             .then((response) => response.json())
@@ -105,6 +103,61 @@ function getUserCosts(userGroupId) {
                 resolve();
             });
     });
+}
+
+function doAssignUserCost(){
+    let bodyAddUserCost = {
+        name: document.getElementById("additional_cost_name").value,
+        costValue:  document.getElementById("additional_cost").value,
+        reimbursementId: REIMBURSEMENT_ID,
+        receiptTypeId: document.getElementById("receipt_list").value
+    };
+
+    fetch(`${USER_COSTS_API_URL}`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bodyAddUserCost)
+    })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('user_cost_information').innerText = `You assign User Cost the User!`;
+            } else {
+                document.getElementById('user_cost_information').innerText = `Assign was failed!`;
+            }
+        })
+        .then(() => {
+           deleteRows(11, 'reimbursement_table_create');
+        })
+        .then(() => {
+           getUserCosts(REIMBURSEMENT_ID);
+        })
+        .catch(console.warn);
+}
+
+function getUserCosts(reimbursementId){
+        fetch(`${USER_COSTS_API_URL}/reimbursement/${reimbursementId}`)
+            .then((response) => response.json())
+            .then((userCostArr) => {
+                userCostArr.map(s => {
+                    makeUserCostRow(s.id, `${s.name}, value= ${s.costValue}`);
+                });
+            });
+}
+
+function makeUserCostRow(id, name){
+    let table = document.getElementById('reimbursement_table_create');
+    let row = table.insertRow(-1);
+    newCellInRow(row, 0, id);
+    newCellInRow(row, 1, name);
+
+    let newChangeCell = row.insertCell(2);
+    const newDeleteButton = document.createElement("div");
+    let textDeleteBtn = `deleteBtn${id}`;
+    newDeleteButton.innerHTML = `<button id="${textDeleteBtn}" class="button-error pure-button">Delete</button>`;
+    newChangeCell.appendChild(newDeleteButton);
 }
 
 function doDeleteReimbursement() {
@@ -138,6 +191,8 @@ function pageCreatingMode(){
     document.getElementById("accept_btn").innerText = "Add Reimbursement";
     changeBtnToDisable("add_cost_btn");
     changeBtnToDisableDelete("delete_btn");
+    setReimbursementPlaceholders("Reimbursement Name", "", "", 0)
+    deleteRows(11,"reimbursement_table_create");
 }
 
 function pageChangingMode(){
@@ -147,4 +202,16 @@ function pageChangingMode(){
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_cost_btn");
     changeBtnToDelete("delete_btn");
+}
+
+function setReimbursementPlaceholders(name, startDay, endDay, distance){
+    if (CREATE_MODE){
+        document.getElementById("reimbursement_name").setAttribute("placeholder", name);
+        document.getElementById("reimbursement_name").value = "";
+    } else {
+        changePlaceholderAndValue("reimbursement_name", name);
+    }
+    changePlaceholderAndValue("reimbursement_start_day", startDay);
+    changePlaceholderAndValue("reimbursement_end_day", endDay);
+    changePlaceholderAndValue("reimbursement_distance", distance);
 }

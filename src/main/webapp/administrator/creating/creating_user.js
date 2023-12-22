@@ -1,7 +1,23 @@
-startAdministrator();
+startCreatingUser();
 getUserGroups();
-setMode();
-readUserDataById();
+
+function startCreatingUser(){
+    loadHeader().then(r => {
+        return readDataFromUrl();
+    })
+        .then(loggedUserId => {
+            if (CREATE_MODE){
+                pageCreatingModeUser();
+            } else {
+                pageChangingModeUser();
+                readUserDataById();
+            }
+            return readLoggedUserById(loggedUserId);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
 
 function readUserDataById() {
     fetch(`${USER_API_URL}/${USER_ID}`)
@@ -119,16 +135,7 @@ function doDeleteUserGroup() {
         .catch(console.warn);
 }
 
-function setMode(){
-    if (CREATE_MODE){
-        pageCreatingModeUserGroup();
-    } else {
-        pageChangingModeUserGroup();
-        readUserDataById();
-    }
-}
-
-function pageCreatingModeUserGroup(){
+function pageCreatingModeUser(){
     CREATE_MODE = true;
     const topTextContainer = document.getElementById('top-text-container');
     topTextContainer.innerHTML = `<h2>Your new User:</h2>`;
@@ -137,7 +144,7 @@ function pageCreatingModeUserGroup(){
     setUserPlaceholders("User Name", getUserGroup());
 }
 
-function pageChangingModeUserGroup(){
+function pageChangingModeUser(){
     CREATE_MODE = false;
     const topTextContainer = document.getElementById('top-text-container');
     topTextContainer.innerHTML = `<h2>Modified user settings:${USER_ID}</h2>`;

@@ -1,13 +1,23 @@
-startAdministrator();
-setMode();
+startCreatingReceiptTyp();
 getUserGroups();
-readReceiptTypeData();
 
-function readReceiptTypeData(){
-    if (!CREATE_MODE) {
-        readReceiptTypeById();
-        getReceiptUserGroups();
-    }
+function startCreatingReceiptTyp(){
+    loadHeader().then(r => {
+        return readDataFromUrl();
+    })
+        .then(loggedUserId => {
+            if (CREATE_MODE){
+                pageCreatingModeReceiptType();
+            } else {
+                pageChangingModeReceiptType();
+                readReceiptTypeById();
+                getReceiptUserGroups();
+            }
+            return readLoggedUserById(loggedUserId);
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 function readReceiptTypeById() {

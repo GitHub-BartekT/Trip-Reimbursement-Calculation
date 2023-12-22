@@ -46,6 +46,22 @@ function readLoggedUserById(loggedUserId) {
     });
 }
 
+//readUserById
+function readLoggedUserByIdToCreating(loggedUserId) {
+    return new Promise((resolve, reject) => {
+        fetch(`${USER_API_URL}/${loggedUserId}`)
+            .then(response => response.json())
+            .then((s) => {
+                LOGGED_USER_NAME = s.name;
+                LOGGED_USER_GROUP_ID = s.userGroup.id;
+                LOGGED_USER_GROUP_NAME = s.userGroup.name;
+                let text = `User ID: ${LOGGED_USER_NAME}, User Group: ${LOGGED_USER_GROUP_NAME}`;
+                document.getElementById("user_info").innerHTML = `<a>${text}</a>`;
+                resolve (CREATE_MODE);
+            });
+    });
+}
+
 //readReimbursements
 function readAllReimbursement(loggedUserId) {
     return new Promise((resolve, reject) => {
@@ -108,4 +124,14 @@ function changeBtnToDisableDelete(btnId){
 
 function reload(){
     location.reload();
+}
+
+function deleteRows(rowIndex, elementId) {
+    const table = document.getElementById(elementId);
+    console.info(table.rows.length);
+    if ((rowIndex >= 0) && (rowIndex < table.rows.length)) {
+        for (let i = table.rows.length - 1; i >= rowIndex; i--) {
+            table.deleteRow(i);
+        }
+    }
 }

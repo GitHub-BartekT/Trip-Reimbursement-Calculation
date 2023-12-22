@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.created(URI.create("http://localhost:8080/users/" + result.getId())).build();
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     ResponseEntity<UserReadModel> updateUserWithUserGroupId(@RequestBody @Valid UserWriteModel toWrite)
             throws UserGroupNotFoundException, UserNotFoundException {
         var updated = service.updateUserByIdWithGroupId(toWrite);
