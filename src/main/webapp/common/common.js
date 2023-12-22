@@ -2,6 +2,7 @@ const USER_GROUPS_API_URL = 'http://localhost:8080/groups';
 const RECEIPT_TYPE_API_URL ='http://localhost:8080/receipts';
 const USER_API_URL = 'http://localhost:8080/users';
 const REIMBURSEMENTS_API_URL = 'http://localhost:8080/reimbursements';
+const USER_COSTS_API_URL = 'http://localhost:8080/costs';
 let LOGGED_USER_ID;
 let LOGGED_USER_NAME;
 let LOGGED_USER_GROUP_ID;
@@ -30,7 +31,7 @@ function readDataFromUrl() {
 }
 
 //readUserById
-function readLoggedUserByIdReturnUserGroupId(loggedUserId) {
+function readLoggedUserById(loggedUserId) {
     return new Promise((resolve, reject) => {
     fetch(`${USER_API_URL}/${loggedUserId}`)
         .then(response => response.json())
@@ -40,7 +41,7 @@ function readLoggedUserByIdReturnUserGroupId(loggedUserId) {
             LOGGED_USER_GROUP_NAME = s.userGroup.name;
             let text = `User ID: ${LOGGED_USER_NAME}, User Group: ${LOGGED_USER_GROUP_NAME}`;
             document.getElementById("user_info").innerHTML = `<a>${text}</a>`;
-            resolve ();
+            resolve (LOGGED_USER_GROUP_ID);
         });
     });
 }

@@ -1,5 +1,4 @@
-readDataFromUrl();
-readLoggedUserByIdReturnUserGroupId();
+startAdministrator();
 setMode();
 getReceipts();
 readUserGroupData();

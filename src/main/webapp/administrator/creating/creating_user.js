@@ -1,5 +1,4 @@
-readDataFromUrl();
-readLoggedUserByIdReturnUserGroupId();
+startAdministrator();
 getUserGroups();
 setMode();
 readUserDataById();

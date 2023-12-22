@@ -1,3 +1,2 @@
-readDataFromUrl();
-readLoggedUserByIdReturnUserGroupId();
+startAdministrator()
 readAllUserGroups();

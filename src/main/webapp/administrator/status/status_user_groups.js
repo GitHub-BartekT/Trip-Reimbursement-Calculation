@@ -1,5 +1,4 @@
-readDataFromUrl();
-readLoggedUserByIdReturnUserGroupId();
+startAdministrator()
 readAllUserGroupsWithDetails();
 
 function readAllUserGroupsWithDetails() {

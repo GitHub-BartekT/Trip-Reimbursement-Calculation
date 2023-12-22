@@ -1,10 +1,14 @@
 start();
 setMode();
 
+startUser();
+
 function start(){
-    readDataFromUrl()
+    loadUserHeader().then(() => {
+            return readDataFromUrl();
+        })
         .then(loggedUserId => {
-            return readLoggedUserByIdReturnUserGroupId(loggedUserId);
+            return readLoggedUserById(loggedUserId);
         })
         .then(userGroupId => {
             return getUserCosts(userGroupId);
@@ -61,13 +65,13 @@ function doPostReimbursement(reimbursement_name, reimbursement_startDate, reimbu
         .catch(console.warn);
 }
 
-function doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance){
+function doPutReimbursement(reimbursement_name, reimbursement_startDate, reimbursement_endDate, reimbursement_distance){
     let bodyAddReimbursement = {
         id: REIMBURSEMENT_ID,
-        name: reimb_name,
-        startDate:  reimb_startDate,
-        endDate: reimb_endDate,
-        distance: reimb_distance,
+        name: reimbursement_name,
+        startDate:  reimbursement_startDate,
+        endDate: reimbursement_endDate,
+        distance: reimbursement_distance,
         userId: LOGGED_USER_ID
     };
 
