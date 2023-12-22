@@ -120,7 +120,8 @@ class UserCostControllerTest {
     @Sql({"/sql/001-test-schema.sql", "/sql/006-test-data-user-costs.sql"})
     void readAllByReceiptType_Id_returnsUserCosts() throws Exception {
         //when
-        mockMvc.perform(get("/costs/receipt/3"))
+        mockMvc.perform(get("/costs" +
+                        "/receipt/3"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 //then

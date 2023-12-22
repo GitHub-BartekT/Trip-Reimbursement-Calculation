@@ -1,25 +1,42 @@
+start();
+setMode();
+
+/*getUserCosts();
 readDataFromUrl();
-readLoggedUserById();
+readLoggedUserById();*/
+
+function start(){
+    readDataFromUrl()
+        .then(loggedUserId => {
+            return readLoggedUserById(loggedUserId);
+        })
+        .then(userGroupId => {
+            return getUserCosts(userGroupId);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
 
 function makeReimbursement(){
-    let reimb_name = document.getElementById(`reimbursement_name`).value;
-    let reimb_startDate = document.getElementById(`reimbursement_start_day`).value;
-    let reimb_endDate= document.getElementById(`reimbursement_end_day`).value;
-    let reimb_distance= document.getElementById(`reimbursement_distance`).value;
+    let reimbursement_name = document.getElementById(`reimbursement_name`).value;
+    let reimbursement_startDate = document.getElementById(`reimbursement_start_day`).value;
+    let reimbursement_endDate= document.getElementById(`reimbursement_end_day`).value;
+    let reimbursement_distance= document.getElementById(`reimbursement_distance`).value;
 
-    if (isCreatingModeReimbursement()) {
-        doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance);
+    if (CREATE_MODE) {
+        doPostReimbursement(reimbursement_name, reimbursement_startDate, reimbursement_endDate, reimbursement_distance);
     } else {
-        doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance);
+        doPutReimbursement(reimbursement_name, reimbursement_startDate, reimbursement_endDate, reimbursement_distance);
     }
 }
 
-function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_distance){
+function doPostReimbursement(reimbursement_name, reimbursement_startDate, reimbursement_endDate, reimbursement_distance){
     let bodyAddReimbursement = {
-        name: reimb_name,
-        startDate:  reimb_startDate,
-        endDate: reimb_endDate,
-        distance: reimb_distance,
+        name: reimbursement_name,
+        startDate:  reimbursement_startDate,
+        endDate: reimbursement_endDate,
+        distance: reimbursement_distance,
         userId: LOGGED_USER_ID
     };
 
@@ -34,7 +51,7 @@ function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_d
         .then(response => {
             if (!response.ok) {
                 return response.json().then(error => {
-                    document.getElementById('information').innerHTML = `<h2>Adding a new reimbursement failed!</h2>`;
+                    document.getElementById('user_information').innerText = `Adding a new reimbursement failed!`;
                 });
             }
             const locationHeader = response.headers.get('Location');
@@ -43,7 +60,7 @@ function doPostReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_d
                 REIMBURSEMENT_ID = urlParts[urlParts.length - 1];
                 pageChangingMode();
             }
-            document.getElementById('information').innerHTML = `<h2>You added a new reimbursements!</h2>`;
+            document.getElementById('user_information').innerText = `You added a new reimbursements!`;
         })
         .catch(console.warn);
 }
@@ -68,12 +85,26 @@ function doPutReimbursement(reimb_name, reimb_startDate, reimb_endDate, reimb_di
     })
         .then(response => {
             if (response.ok) {
-                document.getElementById('information').innerHTML = `<h2>You changed the reimbursement!</h2>`;
+                document.getElementById('user_information').innerText = `You changed the reimbursement!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Changing was failed!</h2>`;
+                document.getElementById('user_information').innerText = `Changing was failed!`;
             }
         })
         .catch(console.warn);
+}
+
+function getUserCosts(userGroupId) {
+    return new Promise((resolve, reject) => {
+        fetch(`${RECEIPT_TYPE_API_URL}/userGroup/${userGroupId}`)
+            .then((response) => response.json())
+            .then((userGroupArr) => {
+                const list = userGroupArr.map(s =>
+                    `<option value="${s.id}">User Group: ${s.name}</option>`)
+                    .join('\n');
+                document.getElementById('receipt_list').innerHTML = list;
+                resolve();
+            });
+    });
 }
 
 function doDeleteReimbursement() {
@@ -83,13 +114,21 @@ function doDeleteReimbursement() {
         .then(response => {
             if (response.ok) {
                 pageCreatingMode();
-                document.getElementById('information').innerHTML = `<h2>You deleted the reimbursement!</h2>`;
-                REIMBURSEMENT_ID = 0;
+                document.getElementById('user_information').innerText = `You deleted the reimbursement!`;
             } else {
-                document.getElementById('information').innerHTML = `<h2>Deleting was failed!</h2>`;
+                document.getElementById('information').innerText = `Deleting was failed!`;
             }
         })
         .catch(console.warn);
+}
+
+function setMode(){
+    if (CREATE_MODE){
+        pageCreatingMode();
+    } else {
+        pageChangingMode();
+        //readUserDataById();
+    }
 }
 
 function pageCreatingMode(){
@@ -108,8 +147,4 @@ function pageChangingMode(){
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_cost_btn");
     changeBtnToDelete("delete_btn");
-}
-
-function isCreatingModeReimbursement() {
-    return REIMBURSEMENT_ID <= 0;
 }

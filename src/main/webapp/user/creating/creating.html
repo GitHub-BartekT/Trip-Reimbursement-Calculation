@@ -42,8 +42,11 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="3">
+                <td>
                     <button id="accept_btn" class="pure-button pure-button-primary" onclick="makeReimbursement()">Add Reimbursement</button>
+                </td>
+                <td  colspan="2">
+                    <div id="user_information"></div>
                 </td>
             </tr>
             <tr>
@@ -51,7 +54,9 @@
             </tr>
             <tr>
                 <td>
-                    <label for="receipt_list"></label><select id="receipt_list" onchange="" ></select>
+                    <label>
+                        <select id="receipt_list" onchange="" ></select>
+                    </label>
                 </td>
                 <td>
                     <label for="additional_cost"></label><input id="additional_cost" value="0">
