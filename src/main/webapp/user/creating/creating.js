@@ -122,11 +122,18 @@ function doAssignUserCost(){
         body: JSON.stringify(bodyAddUserCost)
     })
         .then(response => {
-            if (response.ok) {
-                document.getElementById('user_cost_information').innerText = `You assign User Cost the User!`;
-            } else {
-                document.getElementById('user_cost_information').innerText = `Assign was failed!`;
+            if (!response.ok) {
+                return response.json().then(error => {
+                    document.getElementById('user_cost_information').innerText = `Assign was failed!`;
+                });
             }
+            const locationHeader = response.headers.get('Location');
+            if (locationHeader) {
+                const urlParts = locationHeader.split('/');
+                USER_COST_ID = urlParts[urlParts.length - 1];
+                pageChangingMode();
+            }
+            document.getElementById('user_cost_information').innerText = `You assign User Cost to the User!`;
         })
         .then(() => {
            deleteRows(11, 'reimbursement_table_create');
@@ -160,6 +167,43 @@ function makeUserCostRow(id, name){
     newChangeCell.appendChild(newDeleteButton);
 }
 
+const deleteUserCostButtons = document.getElementById("reimbursement_table_create");
+
+const deleteUserCostButtonsPressed = e => {
+    console.info("Not a button");
+    const isButton = e.target.nodeName === 'BUTTON';
+    console.log(e.target.id);
+    if(!isButton){
+        console.info("Not a button");
+        return;}
+
+    console.log(e.target.id);
+    let clickBtnID = `${e.target.id}`;
+    console.info(clickBtnID);
+    let userCostId = clickBtnID.substring(9);
+    USER_COST_ID = userCostId;
+    let checkButton = clickBtnID.substring(0,6);
+    let deleteButton = `deleteBtn${userCostId}`;
+
+    // Click "Delete" button
+    if (checkButton === 'delete') {
+        fetch(`${USER_COSTS_API_URL}/${USER_COST_ID}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    changeBtnToDisableDelete(deleteButton);
+                    document.getElementById('user_cost_information').innerText = `You deleted User Cost from User!`;
+                } else {
+                    document.getElementById('user_cost_information').innerText = `Deleting was failed!`;
+                }
+            })
+            .catch(console.warn);
+    }
+}
+
+deleteUserCostButtons.addEventListener("click",deleteUserCostButtonsPressed);
+
 function doDeleteReimbursement() {
     fetch(`${REIMBURSEMENTS_API_URL}/${REIMBURSEMENT_ID}`, {
         method: 'DELETE'
@@ -169,7 +213,7 @@ function doDeleteReimbursement() {
                 pageCreatingMode();
                 document.getElementById('user_information').innerText = `You deleted the reimbursement!`;
             } else {
-                document.getElementById('information').innerText = `Deleting was failed!`;
+                document.getElementById('user_information').innerText = `Deleting was failed!`;
             }
         })
         .catch(console.warn);
@@ -180,7 +224,7 @@ function setMode(){
         pageCreatingMode();
     } else {
         pageChangingMode();
-        //readUserDataById();
+       // readUserDataById();
     }
 }
 
@@ -191,7 +235,7 @@ function pageCreatingMode(){
     document.getElementById("accept_btn").innerText = "Add Reimbursement";
     changeBtnToDisable("add_cost_btn");
     changeBtnToDisableDelete("delete_btn");
-    setReimbursementPlaceholders("Reimbursement Name", "", "", 0)
+    setReimbursementPlaceholders("Reimbursement Name", "", "", 0);
     deleteRows(11,"reimbursement_table_create");
 }
 
@@ -211,7 +255,7 @@ function setReimbursementPlaceholders(name, startDay, endDay, distance){
     } else {
         changePlaceholderAndValue("reimbursement_name", name);
     }
-    changePlaceholderAndValue("reimbursement_start_day", startDay);
-    changePlaceholderAndValue("reimbursement_end_day", endDay);
+    document.getElementById("reimbursement_start_day").setAttribute("placeholder", startDay);
+    document.getElementById("reimbursement_end_day").setAttribute("placeholder", endDay);
     changePlaceholderAndValue("reimbursement_distance", distance);
 }

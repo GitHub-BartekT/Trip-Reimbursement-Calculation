@@ -9,6 +9,7 @@ let LOGGED_USER_GROUP_ID;
 let LOGGED_USER_GROUP_NAME;
 let USER_ID;
 let USER_GROUP_ID;
+let USER_COST_ID;
 let REIMBURSEMENT_ID;
 let RECEIPT_TYPE_ID;
 let CREATE_MODE = Boolean(true);
@@ -128,10 +129,14 @@ function reload(){
 
 function deleteRows(rowIndex, elementId) {
     const table = document.getElementById(elementId);
-    console.info(table.rows.length);
     if ((rowIndex >= 0) && (rowIndex < table.rows.length)) {
         for (let i = table.rows.length - 1; i >= rowIndex; i--) {
             table.deleteRow(i);
         }
     }
+}
+
+function changePlaceholderAndValue(id, text){
+    document.getElementById(id).setAttribute("placeholder", text);
+    document.getElementById(id).setAttribute("value", text);
 }

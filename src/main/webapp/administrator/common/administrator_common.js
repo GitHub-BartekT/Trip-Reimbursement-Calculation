@@ -12,10 +12,7 @@ function loadHeader() {
     });
 }
 
-function changePlaceholderAndValue(id, text){
-    document.getElementById(id).setAttribute("placeholder", text);
-    document.getElementById(id).setAttribute("value", text);
-}
+
 
 function startAdministrator(){
     loadHeader().then(r => {

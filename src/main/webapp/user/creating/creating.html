@@ -20,25 +20,33 @@
             <tr>
                 <td>Name:</td>
                 <td colspan="2">
-                    <label for="reimbursement_name"></label><input id="reimbursement_name" placeholder="Reimbursement Name">
+                    <label>
+                        <input id="reimbursement_name" placeholder="Reimbursement Name">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td>Start day:</td>
                 <td colspan="2">
-                    <label for="reimbursement_start_day"></label><input id="reimbursement_start_day" type="date" >
+                    <label>
+                        <input id="reimbursement_start_day" type="date" >
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td>End day:</td >
                 <td colspan="2">
-                    <label for="reimbursement_end_day"></label><input id="reimbursement_end_day" type="date">
+                    <label for="reimbursement_end_day">
+                        <input id="reimbursement_end_day" type="date">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td>Distance:</td>
                 <td colspan="2">
-                    <label for="reimbursement_distance"></label><input id="reimbursement_distance" value="0">
+                    <label>
+                        <input id="reimbursement_distance" value="0">
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -94,9 +102,6 @@
 </div>
 <div class="decisions">
     <button id="delete_btn" class="button-error pure-button pure-button-disabled" onclick="doDeleteReimbursement()">Delete Reimbursement</button>
-</div>
-<div class="footer">
-    <div id="information" class="big-text"><h2></h2></div>
 </div>
 <script src="../../common/common.js"> </script>
 <script src="../common/user_common.js"> </script>
