@@ -6,7 +6,7 @@ function startUser(){
     })
         .then(loggedUserId => {
             return Promise.all([
-                readAllReimbursement(loggedUserId),
+                readAllNotSentReimbursement(loggedUserId),
                 readLoggedUserById(loggedUserId)
             ]);
         })

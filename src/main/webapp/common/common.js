@@ -82,6 +82,31 @@ function readAllReimbursement(loggedUserId) {
     });
 }
 
+function readAllNotSentReimbursement(loggedUserId) {
+    return new Promise((resolve, reject) => {
+        fetch(`${REIMBURSEMENTS_API_URL}/false/${loggedUserId}`)
+            .then((response) => response.json())
+            .then((modulesPropArr) => {
+                    let table = document.getElementById('reimbursement_table');
+
+                    if (modulesPropArr.length === 0) {
+                        let row = table.insertRow(-1);
+                        let cell = row.insertCell(0);
+                        cell.colSpan = 3;
+                        cell.textContent = "No reimbursement to sent for approve"
+                    } else {
+                        modulesPropArr.forEach(s => {
+                        let row = table.insertRow(-1);
+                        newCellInRow(row, 0, s.id);
+                        newCellInRow(row, 1, s.name);
+                        newCellInRow(row, 2, s.returnValue);
+                    });
+                }
+                resolve ();
+            });
+    });
+}
+
 function newCellInRow(row, int, text){
     let newCell = row.insertCell(int);
     let newText = document.createTextNode(text);
