@@ -37,12 +37,25 @@ public class ReimbursementService {
                 .collect(Collectors.toList());
     }
 
+
+
     public List<ReimbursementReadModel> readAllByUser_Id(int id) throws UserNotFoundException {
         if (!userRepository.existsById(id)){
            throw new UserNotFoundException();
         }
         return repository.findAllByUser_Id(id).stream()
                 .map(ReimbursementMapper::toReadModel)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReimbursementReadModelShort> readAllBySendForApprovalAndUser_Id(boolean pushedToAccept, int user_id)
+            throws UserNotFoundException {
+        if (!userRepository.existsById(user_id)){
+            throw new UserNotFoundException();
+        }
+
+        return repository.findAllByPushedToAcceptAndUser_Id(pushedToAccept, user_id).stream()
+                .map(ReimbursementMapper::toReadModelShort)
                 .collect(Collectors.toList());
     }
 

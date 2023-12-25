@@ -7,4 +7,5 @@ import pl.iseebugs.TripReimbursementApp.model.ReimbursementRepository;
 
 @Repository
 public interface SqlReimbursementRepository extends ReimbursementRepository, JpaRepository<Reimbursement, Integer> {
+
 }

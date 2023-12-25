@@ -11,6 +11,8 @@ public interface ReimbursementRepository {
 
     List<Reimbursement> findAllByUser_Id(Integer userId);
 
+    List<Reimbursement>  findAllByPushedToAcceptAndUser_Id(boolean pushedToAccept, int user_id);
+
     boolean existsById(int id);
 
     boolean existsByUser_Id(int id);

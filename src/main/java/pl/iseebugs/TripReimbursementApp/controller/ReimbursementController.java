@@ -40,6 +40,13 @@ public class ReimbursementController {
         return ResponseEntity.ok(service.readAllByUser_Id(id));
     }
 
+    @GetMapping("/{sendForApproval}/{id}")
+    ResponseEntity<List<ReimbursementReadModelShort>>
+    readAllBySendForApprovalAndUserId(@PathVariable boolean sendForApproval, @PathVariable int id)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(service.readAllBySendForApprovalAndUser_Id(sendForApproval, id));
+    }
+
     @GetMapping("/short")
     ResponseEntity<List<ReimbursementReadModelShort>> readAllReimbursementShort(){
         return ResponseEntity.ok(service.readAllShort());
