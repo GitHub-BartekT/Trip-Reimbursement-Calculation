@@ -61,6 +61,12 @@ public class ReimbursementController {
         return ResponseEntity.ok(updated);
     }
 
+    @PutMapping("/push/{id}")
+    ResponseEntity<ReimbursementReadModel> sendForAprovalReimbursement(@PathVariable int id) throws ReimbursementNotFoundException{
+        ReimbursementReadModel updated = service.setSendForApprovalToTrue(id);
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteReimbursement(@PathVariable int id) throws ReimbursementNotFoundException {
         service.deleteReimbursementById(id);

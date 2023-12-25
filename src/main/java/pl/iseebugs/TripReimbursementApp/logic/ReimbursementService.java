@@ -87,6 +87,12 @@ public class ReimbursementService {
         return ReimbursementMapper.toReadModel(repository.save(toEntity(toUpdate)));
     }
 
+    public ReimbursementReadModel setSendForApprovalToTrue(int id) throws ReimbursementNotFoundException {
+        Reimbursement reimbursement = repository.findById(id).orElseThrow(ReimbursementNotFoundException::new);
+        reimbursement.setPushedToAccept(true);
+        return ReimbursementMapper.toReadModel(repository.save(reimbursement));
+    }
+
     public void deleteReimbursementById(int id) throws ReimbursementNotFoundException {
         if (!repository.existsById(id)){
             throw new ReimbursementNotFoundException();
