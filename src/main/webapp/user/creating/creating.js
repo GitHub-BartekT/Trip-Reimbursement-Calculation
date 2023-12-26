@@ -1,11 +1,17 @@
 start();
-setMode();
 
 function start(){
     loadUserHeader().then(() => {
             return readDataFromUrl();
         })
         .then(loggedUserId => {
+            if (CREATE_MODE){
+                pageCreatingMode();
+            } else {
+                pageChangingMode();
+                readReimbursementById();
+                getUserCosts(REIMBURSEMENT_ID);
+            }
             return readLoggedUserById(loggedUserId);
         })
         .then(userGroupId => {
@@ -219,13 +225,12 @@ function doDeleteReimbursement() {
         .catch(console.warn);
 }
 
-function setMode(){
-    if (CREATE_MODE){
-        pageCreatingMode();
-    } else {
-        pageChangingMode();
-       // readUserDataById();
-    }
+function readReimbursementById() {
+    fetch(`${REIMBURSEMENTS_API_URL}/${REIMBURSEMENT_ID}`)
+        .then(response => response.json())
+        .then((s) => {
+            setReimbursementPlaceholders(s.name, s.startDate, s.endDate, s.distance);
+        });
 }
 
 function pageCreatingMode(){
@@ -256,6 +261,8 @@ function setReimbursementPlaceholders(name, startDay, endDay, distance){
         changePlaceholderAndValue("reimbursement_name", name);
     }
     document.getElementById("reimbursement_start_day").setAttribute("placeholder", startDay);
+    document.getElementById("reimbursement_end_day").value = startDay;
     document.getElementById("reimbursement_end_day").setAttribute("placeholder", endDay);
+    document.getElementById("reimbursement_end_day").value = endDay;
     changePlaceholderAndValue("reimbursement_distance", distance);
 }
