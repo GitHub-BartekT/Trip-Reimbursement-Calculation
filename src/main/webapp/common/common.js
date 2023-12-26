@@ -92,7 +92,7 @@ function readAllNotSentReimbursement(loggedUserId) {
                     if (modulesPropArr.length === 0) {
                         let row = table.insertRow(-1);
                         let cell = row.insertCell(0);
-                        cell.colSpan = 3;
+                        cell.colSpan = 4;
                         cell.textContent = "No reimbursement to sent for approve"
                     } else {
                         modulesPropArr.forEach(s => {
@@ -100,6 +100,12 @@ function readAllNotSentReimbursement(loggedUserId) {
                         newCellInRow(row, 0, s.id);
                         newCellInRow(row, 1, s.name);
                         newCellInRow(row, 2, s.returnValue);
+
+                            let newChangeCell = row.insertCell(3);
+                            const newChangeButton = document.createElement("div");
+                            let textChangeBtn = `changeBtn${s.id}`;
+                            newChangeButton.innerHTML = `<button id="${textChangeBtn}" class="pure-button">Change</button>`;
+                            newChangeCell.appendChild(newChangeButton);
                     });
                 }
                 resolve ();
