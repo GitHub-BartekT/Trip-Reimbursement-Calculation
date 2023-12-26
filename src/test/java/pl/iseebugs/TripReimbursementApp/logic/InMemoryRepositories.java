@@ -270,6 +270,11 @@ public class InMemoryRepositories {
         }
 
         @Override
+        public List<Reimbursement> findAllByPushedToAcceptAndUser_Id(boolean pushedToAccept, int user_id) {
+            return null;
+        }
+
+        @Override
         public boolean existsById(int id) {
             return map.containsKey(id);
         }

@@ -21,8 +21,8 @@ public class Reimbursement {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
-    @OneToMany(mappedBy = "reimbursement")
-    private Set<UserCost> userCosts;
+    @OneToMany(mappedBy = "reimbursement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserCost> userCosts = new HashSet<>();
 
     public Reimbursement() {
     }
@@ -34,7 +34,6 @@ public class Reimbursement {
         this.distance = distance;
         this.pushedToAccept = pushedToAccept;
         this.user = user;
-        this.userCosts  = new HashSet<>();
     }
 
     public Reimbursement(String name, LocalDate startDate, LocalDate endDate, int distance, boolean pushedToAccept, User user, Set<UserCost> userCosts) {
@@ -108,6 +107,6 @@ public class Reimbursement {
     }
 
     public void setUserCosts(Set<UserCost> costTypes) {
-        this.userCosts = costTypes;
+        this.userCosts.addAll(costTypes);
     }
 }
