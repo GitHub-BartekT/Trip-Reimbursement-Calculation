@@ -213,6 +213,13 @@ const deleteUserCostButtonsPressed = e => {
 
 deleteUserCostButtons.addEventListener("click",deleteUserCostButtonsPressed);
 
+function deleteBtnAction(){
+    var confirmDelete = confirm("Do you won to remove reimbursement?");
+    if(confirmDelete){
+        doDeleteReimbursement();
+    }
+}
+
 function doDeleteReimbursement() {
     fetch(`${REIMBURSEMENTS_API_URL}/${REIMBURSEMENT_ID}`, {
         method: 'DELETE'
@@ -227,6 +234,30 @@ function doDeleteReimbursement() {
         })
         .catch(console.warn);
 }
+
+function sendToAcceptBtnAction(){
+    var confirmDelete = confirm("Do you want to send reimbursement for approval?");
+    if(confirmDelete){
+        doSendToApproval();
+    }
+}
+
+function doSendToApproval() {
+    fetch(`${REIMBURSEMENTS_API_URL}/push/${REIMBURSEMENT_ID}`, {
+        method: 'PUT'
+    })
+        .then(response => {
+            if (response.ok) {
+                pageCreatingMode();
+                REIMBURSEMENT_ID = "";
+                document.getElementById('user_information').innerText = `You have sent reimbursement to approval!`;
+            } else {
+                document.getElementById('user_information').innerText = `Sending was failed!`;
+            }
+        })
+        .catch(console.warn);
+}
+
 
 function readReimbursementById() {
     fetch(`${REIMBURSEMENTS_API_URL}/${REIMBURSEMENT_ID}`)
