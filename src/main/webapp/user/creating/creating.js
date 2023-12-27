@@ -15,7 +15,10 @@ function start(){
             return readLoggedUserById(loggedUserId);
         })
         .then(userGroupId => {
-            return getReceiptTypesCosts(userGroupId);
+            return Promise.all([
+                readUserGroupByIdToTable(userGroupId),
+                getReceiptTypesCosts(userGroupId)
+            ]);
         })
         .catch(error => {
             console.error(error);

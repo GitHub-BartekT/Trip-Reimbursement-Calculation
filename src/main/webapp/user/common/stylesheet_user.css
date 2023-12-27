@@ -3,6 +3,18 @@
     padding: 0;
     background-color: #ffdf73;
 }
+
+.user_group_params {
+    display: flex;
+    justify-content: center;
+}
+
+.user_group_params_table{
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
 .big-text {
     margin-top: 2.5em;
     margin-bottom: 2.5em;
@@ -50,3 +62,4 @@
 .button-error {
     background: rgb(202, 60, 60);
 }
+

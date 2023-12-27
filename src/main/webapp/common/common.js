@@ -47,41 +47,6 @@ function readLoggedUserById(loggedUserId) {
     });
 }
 
-//readUserById
-function readLoggedUserByIdToCreating(loggedUserId) {
-    return new Promise((resolve, reject) => {
-        fetch(`${USER_API_URL}/${loggedUserId}`)
-            .then(response => response.json())
-            .then((s) => {
-                LOGGED_USER_NAME = s.name;
-                LOGGED_USER_GROUP_ID = s.userGroup.id;
-                LOGGED_USER_GROUP_NAME = s.userGroup.name;
-                let text = `User ID: ${LOGGED_USER_NAME}, User Group: ${LOGGED_USER_GROUP_NAME}`;
-                document.getElementById("user_info").innerHTML = `<a>${text}</a>`;
-                resolve (CREATE_MODE);
-            });
-    });
-}
-
-//readReimbursements
-function readAllReimbursement(loggedUserId) {
-    return new Promise((resolve, reject) => {
-        fetch(`${REIMBURSEMENTS_API_URL}/user/${loggedUserId}`)
-            .then((response) => response.json())
-            .then((modulesPropArr) => {
-                modulesPropArr.map(s => {
-                    let table = document.getElementById('reimbursement_table');
-                    let row = table.insertRow(-1);
-
-                    newCellInRow(row, 0, s.id);
-                    newCellInRow(row, 1, s.name);
-                    newCellInRow(row, 2, s.returnValue);
-                });
-                resolve ();
-            });
-    });
-}
-
 function newCellInRow(row, int, text){
     let newCell = row.insertCell(int);
     let newText = document.createTextNode(text);
