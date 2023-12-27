@@ -103,7 +103,7 @@ function getReceiptTypesCosts(userGroupId) {
             .then((response) => response.json())
             .then((userGroupArr) => {
                 const list = userGroupArr.map(s =>
-                    `<option value="${s.id}">User Group: ${s.name}</option>`)
+                    `<option value="${s.id}">Cost type: ${s.name}, max:${s.maxValue}</option>`)
                     .join('\n');
                 document.getElementById('receipt_list').innerHTML = list;
                 resolve();
