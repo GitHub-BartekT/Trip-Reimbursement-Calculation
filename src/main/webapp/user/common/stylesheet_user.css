@@ -28,6 +28,7 @@
 .status-container {
     display: flex;
     justify-content: center;
+    margin-bottom: 2.5em;
 }
 
 .status-container table {
@@ -46,7 +47,6 @@
     margin: 2.5em auto;
     width: 50%;
     text-align: center;
-
 }
 
 .pure-button {
@@ -63,3 +63,11 @@
     background: rgb(202, 60, 60);
 }
 
+
+.button-success {
+    background: rgb(28, 184, 65);
+}
+
+.creating {
+    margin-bottom: 5em;
+}

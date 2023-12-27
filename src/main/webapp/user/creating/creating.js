@@ -243,6 +243,7 @@ function pageCreatingMode(){
     document.getElementById("accept_btn").innerText = "Add Reimbursement";
     changeBtnToDisable("add_cost_btn");
     changeBtnToDisableDelete("delete_btn");
+    changeBtnToDisableSuccess("assign_reimbursement");
     setReimbursementPlaceholders("Reimbursement Name", "", "", 0);
     deleteRows(11,"reimbursement_table_create");
 }
@@ -254,6 +255,7 @@ function pageChangingMode(){
     document.getElementById("accept_btn").innerText = "Save changes";
     changeBtnToPrimary("add_cost_btn");
     changeBtnToDelete("delete_btn");
+    changeBtnToSuccess("assign_reimbursement");
 }
 
 function setReimbursementPlaceholders(name, startDay, endDay, distance){

@@ -95,3 +95,7 @@ a.pure-button-primary {
 .button-error {
     background: rgb(202, 60, 60);
 }
+
+.button-success {
+    background: rgb(28, 184, 65);
+}

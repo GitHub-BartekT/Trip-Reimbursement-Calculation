@@ -78,6 +78,16 @@ function changeBtnToDisable(btnId){
     document.getElementById(btnId).classList.add("pure-button", "pure-button-disabled");
 }
 
+function changeBtnToSuccess(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("button-success", "pure-button");
+}
+
+function changeBtnToDisableSuccess(btnId){
+    document.getElementById(btnId).className = "";
+    document.getElementById(btnId).classList.add("button-success", "pure-button", "pure-button-disabled");
+}
+
 function changeBtnToDelete(btnId){
     document.getElementById(btnId).className = "";
     document.getElementById(btnId).classList.add("button-error", "pure-button");
