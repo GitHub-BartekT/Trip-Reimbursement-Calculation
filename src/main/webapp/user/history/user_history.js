@@ -1,12 +1,12 @@
-startUser();
+startUserHistory();
 
-function startUser(){
+function startUserHistory(){
     loadUserHeader().then(r => {
         return readDataFromUrl();
     })
         .then(loggedUserId => {
             return Promise.all([
-                readOptionalReimbursement(false, loggedUserId),
+                readOptionalReimbursement(true, loggedUserId),
                 readLoggedUserById(loggedUserId)
             ]);
         })
@@ -14,5 +14,3 @@ function startUser(){
             console.error(error);
         });
 }
-
-
