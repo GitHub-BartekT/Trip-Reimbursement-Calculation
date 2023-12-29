@@ -115,3 +115,13 @@ function changePlaceholderAndValue(id, text){
     document.getElementById(id).setAttribute("placeholder", text);
     document.getElementById(id).setAttribute("value", text);
 }
+
+function updateLink() {
+    var userId = LOGGED_USER_ID;
+    var links = document.querySelectorAll('a[href*="user="]');
+    links.forEach(function(link) {
+        var href = link.getAttribute('href');
+        var updatedHref = href.split('user=')[0] + 'user=' + userId;
+        link.setAttribute('href', updatedHref);
+    });
+}

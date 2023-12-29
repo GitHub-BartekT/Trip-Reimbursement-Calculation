@@ -1,10 +1,12 @@
 startCreatingUser();
-getUserGroups();
 
 function startCreatingUser(){
-    loadHeader().then(r => {
-        return readDataFromUrl();
-    })
+    loadHeader().then(s => {
+            return getUserGroups();
+        })
+        .then(r => {
+            return readDataFromUrl();
+        })
         .then(loggedUserId => {
             if (CREATE_MODE){
                 pageCreatingModeUser();
@@ -93,14 +95,17 @@ function doPutUserGroup(user_name){
 }
 
 function getUserGroups() {
-    fetch(`${USER_GROUPS_API_URL}`)
-        .then((response) => response.json())
-        .then((userGroupArr) => {
-            const list = userGroupArr.map(s =>
-                `<option value="${s.id}">User Group: ${s.name}</option>`)
-                .join('\n');
-            document.getElementById('user_groups_list').innerHTML = list;
-        });
+    return new Promise((resolve) => {
+        fetch(`${USER_GROUPS_API_URL}`)
+            .then((response) => response.json())
+            .then((userGroupArr) => {
+                const list = userGroupArr.map(s =>
+                    `<option value="${s.id}">User Group: ${s.name}</option>`)
+                    .join('\n');
+                document.getElementById('user_groups_list').innerHTML = list;
+                resolve();
+            });
+    });
 }
 
 function getUserGroup() {

@@ -99,3 +99,7 @@ a.pure-button-primary {
 .button-success {
     background: rgb(28, 184, 65);
 }
+
+.button-orange {
+    background: rgb(223, 117, 20);
+}
