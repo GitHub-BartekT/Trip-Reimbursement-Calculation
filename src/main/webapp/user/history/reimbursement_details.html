@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Reimbursement</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../common/stylesheet.css">
+    <link rel="stylesheet" href="../common/stylesheet_user.css">
+</head>
+<body style="background: #ffdf73">
+<div id="header"></div>
+<div id="user_group_params">
+    <div class="user_group_params">
+        <table id="user_group_params_table" class="pure-table pure-table-bordered pure-table-striped center-table">
+            <tr>
+                <td>User Group</td>
+                <td>daily allowance</td>
+                <td>cost per km</td>
+                <td>max mileage</td>
+                <td>max refund</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="creating">
+    <div  class="big-text">
+        <div id="top-text-container">
+            <h2>Your reimbursement:</h2>
+        </div>
+    </div>
+    <div class="create-container">
+        <table id="reimbursement_table_create" class="pure-table pure-table-bordered pure-table-striped center-table">
+
+            <tr>
+                <td>Name:</td>
+                <td colspan="2" id="reimbursement_name"></td>
+            </tr>
+            <tr>
+                <td>Value</td>
+                <td colspan="2" id="reimbursement_value"></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="background: rgb(164, 162, 162)">Duration</td>
+            </tr>
+            <tr>
+                <td>Start day:</td>
+                <td colspan="2" id="reimbursement_start_day"></td>
+            </tr>
+            <tr>
+                <td>End day:</td >
+                <td colspan="2" id="reimbursement_end_day"></td>
+            </tr>
+            <tr>
+                <td rowspan="2">Duration:</td>
+                <td>Days:</td>
+                <td>Daily Allowance</td>
+            </tr>
+            <tr>
+                <td id="calculation_duration"></td>
+                <td id="user_group_daily_allowance"></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="background: rgb(164, 162, 162)">Distance</td>
+            </tr>
+            <tr>
+                <td colspan="2">Smaller value</td>
+                <td rowspan="2">Cest per Km:</td>
+            </tr>
+            <tr>
+                <td>Distance:</td>
+                <td>Max mileage:</td>
+            </tr>
+            <tr>
+                <td id="reimbursement_distance"></td>
+                <td id="user_group_max_mileage"></td>
+                <td id="user_group_cost_per_km"></td>
+            </tr>
+
+            <tr>
+                <td colspan="3" style="background: rgb(164, 162, 162)">Additional costs:</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>value</td>
+                <td>max refund value</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script src="../../common/common.js"> </script>
+<script src="reimbursement_details.js"> </script>
+
+</body>
+</html>

@@ -82,6 +82,8 @@ const changeReimbursementButtonsPressed = e => {
 
     if (checkButton === 'change'  && clickBtnID.startsWith('changeBtn')){
         window.location.href = `../creating/creating.html?user=${LOGGED_USER_ID}&reimbursement=${REIMBURSEMENT_ID}&createMode=`;
+    } else {
+        window.location.href = `../history/reimbursement_details.html?user=${LOGGED_USER_ID}&reimbursement=${REIMBURSEMENT_ID}`;
     }
 }
 
