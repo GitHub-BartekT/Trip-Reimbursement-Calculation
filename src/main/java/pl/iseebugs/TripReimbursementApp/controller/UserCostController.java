@@ -1,6 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.*;
@@ -17,6 +18,7 @@ public class UserCostController {
 
     private final UserCostService service;
 
+    @Autowired
     public UserCostController(UserCostService service) {
         this.service = service;
     }

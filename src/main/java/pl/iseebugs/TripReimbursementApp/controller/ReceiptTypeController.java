@@ -1,6 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
@@ -19,6 +20,7 @@ public class ReceiptTypeController {
 
     private final ReceiptTypeService service;
 
+    @Autowired
     public ReceiptTypeController(ReceiptTypeService service){this.service = service;}
 
     @GetMapping

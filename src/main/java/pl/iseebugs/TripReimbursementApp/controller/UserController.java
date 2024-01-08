@@ -1,6 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
@@ -19,6 +20,7 @@ public class UserController {
 
     private final UserService service;
 
+    @Autowired
     public UserController(UserService service) {
         this.service = service;
     }

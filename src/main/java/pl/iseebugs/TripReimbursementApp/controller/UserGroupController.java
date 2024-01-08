@@ -1,6 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
@@ -21,6 +22,7 @@ public class UserGroupController {
 
     private final UserGroupService service;
 
+    @Autowired
     public UserGroupController(UserGroupService service) {
         this.service = service;
     }

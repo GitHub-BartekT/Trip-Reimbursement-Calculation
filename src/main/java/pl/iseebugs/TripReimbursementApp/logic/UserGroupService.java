@@ -2,6 +2,7 @@ package pl.iseebugs.TripReimbursementApp.logic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.TripReimbursementApp.exception.ReceiptTypeNotFoundException;
 import pl.iseebugs.TripReimbursementApp.exception.UserGroupNotFoundException;
@@ -21,6 +22,7 @@ public class UserGroupService {
     private final UserRepository userRepository;
     private final ReceiptTypeRepository receiptTypeRepository;
 
+    @Autowired
     public UserGroupService(UserGroupRepository repository, UserRepository userRepository, ReceiptTypeRepository receiptTypeRepository) {
         this.repository = repository;
         this.userRepository = userRepository;

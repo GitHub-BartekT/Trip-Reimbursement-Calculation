@@ -1,6 +1,7 @@
 package pl.iseebugs.TripReimbursementApp.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.TripReimbursementApp.exception.ReimbursementNotFoundException;
@@ -20,6 +21,7 @@ public class ReimbursementController {
 
     private final ReimbursementService service;
 
+    @Autowired
     public ReimbursementController(ReimbursementService service) {
         this.service = service;
     }
