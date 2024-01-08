@@ -33,3 +33,4 @@ build/
 .vscode/
 /src/main/resources/db/database/
 /src/test/resources/db/
+/out/
